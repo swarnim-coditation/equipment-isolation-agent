@@ -1,0 +1,18 @@
+[project]
+name = "equipment-isolation"
+version = "0.1.0"
+description = "Deterministic local runner for equipment isolation using graph traversal and Plant360 APIs"
+requires-python = ">=3.11"
+dependencies = [
+    "gremlinpython>=3.6.2",
+    "requests>=2.31.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+
+[tool.setuptools.packages.find]
+where = ["."]

@@ -1,4 +1,4 @@
-from .api_client import Plant360Client
+from api_client import Plant360Client
 
 
 def resolve_pid_image(config, output_dir, stem):

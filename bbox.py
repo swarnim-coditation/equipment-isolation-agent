@@ -1,4 +1,4 @@
-from .api_client import Plant360Client
+from api_client import Plant360Client
 
 
 MAX_PARALLEL_COMPANIONS_PER_SOURCE = 2

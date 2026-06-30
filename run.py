@@ -5,18 +5,18 @@ import sys
 from dataclasses import replace
 from pathlib import Path
 
-from .bbox import resolve_bboxes
-from .bbox import _extract_symbols
-from .boundary import fetch_boundaries
-from .candidates import find_candidates
-from .config import ApiConfig, GraphConfig, IsolationPolicy, JOB_IDS_BY_NAME, RunConfig, WorkScope
-from .evidence import build_evidence
-from .graph_client import GraphClient, normalize_vertex, props_only, vertex_id
-from .image import resolve_pid_image
-from .output import build_final_payload, write_json, write_viewer
-from .planner import plan_requests
-from .api_client import Plant360Client
-from .validator import validate
+from bbox import resolve_bboxes
+from bbox import _extract_symbols
+from boundary import fetch_boundaries
+from candidates import find_candidates
+from config import ApiConfig, GraphConfig, IsolationPolicy, JOB_IDS_BY_NAME, RunConfig, WorkScope
+from evidence import build_evidence
+from graph_client import GraphClient, normalize_vertex, props_only, vertex_id
+from image import resolve_pid_image
+from output import build_final_payload, write_json, write_viewer
+from planner import plan_requests
+from api_client import Plant360Client
+from validator import validate
 
 
 logger = logging.getLogger("local_no_llm")

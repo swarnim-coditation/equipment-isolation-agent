@@ -1,6 +1,6 @@
 from gremlin_python.process.graph_traversal import __
 
-from .graph_client import GraphClient, normalize_vertex, props_only, vertex_id, vertex_label
+from graph_client import GraphClient, normalize_vertex, props_only, vertex_id, vertex_label
 
 
 def fetch_boundaries(config):
