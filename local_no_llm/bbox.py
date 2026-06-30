@@ -377,7 +377,10 @@ def _mark_visible_source_labels(candidates, symbols, text_items):
         else:
             display_nozzle = ""
             confidence = "graph_only_unlabeled_component"
-        candidate["source_display_label"] = f"{display_nozzle}_{equipment_tag}" if display_nozzle and equipment_tag else display_nozzle
+        if display_nozzle and graph_tag.upper().startswith(f"{display_nozzle}_"):
+            candidate["source_display_label"] = graph_tag
+        else:
+            candidate["source_display_label"] = f"{display_nozzle}_{equipment_tag}" if display_nozzle and equipment_tag else display_nozzle
         candidate["source_label_confidence"] = confidence
         marked.append(candidate)
     return marked
