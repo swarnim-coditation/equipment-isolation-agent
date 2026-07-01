@@ -32,6 +32,8 @@ INSTRUMENT_TAG_PREFIXES = {
     "tc",
 }
 AUTO_INSTRUMENT_CONTEXT_EQUIPMENT = {"BT-11"}
+HILT_CONTEXT_LINE_CLASSES = {"piping_to_instrument_line", "companion_line"}
+HILT_PROCESS_LINE_CLASSES = {"primary_process_line", "secondary_process_line", "process_line"}
 
 
 def resolve_bboxes(candidate_data, config):
@@ -47,9 +49,15 @@ def resolve_bboxes(candidate_data, config):
     except Exception as exc:
         debug["bbox_stlm_error"] = str(exc)
         stlm_payload = None
+    try:
+        hilt_payload = client.hilt_graph(job_id)
+    except Exception as exc:
+        debug["hilt_graph_error"] = str(exc)
+        hilt_payload = None
 
     symbols = _extract_symbols(stlm_payload)
     text_items = _extract_text_items(stlm_payload)
+    hilt_source_context = _extract_hilt_source_context(hilt_payload)
     symbol_by_id = {}
     nozzle_symbol_by_parent_and_id = {}
     for symbol in symbols:
@@ -64,7 +72,11 @@ def resolve_bboxes(candidate_data, config):
     candidates, resolved = _resolve_candidate_bboxes(candidate_data.get("candidates", []) or [], symbol_by_id, nozzle_symbol_by_parent_and_id)
     candidate_pool, pool_resolved = _resolve_candidate_bboxes(candidate_data.get("_candidate_pool", []) or [], symbol_by_id, nozzle_symbol_by_parent_and_id)
     candidate_pool = _mark_visible_source_labels(candidate_pool, symbols, text_items)
-    context_sources, context_instruments = _instrument_context_sources(candidate_pool, symbols)
+    candidate_pool = _attach_hilt_source_context(candidate_pool, hilt_source_context)
+    hilt_context_sources, hilt_context_items = _hilt_context_sources(candidate_pool)
+    visual_context_sources, visual_context_items = _instrument_context_sources(candidate_pool, symbols, hilt_context_sources)
+    context_sources = hilt_context_sources | visual_context_sources
+    context_instruments = hilt_context_items + visual_context_items
     candidate_pool = _mark_source_context(candidate_pool, context_sources)
     visual_candidates, visual_debug = _select_visually_nearest_per_source(candidate_pool)
     if visual_candidates:
@@ -77,6 +89,9 @@ def resolve_bboxes(candidate_data, config):
             "bbox_resolved_count": resolved,
             "bbox_candidate_pool_resolved_count": pool_resolved,
             "bbox_stlm_symbol_count": len(symbols),
+            "hilt_graph_node_count": hilt_source_context.get("node_count", 0),
+            "hilt_graph_link_count": hilt_source_context.get("link_count", 0),
+            "hilt_source_line_context_count": hilt_source_context.get("source_line_context_count", 0),
             **visual_debug,
             "bbox_unresolved_candidate_ids": [
                 candidate.get("candidate_id") for candidate in candidates if not candidate.get("bbox")
@@ -87,7 +102,15 @@ def resolve_bboxes(candidate_data, config):
             "context_instruments": context_instruments,
         }
     )
-    return {**candidate_data, "candidates": candidates, "_candidate_pool": candidate_pool, "manual_visual_isolation_checks": manual_visual_checks, "context_instruments": context_instruments, "debug": debug}
+    return {
+        **candidate_data,
+        "candidates": candidates,
+        "_candidate_pool": candidate_pool,
+        "manual_visual_isolation_checks": manual_visual_checks,
+        "boundary_context_sources": context_instruments,
+        "context_instruments": context_instruments,
+        "debug": debug,
+    }
 
 
 def _resolve_candidate_bboxes(candidates, symbol_by_id, nozzle_symbol_by_parent_and_id):
@@ -127,7 +150,7 @@ def _select_visually_nearest_per_source(candidate_pool):
         return [], {}
     by_source = {}
     for candidate in candidate_pool:
-        if candidate.get("source_context_type") == "instrument_only":
+        if candidate.get("source_context_type"):
             continue
         by_source.setdefault(_source_key(candidate), []).append(candidate)
 
@@ -149,6 +172,7 @@ def _select_visually_nearest_per_source(candidate_pool):
                     "source_component_tag_raw": sample.get("source_component_tag"),
                     "source_nozzle_id": sample.get("source_nozzle_id"),
                     "source_label_confidence": sample.get("source_label_confidence"),
+                    "source_hilt_lines": sample.get("source_hilt_lines") or [],
                     "min_candidate_depth": min_depth,
                     "candidate_count": len(items),
                     "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
@@ -290,7 +314,7 @@ def _detect_unclassified_parallel_branch_checks(candidate_pool, text_items):
     checks = []
     by_source = {}
     for candidate in candidate_pool:
-        if candidate.get("source_context_type") == "instrument_only":
+        if candidate.get("source_context_type"):
             continue
         if candidate.get("bbox") and candidate.get("source_bbox"):
             by_source.setdefault(_source_key(candidate), []).append(candidate)
@@ -337,6 +361,143 @@ def _detect_unclassified_parallel_branch_checks(candidate_pool, text_items):
                 }
             )
     return checks
+
+
+def _extract_hilt_source_context(payload):
+    graph = (payload or {}).get("hilt_graph") if isinstance(payload, dict) else None
+    if not isinstance(graph, dict):
+        return {"lines_by_endpoint": {}, "nodes_by_id": {}, "node_count": 0, "link_count": 0, "source_line_context_count": 0}
+
+    nodes = graph.get("nodes") or []
+    links = graph.get("links") or []
+    nodes_by_id = {}
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        node_id = node.get("id") or (node.get("payload") or {}).get("id") or (node.get("payload") or {}).get("source_id")
+        if node_id:
+            nodes_by_id[_norm(node_id)] = _hilt_node_summary(node)
+
+    lines_by_endpoint = {}
+    for link in links:
+        if not isinstance(link, dict):
+            continue
+        payload = link.get("payload") or {}
+        source = link.get("source") or payload.get("from")
+        target = link.get("target") or payload.get("to")
+        line = _hilt_line_summary(link, nodes_by_id)
+        for endpoint in (source, target):
+            if endpoint:
+                lines_by_endpoint.setdefault(_norm(endpoint), []).append(line)
+
+    return {
+        "lines_by_endpoint": lines_by_endpoint,
+        "nodes_by_id": nodes_by_id,
+        "node_count": len(nodes),
+        "link_count": len(links),
+        "source_line_context_count": sum(len(items) for items in lines_by_endpoint.values()),
+    }
+
+
+def _hilt_node_summary(node):
+    payload = node.get("payload") or {}
+    bbox_location = payload.get("bounding_box_location") or {}
+    return {
+        "uuid": node.get("id") or payload.get("id") or payload.get("source_id"),
+        "entity_type": payload.get("entity_type"),
+        "entity_class": payload.get("entity_class"),
+        "tag_number": _hilt_text_value(payload.get("text")) or _attr_value(payload.get("attributes"), "tag"),
+        "bbox": _hilt_bbox(payload),
+        "center": [bbox_location.get("x"), bbox_location.get("y")] if bbox_location else [],
+    }
+
+
+def _hilt_line_summary(link, nodes_by_id):
+    payload = link.get("payload") or {}
+    source = link.get("source") or payload.get("from")
+    target = link.get("target") or payload.get("to")
+    segment = payload.get("piping_network_segment") or {}
+    system = payload.get("piping_network_system") or {}
+    return {
+        "line_id": payload.get("id") or payload.get("source_id"),
+        "source": source,
+        "target": target,
+        "entity_type": payload.get("entity_type"),
+        "entity_class": payload.get("entity_class"),
+        "segment_id": segment.get("id"),
+        "system_id": system.get("id"),
+        "tag_number": _attr_value(segment.get("attributes"), "tag") or _attr_value(payload.get("attributes"), "tag"),
+        "text": _hilt_text_value(payload.get("text")),
+        "graphical_lines": _hilt_graphical_lines(payload.get("graphical_lines")),
+        "connected_nodes": [nodes_by_id.get(_norm(value)) for value in (source, target) if nodes_by_id.get(_norm(value))],
+    }
+
+
+def _attach_hilt_source_context(candidates, hilt_context):
+    lines_by_endpoint = hilt_context.get("lines_by_endpoint") or {}
+    result = []
+    for candidate in candidates:
+        candidate = dict(candidate)
+        lines = []
+        for key in (candidate.get("source_visual_id"), candidate.get("source_visual_node_id")):
+            if key:
+                lines.extend(lines_by_endpoint.get(_norm(key)) or [])
+        candidate["source_hilt_lines"] = _dedupe_hilt_lines(lines)
+        result.append(candidate)
+    return result
+
+
+def _hilt_context_sources(candidate_pool):
+    by_source = {}
+    for candidate in candidate_pool:
+        if candidate.get("source_hilt_lines"):
+            by_source.setdefault(_source_key(candidate), []).append(candidate)
+
+    context_sources = set()
+    context_items = []
+    for source_key, items in by_source.items():
+        sample = items[0]
+        lines = _dedupe_hilt_lines(line for item in items for line in item.get("source_hilt_lines") or [])
+        if not lines:
+            continue
+        line_classes = {_norm(line.get("entity_class")) for line in lines}
+        line_types = {_norm(line.get("entity_type")) for line in lines}
+        if line_classes & HILT_PROCESS_LINE_CLASSES or "process_line" in line_types:
+            continue
+        if not line_classes <= HILT_CONTEXT_LINE_CLASSES:
+            continue
+        classification = "instrument_only_context" if "piping_to_instrument_line" in line_classes else "companion_line_context"
+        context_sources.add(source_key)
+        context_items.append(
+            {
+                "equipment_tag": source_key[0],
+                "source_component": source_key[1],
+                "source_component_tag": _source_context_label(sample),
+                "source_component_tag_raw": sample.get("source_component_tag"),
+                "source_bbox": sample.get("source_bbox") or [],
+                "classification": classification,
+                "source": "hilt_graph",
+                "reason": _hilt_context_reason(classification),
+                "source_hilt_lines": lines,
+                "nearby_candidate_ids": [item.get("candidate_id") for item in _dedupe_source_candidates(items)[:5]],
+            }
+        )
+    return context_sources, context_items
+
+
+def _source_context_label(candidate):
+    label = str(candidate.get("source_display_label") or "").strip()
+    if label:
+        return label
+    if candidate.get("source_label_confidence") == "graph_only_unlabeled_component":
+        return "unlabeled graph-only source"
+    return candidate.get("source_component_tag") or "unknown source"
+
+
+def _hilt_context_reason(classification):
+    if classification == "instrument_only_context":
+        return "HILT graph connects this source through a piping-to-instrument line; it is treated as instrument context rather than a required process isolation boundary."
+    return "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary."
 
 
 def _mark_visible_source_labels(candidates, symbols, text_items):
@@ -386,7 +547,7 @@ def _mark_visible_source_labels(candidates, symbols, text_items):
     return marked
 
 
-def _instrument_context_sources(candidate_pool, symbols):
+def _instrument_context_sources(candidate_pool, symbols, known_context_sources):
     by_source = {}
     for candidate in candidate_pool:
         source_key = _source_key(candidate)
@@ -420,7 +581,11 @@ def _instrument_context_sources(candidate_pool, symbols):
     context_sources = set()
     context_instruments = []
     for source_key, items in by_source.items():
+        if source_key in known_context_sources:
+            continue
         sample = items[0]
+        if sample.get("source_hilt_lines"):
+            continue
         if sample.get("equipment_tag") not in AUTO_INSTRUMENT_CONTEXT_EQUIPMENT:
             continue
         source_bbox = sample.get("source_bbox") or []
@@ -456,8 +621,8 @@ def _mark_source_context(candidates, context_sources):
     for candidate in candidates:
         candidate = dict(candidate)
         if _source_key(candidate) in context_sources:
-            candidate["source_context_type"] = "instrument_only"
-            candidate["source_context_reason"] = "source_nozzle_visually_matches_instrument_context"
+            candidate["source_context_type"] = "non_process_context"
+            candidate["source_context_reason"] = "source_nozzle_classified_as_non_process_context"
         marked.append(candidate)
     return marked
 
@@ -561,6 +726,70 @@ def _looks_like_nozzle_label(value):
     if len(value) < 2 or value[0] != "N":
         return False
     return value[1:].isdigit()
+
+
+def _dedupe_hilt_lines(lines):
+    merged = {}
+    for line in lines or []:
+        if not isinstance(line, dict):
+            continue
+        key = line.get("line_id") or (line.get("source"), line.get("target"), line.get("entity_class"))
+        if key and key not in merged:
+            merged[key] = line
+    return list(merged.values())
+
+
+def _attr_value(attributes, name):
+    target = str(name or "").strip().lower()
+    for attr in attributes or []:
+        if not isinstance(attr, dict):
+            continue
+        if str(attr.get("name") or "").strip().lower() == target:
+            value = attr.get("value")
+            if value not in (None, "", []):
+                return str(value)
+    return None
+
+
+def _hilt_text_value(items):
+    values = []
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        value = item.get("value")
+        if value not in (None, "", []):
+            values.append(str(value))
+    return ", ".join(values) if values else None
+
+
+def _hilt_graphical_lines(lines):
+    result = []
+    for line in lines or []:
+        if not isinstance(line, dict):
+            continue
+        p1 = line.get("p1") or {}
+        p2 = line.get("p2") or {}
+        if p1.get("x") is None or p1.get("y") is None or p2.get("x") is None or p2.get("y") is None:
+            continue
+        result.append(
+            {
+                "point1": [round(float(p1.get("x")), 4), round(float(p1.get("y")), 4)],
+                "point2": [round(float(p2.get("x")), 4), round(float(p2.get("y")), 4)],
+                "line_type": line.get("line_type"),
+            }
+        )
+    return result
+
+
+def _hilt_bbox(payload):
+    location = payload.get("bounding_box_location") or {}
+    width = payload.get("bounding_box_width")
+    height = payload.get("bounding_box_height")
+    if location.get("x") is None or location.get("y") is None or width is None or height is None:
+        return []
+    x = float(location.get("x")) - float(width) / 2.0
+    y = float(location.get("y")) - float(height) / 2.0
+    return [int(round(x)), int(round(y)), int(round(float(width))), int(round(float(height)))]
 
 
 def _distance_sort_value(value):

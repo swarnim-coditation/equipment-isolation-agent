@@ -55,6 +55,7 @@ def validate(planner_data):
         "covered_boundary_source_count": evidence.get("covered_boundary_source_count"),
         "missing_boundary_count": missing_boundary_count,
         "unselected_boundary_sources": evidence.get("unselected_boundary_sources") or [],
+        "boundary_context_sources": evidence.get("boundary_context_sources") or evidence.get("context_instruments") or [],
         "context_instruments": evidence.get("context_instruments") or [],
         "barrier_candidate_ids": barrier_ids,
         "positive_candidate_ids": positive_ids,

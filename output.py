@@ -7,6 +7,7 @@ def build_final_payload(validation_data, config):
     context = validation_data.get("context") or config.context
     manual_visual_checks = validation_data.get("manual_visual_isolation_checks") or []
     context_instruments = (validation_data.get("isolation_validation") or {}).get("context_instruments") or validation_data.get("context_instruments") or []
+    boundary_context_sources = (validation_data.get("isolation_validation") or {}).get("boundary_context_sources") or validation_data.get("boundary_context_sources") or context_instruments
     isolation_points = []
     for candidate in candidates:
         properties = candidate.get("properties", {}) or {}
@@ -39,6 +40,7 @@ def build_final_payload(validation_data, config):
                 "assurance_status": validation_data.get("assurance_status"),
                 "isolation_validation": validation_data.get("isolation_validation"),
                 "unselected_boundary_sources": (validation_data.get("isolation_validation") or {}).get("unselected_boundary_sources") or [],
+                "boundary_context_sources": boundary_context_sources,
                 "context_instruments": context_instruments,
                 "manual_visual_isolation_checks": manual_visual_checks,
                 "isolation_points": isolation_points,
@@ -55,7 +57,7 @@ def write_viewer(path, payload, image_url=""):
     data = payload.get("data", [{}])[0]
     points = data.get("isolation_points", [])
     unselected_sources = data.get("unselected_boundary_sources", []) or []
-    context_instruments = data.get("context_instruments", []) or []
+    context_instruments = data.get("boundary_context_sources", []) or data.get("context_instruments", []) or []
     manual_checks = data.get("manual_visual_isolation_checks", []) or []
     drawable_points = []
     for point in points:
@@ -141,8 +143,8 @@ def write_viewer(path, payload, image_url=""):
         x, y, w, h = [int(value) for value in bbox]
         display_x = x - offset_x
         display_y = y - offset_y
-        label = context.get("source_component_tag") or "instrument context"
-        title = f"instrument context | source={label} | bbox={bbox}"
+        label = context.get("source_component_tag") or "boundary context"
+        title = f"boundary context | source={label} | class={context.get('classification')} | bbox={bbox}"
         boxes.append(
             f'<div class="context-box" style="left:{display_x}px;top:{display_y}px;width:{w}px;height:{h}px;" title="{html.escape(str(title))}"></div>'
         )
@@ -186,8 +188,8 @@ def write_viewer(path, payload, image_url=""):
         )
     if context_instruments:
         warning += (
-            '<div class="context-warning">Instrument context: '
-            f'{len(context_instruments)} nozzle/source path(s) were visually matched to instrument-only context and not counted as process isolation boundaries.</div>'
+            '<div class="context-warning">Boundary context: '
+            f'{len(context_instruments)} nozzle/source path(s) were classified as non-process context and not counted as process isolation boundaries.</div>'
         )
     path.write_text(
         """<!doctype html>

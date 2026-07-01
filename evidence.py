@@ -61,6 +61,7 @@ def build_evidence(candidate_data, config):
         missing.append(f"{missing_boundary_count} equipment boundary path(s) do not have a selected isolation candidate.")
     unselected_sources = (candidate_data.get("debug") or {}).get("bbox_unselected_source_components") or []
     context_instruments = candidate_data.get("context_instruments") or (candidate_data.get("debug") or {}).get("context_instruments") or []
+    boundary_context_sources = candidate_data.get("boundary_context_sources") or context_instruments
     if unselected_sources:
         source_tags = ", ".join(_source_warning_label(item) for item in unselected_sources[:8])
         missing.append(f"Some equipment boundary source(s) were not selected because only distant or visually unresolved candidates were found: {source_tags}.")
@@ -74,6 +75,7 @@ def build_evidence(candidate_data, config):
         "covered_boundary_source_count": covered_count,
         "missing_boundary_count": missing_boundary_count,
         "unselected_boundary_sources": unselected_sources,
+        "boundary_context_sources": boundary_context_sources,
         "context_instruments": context_instruments,
         "candidate_summaries": summaries,
         "barrier_candidate_ids": barrier_ids,
