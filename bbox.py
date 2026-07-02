@@ -1,4 +1,6 @@
 from api_client import Plant360Client
+from flow import classify_nozzle_flow, role_for_source
+from hilt_topology import resolve_nozzle_isolation
 
 
 MAX_PARALLEL_COMPANIONS_PER_SOURCE = 2
@@ -73,6 +75,8 @@ def resolve_bboxes(candidate_data, config):
     candidate_pool, pool_resolved = _resolve_candidate_bboxes(candidate_data.get("_candidate_pool", []) or [], symbol_by_id, nozzle_symbol_by_parent_and_id)
     candidate_pool = _mark_visible_source_labels(candidate_pool, symbols, text_items)
     candidate_pool = _attach_hilt_source_context(candidate_pool, hilt_source_context)
+    flow_roles = classify_nozzle_flow(hilt_payload) if hilt_payload else {}
+    candidate_pool = _attach_flow_roles(candidate_pool, flow_roles)
     hilt_context_sources, hilt_context_items = _hilt_context_sources(candidate_pool)
     visual_context_sources, visual_context_items = _instrument_context_sources(candidate_pool, symbols, hilt_context_sources)
     context_sources = hilt_context_sources | visual_context_sources
@@ -83,6 +87,19 @@ def resolve_bboxes(candidate_data, config):
         candidates = visual_candidates
         resolved = sum(1 for candidate in candidates if candidate.get("bbox"))
     manual_visual_checks = _detect_unclassified_parallel_branch_checks(candidate_pool, text_items)
+    candidates = _attach_flow_roles(candidates, flow_roles)
+    # HILT piping topology is AUTHORITATIVE for nozzle<->valve connectivity
+    # (the parsed P&ID piping graph beats JanusGraph depth + bbox distance, which
+    # can pick a geographically-near but topologically-wrong valve). HILT uses a
+    # CAD y-axis (bottom-left); calibrate the flip to image coords via STLM nozzles.
+    hilt_nodes_raw = ((hilt_payload.get("hilt_graph") or {}) if isinstance(hilt_payload, dict) else {}).get("nodes") or []
+    y_flip_h = _calibrate_hilt_yflip(hilt_nodes_raw, symbols)
+    hilt_isolation_map = (
+        resolve_nozzle_isolation(hilt_payload, config.equipment_tag, y_flip=y_flip_h)
+        if hilt_payload and y_flip_h is not None
+        else {}
+    )
+    candidates = _merge_hilt_topology(candidates, hilt_isolation_map, flow_roles, config.equipment_tag) if hilt_isolation_map else candidates
 
     debug.update(
         {
@@ -100,6 +117,15 @@ def resolve_bboxes(candidate_data, config):
             "manual_visual_isolation_checks": manual_visual_checks,
             "context_instrument_source_component_count": len(context_sources),
             "context_instruments": context_instruments,
+            "flow_nozzle_classified_count": len(flow_roles),
+            "flow_candidate_role_counts": {
+                role: sum(1 for c in candidates if (c.get("source_flow_role") or "unknown") == role)
+                for role in ("inlet", "outlet", "bidirectional", "unknown")
+            },
+            "hilt_topology_nozzle_count": len(hilt_isolation_map),
+            "hilt_topology_valve_count": sum(len(v) for v in hilt_isolation_map.values()),
+            "hilt_topology_authoritative_count": sum(1 for c in candidates if c.get("connectivity_source") == "hilt_topology"),
+            "hilt_y_flip_calibrated": y_flip_h,
         }
     )
     return {
@@ -445,6 +471,114 @@ def _attach_hilt_source_context(candidates, hilt_context):
         candidate["source_hilt_lines"] = _dedupe_hilt_lines(lines)
         result.append(candidate)
     return result
+
+
+def _attach_flow_roles(candidates, flow_roles):
+    if not flow_roles:
+        return candidates
+    result = []
+    for candidate in candidates:
+        candidate = dict(candidate)
+        candidate["source_flow_role"] = role_for_source(
+            flow_roles,
+            candidate.get("source_component_tag"),
+            candidate.get("source_visual_id") or candidate.get("source_visual_node_id"),
+        )
+        result.append(candidate)
+    return result
+
+
+def _merge_hilt_topology(candidates, hilt_isolation_map, flow_roles, equipment_tag):
+    """Override nozzle->valve assignments with HILT piping-topology results.
+    For each nozzle HILT resolves, replace any JanusGraph-derived candidate for
+    that nozzle with the topologically-connected HILT valve. Nozzles HILT did not
+    resolve keep their existing candidate (if any). If one physical valve covers
+    multiple nozzles, keep one candidate and accumulate all source paths."""
+    if not hilt_isolation_map:
+        return candidates
+    covered_nozzles = {tag for tag, valves in hilt_isolation_map.items() if valves}
+    merged = []
+    for candidate in candidates:
+        src = candidate.get("source_component_tag")
+        if src and src in covered_nozzles:
+            continue  # replaced by the HILT-authoritative valve for this nozzle
+        merged.append(candidate)
+    hilt_by_valve_id = {}
+    for nozzle_tag, valves in hilt_isolation_map.items():
+        if not valves:
+            continue
+        seen_valve_ids: set[str] = set()
+        for valve in valves:
+            vid = str(valve.get("valve_id") or "")
+            if not vid:
+                continue
+            if vid in seen_valve_ids:
+                continue
+            seen_valve_ids.add(vid)
+            if vid not in hilt_by_valve_id:
+                hilt_by_valve_id[vid] = _hilt_valve_candidate(valve, nozzle_tag, equipment_tag, flow_roles)
+                continue
+            _append_hilt_source_path(hilt_by_valve_id[vid], valve, nozzle_tag, flow_roles)
+    merged.extend(hilt_by_valve_id.values())
+    return merged
+
+
+def _hilt_valve_candidate(valve, nozzle_tag, equipment_tag, flow_roles):
+    entity_class = valve.get("entity_class") or "valve"
+    hops = int(valve.get("hop_distance") or 0)
+    return {
+        "equipment_tag": equipment_tag,
+        "source_component_tag": nozzle_tag,
+        "source_component_id": nozzle_tag,
+        "candidate_id": valve.get("valve_id"),
+        "visual_id": valve.get("valve_id"),
+        "tag_number": valve.get("tag") or None,
+        "candidate_label": entity_class,
+        "tag_type": "line",
+        "energy_type": ["process"],
+        "isolation_method": "close and lock valve" if "valve" in entity_class.lower() else "isolate and lock/tag",
+        "matched_keywords": [entity_class],
+        "traversal_depth": hops,
+        "source_distance": None,
+        "confidence": max(130 - hops * 10, 60),
+        "reason": f"Connected to {nozzle_tag} via HILT piping topology ({hops} hops). Topology-authoritative.",
+        "properties": {"entity_class": entity_class, "entity_type": valve.get("entity_type")},
+        "property_preview": {},
+        "bbox": valve.get("bbox") or [],
+        "connectivity_source": "hilt_topology",
+        "source_flow_role": role_for_source(flow_roles, nozzle_tag),
+        "source_paths": [_hilt_source_path(nozzle_tag, hops, flow_roles)],
+        "source_path_count": 1,
+    }
+
+
+def _append_hilt_source_path(candidate, valve, nozzle_tag, flow_roles):
+    hops = int(valve.get("hop_distance") or 0)
+    candidate.setdefault("source_paths", []).append(_hilt_source_path(nozzle_tag, hops, flow_roles))
+    candidate["source_path_count"] = len(candidate["source_paths"])
+    roles = {
+        path.get("source_flow_role")
+        for path in candidate["source_paths"]
+        if path.get("source_flow_role") and path.get("source_flow_role") != "unknown"
+    }
+    if len(roles) == 1:
+        candidate["source_flow_role"] = next(iter(roles))
+    elif len(roles) > 1:
+        candidate["source_flow_role"] = "bidirectional"
+    candidate["reason"] = (
+        f"Connected to {candidate['source_path_count']} nozzle(s) via HILT piping topology. "
+        "Topology-authoritative."
+    )
+
+
+def _hilt_source_path(nozzle_tag, hops, flow_roles):
+    return {
+        "source_component_tag": nozzle_tag,
+        "source_component_id": nozzle_tag,
+        "source_flow_role": role_for_source(flow_roles, nozzle_tag),
+        "reason": "hilt_topology",
+        "traversal_depth": hops,
+    }
 
 
 def _hilt_context_sources(candidate_pool):
@@ -867,6 +1001,46 @@ def _symbol_bbox(symbol):
     if all(symbol.get(key) is not None for key in keys):
         return [int(round(float(symbol[key]))) for key in keys]
     return []
+
+
+def _calibrate_hilt_yflip(hilt_nodes, symbols):
+    """Derive the image height H such that image_y = H - hilt_y. Pairs HILT nodes
+    with STLM symbols (STLM coords are image-space) by node id first, then by tag.
+    Returns None if no pairs (calibration failed -> HILT merge is skipped)."""
+    if not symbols:
+        return None
+    stlm_by_id = {}
+    for sym in symbols:
+        for key in ("source_id", "uuid", "id"):
+            value = sym.get(key)
+            if value:
+                stlm_by_id[str(value).lower()] = sym
+    stlm_by_tag = {}
+    for sym in symbols:
+        tag = sym.get("tag") or _symbol_attr(sym, "tag")
+        if tag:
+            stlm_by_tag[_norm(tag)] = sym
+
+    heights = []
+    for node in hilt_nodes:
+        payload = node.get("payload") or {}
+        loc = payload.get("bounding_box_location") or {}
+        if loc.get("y") is None:
+            continue
+        sym = stlm_by_id.get(str(node.get("id") or "").lower())
+        if sym is None:
+            tag = _symbol_attr(payload, "tag")
+            sym = stlm_by_tag.get(_norm(tag)) if tag else None
+        if sym is None:
+            continue
+        sb = _symbol_bbox(sym)
+        if not sb:
+            continue
+        stlm_center_y = sb[1] + sb[3] / 2.0
+        heights.append(stlm_center_y + float(loc.get("y")))
+    if not heights:
+        return None
+    return sum(heights) / len(heights)
 
 
 def _norm(value):

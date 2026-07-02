@@ -59,6 +59,9 @@ def write_viewer(path, payload, image_url=""):
     unselected_sources = data.get("unselected_boundary_sources", []) or []
     context_instruments = data.get("boundary_context_sources", []) or data.get("context_instruments", []) or []
     manual_checks = data.get("manual_visual_isolation_checks", []) or []
+    # Map each isolation device uuid -> its sequence number in the LOTO Phase 3
+    # (isolation) order, so we can badge the bboxes 1,2,3... in closure order.
+    seq_by_uuid = _isolation_sequence(data.get("loto_procedure"))
     drawable_points = []
     for point in points:
         bbox = point.get("bbox") or []
@@ -97,7 +100,10 @@ def write_viewer(path, payload, image_url=""):
         x, y, w, h = [int(value) for value in bbox]
         display_x = x - offset_x
         display_y = y - offset_y
+        seq = seq_by_uuid.get(str(point.get("uuid")))
         label = point.get("tag_number") or point.get("entity_class") or point.get("uuid")
+        if seq:
+            label = f"#{seq}  {label}"
         title = f"{label} | uuid={point.get('uuid')} | bbox={bbox}"
         boxes.append(
             f'<div class="box" style="left:{display_x}px;top:{display_y}px;width:{w}px;height:{h}px;" title="{html.escape(str(title))}"></div>'
@@ -105,8 +111,16 @@ def write_viewer(path, payload, image_url=""):
         boxes.append(
             f'<div class="label" style="left:{display_x}px;top:{max(display_y - 22, 0)}px;">{html.escape(str(label))}</div>'
         )
+        if seq:
+            badge_left = display_x - 17
+            badge_top = max(display_y - 17, 0)
+            boxes.append(
+                f'<div class="seq-badge" style="left:{badge_left}px;top:{badge_top}px;" '
+                f'title="Isolation step {seq}">{seq}</div>'
+            )
         summary_rows.append(
             "<tr>"
+            f"<td>{html.escape(str(seq or ''))}</td>"
             f"<td>{html.escape(str(point.get('uuid')))}</td>"
             f"<td>{html.escape(str(label))}</td>"
             f"<td>{html.escape(str(bbox))}</td>"
@@ -130,6 +144,7 @@ def write_viewer(path, payload, image_url=""):
         )
         summary_rows.append(
             "<tr>"
+            f"<td></td>"
             f"<td>{html.escape(str(check.get('uuid')))}</td>"
             f"<td>{html.escape(str(check.get('entity_class') or label))}</td>"
             f"<td>{html.escape(str(bbox))}</td>"
@@ -153,6 +168,7 @@ def write_viewer(path, payload, image_url=""):
         )
         summary_rows.append(
             "<tr>"
+            f"<td></td>"
             f"<td>{html.escape(str(context.get('source_component')))}</td>"
             f"<td>{html.escape(str(label))}</td>"
             f"<td>{html.escape(str(bbox))}</td>"
@@ -165,7 +181,7 @@ def write_viewer(path, payload, image_url=""):
         else f'<div class="blank" style="width:{canvas_width}px;height:{canvas_height}px;">Focused no-image view. Original offset: x={offset_x}, y={offset_y}. Use --image-url for full P&amp;ID background.</div>'
     )
     summary = "" if not summary_rows else (
-        '<table><thead><tr><th>UUID</th><th>Label</th><th>BBox</th><th>Reason</th></tr></thead><tbody>'
+        '<table><thead><tr><th>Seq</th><th>UUID</th><th>Label</th><th>BBox</th><th>Reason</th></tr></thead><tbody>'
         + "\n".join(summary_rows)
         + "</tbody></table>"
     )
@@ -191,6 +207,7 @@ def write_viewer(path, payload, image_url=""):
             '<div class="context-warning">Boundary context: '
             f'{len(context_instruments)} nozzle/source path(s) were classified as non-process context and not counted as process isolation boundaries.</div>'
         )
+    procedure_html = _render_loto_panel(data.get("loto_procedure"))
     path.write_text(
         """<!doctype html>
 <html>
@@ -206,6 +223,7 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .canvas img { display: block; width: auto; height: auto; max-width: none; }
 .blank { background: #fafafa; color: #555; display:flex; align-items:center; justify-content:center; }
 .box { position: absolute; border: 3px solid #e11d48; box-sizing: border-box; background: rgba(225,29,72,0.12); }
+.seq-badge { position: absolute; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 50%; background: #e11d48; color: #fff; font-weight: 700; font-size: 14px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 5; }
 .label { position: absolute; background: #111827; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
 .manual-box { position: absolute; border: 3px dashed #f59e0b; box-sizing: border-box; background: rgba(245,158,11,0.18); }
 .manual-label { position: absolute; background: #92400e; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
@@ -213,6 +231,14 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .context-box { position: absolute; border: 2px solid #2563eb; box-sizing: border-box; background: rgba(37,99,235,0.14); }
 .context-label { position: absolute; background: #1d4ed8; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
 .context-warning { margin: 0 0 16px; padding: 10px 12px; border: 1px solid #60a5fa; background: #eff6ff; color: #1e40af; font-weight: 600; }
+.loto { margin-top: 20px; max-width: 1200px; border: 1px solid #d1d5db; border-radius: 6px; padding: 14px 18px; background: #fff; }
+.loto h2 { margin: 0 0 4px; font-size: 16px; }
+.loto .meta { margin: 0 0 10px; }
+.loto ol { margin: 6px 0 6px 18px; padding: 0; }
+.loto li { margin: 4px 0; font-size: 13px; line-height: 1.4; }
+.loto .phase { display:inline-block; min-width: 230px; color: #1d4ed8; font-weight: 600; font-size: 12px; }
+.loto .field-gap { color: #b45309; font-weight: 600; }
+.loto .release { margin-top: 10px; font-size: 12px; color: #4b5563; border-top: 1px dashed #d1d5db; padding-top: 8px; }
 table { border-collapse: collapse; margin-top: 16px; max-width: 1200px; font-size: 13px; }
 th, td { border: 1px solid #d1d5db; padding: 6px 8px; text-align: left; vertical-align: top; }
 th { background: #f3f4f6; }
@@ -235,6 +261,7 @@ WARNING_BLOCK
         + "\n".join(boxes)
         + "\n</div>\n</div>\n"
         + summary
+        + procedure_html
         + """
 <script>
 window.addEventListener('load', function () {
@@ -264,3 +291,60 @@ def _source_warning_label(item):
     if item.get("source_label_confidence") == "graph_only_unlabeled_component":
         return "unlabeled graph-only source"
     return str(item.get("source_component") or "unknown")
+
+
+def _isolation_sequence(procedure):
+    """Return {device_uuid: sequence_number} for the LOTO Phase 3 (isolation)
+    order -- i.e. the order in which valves are closed. Used to badge bboxes."""
+    if not procedure:
+        return {}
+    seq_by_uuid = {}
+    seq = 0
+    for step in procedure.get("ordered_steps") or []:
+        if step.get("phase") == 3 and step.get("device_uuid"):
+            seq += 1
+            seq_by_uuid[str(step["device_uuid"])] = seq
+    return seq_by_uuid
+
+
+def _render_loto_panel(procedure):
+    if not procedure:
+        return ""
+    steps = procedure.get("ordered_steps") or []
+    if not steps:
+        return ""
+    items = []
+    for step in steps:
+        cls = ' class="field-gap"' if step.get("field_gap") else ""
+        phase = (
+            f'<span class="phase">[Phase {step.get("phase")} | '
+            f'{html.escape(str(step.get("ref") or ""))}] {html.escape(str(step.get("title") or ""))}</span>'
+        )
+        items.append(f'<li{cls}>{phase} {html.escape(str(step.get("action") or ""))}</li>')
+    standard = html.escape(str(procedure.get("standard") or "29 CFR 1910.147"))
+    release_ref = html.escape(str(procedure.get("release_from_loto_ref") or "1910.147(e)"))
+    release = html.escape(str(procedure.get("release_note") or ""))
+    order_source = procedure.get("within_phase_order_source") or "engine_candidate_order_not_proposed"
+    if order_source == "agent_engineering_judgment":
+        order_note = (
+            "Within-phase device order is the agent's engineering judgment "
+            "(OSHA does NOT prescribe which valve to close first -- only the phase order is regulated)."
+        )
+    elif order_source == "flow_grounding_inlet_first_default":
+        order_note = (
+            "Within-phase device order is a flow-grounded default (isolate INLET/upstream first, then outlet), "
+            "derived from the P&ID flow direction parsed by the HILT graph. "
+            "OSHA does NOT prescribe which valve to close first -- only the phase order is regulated."
+        )
+    else:
+        order_note = (
+            "Within-phase device order NOT yet proposed by the agent (shown in engine candidate order). "
+            "OSHA prescribes only the phase order, not the within-phase device order."
+        )
+    return (
+        f'<div class="loto"><h2>LOTO Procedure &mdash; OSHA {standard}(d)</h2>'
+        f'<p class="meta">{html.escape(order_note)}</p>'
+        '<ol>' + "\n".join(items) + '</ol>'
+        f'<p class="release"><b>Release ({release_ref}):</b> {release}</p>'
+        '</div>'
+    )

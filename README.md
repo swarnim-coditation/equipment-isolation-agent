@@ -63,3 +63,44 @@ validator.py    Assurance status validator
 output.py       UI payload and HTML overlay writer
 image.py        P&ID image download
 ```
+
+## Agentic Runner (Gemini-orchestrated)
+
+The `agent/` package adds a second runner where a Gemini LLM is the **orchestrator**.
+It runs a tool-calling loop and decides which deterministic stage to call next. The
+deterministic modules above are preserved **unchanged** and exposed to the agent as
+tools; the deterministic `validate()` remains the **authoritative** source of
+`assurance_status` (the agent can gather more evidence but cannot declare isolation
+on its own).
+
+```bash
+uv run python -m agent --equipment BT-11 --job-name pnid_2_bio_final --job-id 2100
+```
+
+The agent tools: `fetch_boundary`, `find_candidates`, `resolve_bboxes`,
+`list_unselected_sources`, `investigate_source`, `build_evidence`, `validate`,
+`get_osha_guidance`, `build_loto_procedure`, `finalize_plan`. When `validate()`
+reports missing boundaries, the agent proactively investigates each uncovered
+nozzle before finalizing. After `validate()`, it builds an **OSHA 1910.147(d)
+LOTO procedure**: the 6-phase order is fixed/authoritative (deterministic
+`loto.py`), and the agent uses `get_osha_guidance` (RAG over the bundled OSHA
+29 CFR 1910.147 reference) to reason about within-phase device ordering and cite
+provisions. The procedure (with field-action gaps for missing bleed/verification)
+is added to the output payload as `loto_procedure`.
+
+Outputs (default dir `/tmp/opencode/equipment_isolation_agent`):
+
+```text
+BT-11_output.json   final UI payload (same shape as the deterministic runner)
+BT-11_viewer.html   bbox overlay viewer
+BT-11_trace.json    agent transcript + per-tool audit trace
+```
+
+Requires `GEMINI_API_KEY` in `.env`. Default model `gemini-2.5-flash` (override
+with `--model`). This is a POC decision-support aid, not a certified LOTO procedure.
+
+Compare the agent against the deterministic baseline across equipment:
+
+```bash
+uv run python eval_compare.py BT-11 C-02
+```

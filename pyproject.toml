@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Deterministic local runner for equipment isolation using graph traversal and Plant360 APIs"
 requires-python = ">=3.11"
 dependencies = [
+    "google-genai>=2.10.0",
     "gremlinpython>=3.6.2",
     "requests>=2.31.0",
 ]
