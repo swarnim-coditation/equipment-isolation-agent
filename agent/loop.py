@@ -50,7 +50,7 @@ def run_agent(
     *,
     model: str = DEFAULT_MODEL,
     api_key: str | None = None,
-    max_steps: int = 12,
+    max_steps: int = 16,
     on_event: Callable | None = None,
 ) -> dict:
     """Run the orchestrator loop. Returns a result dict with transcript, step

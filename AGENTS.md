@@ -33,7 +33,7 @@ uv run python eval_compare.py BT-11 C-02
 |------|---------|
 | Install deps | `uv sync` |
 | Run isolation (deterministic) | `uv run python -m run --equipment <TAG> --job-name <NAME> --job-id <ID>` |
-| Run isolation (agentic / Gemini) | `uv run python -m agent --equipment <TAG> [--model gemini-2.5-flash] [--max-steps 12]` |
+| Run isolation (agentic / Gemini) | `uv run python -m agent --equipment <TAG> [--model gemini-2.5-flash] [--max-steps 16]` |
 | List equipment | `uv run python -m run --list-equipment [--equipment-limit N]` |
 | Eval agent vs baseline | `uv run python eval_compare.py <TAG>...` (or `--limit N`) |
 | With API auth | `PLANT360_AUTH_TOKEN=xxx uv run python -m run ...` or `--auth-token xxx` |

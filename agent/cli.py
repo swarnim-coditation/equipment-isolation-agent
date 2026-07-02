@@ -3,7 +3,7 @@
 Usage:
     uv run python -m agent --equipment BT-11 [--job-name pnid_2_bio_final]
                                             [--model gemini-2.5-flash]
-                                            [--max-steps 12] [--output-dir DIR]
+                                            [--max-steps 16] [--output-dir DIR]
 
 The Gemini orchestrator drives the deterministic pipeline as tools. Outputs
 mirror the deterministic runner plus an audit trace of every tool call:
@@ -49,7 +49,7 @@ def parse_args():
         default=os.environ.get("GEMINI_MODEL") or DEFAULT_MODEL,
         help=f"Gemini model (default: {DEFAULT_MODEL}; override via GEMINI_MODEL env or --model)",
     )
-    parser.add_argument("--max-steps", type=int, default=12, help="Cap on agent tool-calling iterations")
+    parser.add_argument("--max-steps", type=int, default=16, help="Cap on agent tool-calling iterations")
     parser.add_argument("--max-depth", type=int, default=3)
     parser.add_argument("--output-dir", default="/tmp/opencode/equipment_isolation_agent")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")

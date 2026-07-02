@@ -102,7 +102,7 @@ def main():
     parser.add_argument("equipment", nargs="*", help="Equipment tags to evaluate")
     parser.add_argument("--limit", type=int, default=0, help="If >0, take first N equipment tags from the graph")
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--max-steps", type=int, default=12)
+    parser.add_argument("--max-steps", type=int, default=16)
     args = parser.parse_args()
 
     tags = args.equipment or list_equipment_tags(args.limit)
