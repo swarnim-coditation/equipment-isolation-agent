@@ -7,8 +7,8 @@ Usage:
 
 The Gemini orchestrator drives the deterministic pipeline as tools. Outputs
 mirror the deterministic runner plus an audit trace of every tool call:
-    <TAG>_output.json   final UI payload (same shape as run.py)
-    <TAG>_viewer.html   bbox overlay viewer
+    <TAG>.json          final UI payload (same shape as run.py)
+    <TAG>.html          bbox overlay viewer
     <TAG>_trace.json    agent transcript + per-tool audit trace
 """
 from __future__ import annotations
@@ -20,7 +20,17 @@ import os
 import sys
 from pathlib import Path
 
-from config import ApiConfig, GraphConfig, IsolationPolicy, RunConfig, WorkScope
+from dataclasses import replace
+
+from config import (
+    ApiConfig,
+    GraphConfig,
+    IsolationPolicy,
+    RunConfig,
+    WorkScope,
+    apply_project_profile,
+    load_project_profile,
+)
 from image import resolve_pid_image
 from output import write_json, write_viewer
 
@@ -34,13 +44,17 @@ def parse_args():
     load_dotenv()
     parser = argparse.ArgumentParser(description="Run the agentic (Gemini-orchestrated) equipment isolation runner.")
     parser.add_argument("--equipment", required=True, help="Equipment tag, e.g. BT-11")
+    parser.add_argument("--project-config", default="project_config.json", help="Project profile JSON path")
+    parser.add_argument("--project-profile", default="", help="Project profile name from --project-config")
     parser.add_argument("--job-name", default="", help="P&ID/job name, e.g. pnid_2_bio_final")
     parser.add_argument("--job-id", default="", help="P&ID/job id, e.g. 2100")
-    parser.add_argument("--host", default="44.217.77.13")
-    parser.add_argument("--port", default="8182")
-    parser.add_argument("--project-id", default="274")
-    parser.add_argument("--collection-id", default="196")
-    parser.add_argument("--collection-name", default="Unit")
+    parser.add_argument("--host", default="", help="Override Gremlin host")
+    parser.add_argument("--port", default="", help="Override Gremlin port")
+    parser.add_argument("--project-id", default="", help="Override Unigraph project id")
+    parser.add_argument("--cnvrt-project-id", default="", help="Override CNVRT project id")
+    parser.add_argument("--traversal-source", default="", help="Override Gremlin traversal source alias")
+    parser.add_argument("--collection-id", default="", help="Override CNVRT collection id")
+    parser.add_argument("--collection-name", default="", help="Override CNVRT collection name")
     parser.add_argument("--api-base-url", default="https://api.plant360.ai:8080")
     parser.add_argument("--auth-token", default=os.environ.get("PLANT360_AUTH_TOKEN", ""))
     parser.add_argument("--gemini-api-key", default=os.environ.get("GEMINI_API_KEY", ""))
@@ -51,7 +65,7 @@ def parse_args():
     )
     parser.add_argument("--max-steps", type=int, default=16, help="Cap on agent tool-calling iterations")
     parser.add_argument("--max-depth", type=int, default=3)
-    parser.add_argument("--output-dir", default="/tmp/opencode/equipment_isolation_agent")
+    parser.add_argument("--output-dir", default="/tmp/eia_agent")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")
     parser.add_argument("--non-intrusive", action="store_true")
     parser.add_argument("--not-high-risk", action="store_true")
@@ -75,13 +89,42 @@ def load_dotenv():
 
 
 def build_config(args) -> RunConfig:
-    return RunConfig(
+    profile = load_project_profile(args.project_config, args.project_profile)
+    config = apply_project_profile(
+        RunConfig(
+            equipment_tag=args.equipment,
+            job_name=args.job_name,
+            job_id=args.job_id,
+            api=ApiConfig(
+                base_url=args.api_base_url,
+                auth_token=args.auth_token,
+                verify_ssl=True,
+            ),
+            policy=IsolationPolicy(max_traversal_depth=args.max_depth),
+            work_scope=WorkScope(
+                intrusive_work=not args.non_intrusive,
+                high_risk_service=not args.not_high_risk,
+            ),
+            output_dir=Path(args.output_dir),
+        ),
+        profile,
+    )
+    graph = replace(
+        config.graph,
+        host=args.host or config.graph.host,
+        port=args.port or config.graph.port,
+        project_id=args.project_id or config.graph.project_id,
+        traversal_source_name=args.traversal_source or config.graph.traversal_source_name,
+    )
+    return replace(
+        config,
         equipment_tag=args.equipment,
         job_name=args.job_name,
         job_id=args.job_id,
-        collection_id=args.collection_id,
-        collection_name=args.collection_name,
-        graph=GraphConfig(host=args.host, port=args.port, project_id=args.project_id),
+        cnvrt_project_id=args.cnvrt_project_id or config.cnvrt_project_id,
+        collection_id=args.collection_id or config.collection_id,
+        collection_name=args.collection_name or config.collection_name,
+        graph=graph,
         api=ApiConfig(
             base_url=args.api_base_url,
             auth_token=args.auth_token,
@@ -105,6 +148,7 @@ _SUMMARY_KEYS = (
     "verification_count",
     "missing_boundary_count",
     "isolation_points_count",
+    "warning_count",
     "error",
 )
 
@@ -190,8 +234,8 @@ def main():
         image_url, image_debug = resolve_pid_image(config, output_dir, stem)
         final_payload.setdefault("debug", {}).update(image_debug)
 
-    output_json = output_dir / f"{stem}_output.json"
-    viewer_html = output_dir / f"{stem}_viewer.html"
+    output_json = output_dir / f"{stem}.json"
+    viewer_html = output_dir / f"{stem}.html"
     write_json(output_json, final_payload)
     write_viewer(viewer_html, final_payload, image_url=image_url)
 

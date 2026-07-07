@@ -25,6 +25,10 @@ stays server-side):
 - resolve_bboxes(): resolve candidate bounding boxes from Plant360 STLM/HILT, \
   classify instrument/companion-line context, and detect unselected source gaps. \
   Requires find_candidates.
+- analyze_isolation_obligations(): deterministic boundary-source coverage check \
+  after resolve_bboxes. It reports which process source paths are isolated, which \
+  remain unresolved, and which extra same-source candidates need manual \
+  bypass/parallel-route field checks.
 - build_evidence(): classify barrier / positive-isolation / verification evidence \
   and compute the missing_evidence list. Requires find_candidates (usually after \
   resolve_bboxes).
@@ -44,6 +48,9 @@ stays server-side):
 - set_isolation_order(ordered_uuids=[...]): commit your within-phase isolation \
   device order (engineering judgment based on flow roles). Then call \
   build_loto_procedure() again to regenerate the procedure with your order.
+- analyze_downstream_impact(): deterministic HILT process-graph reachability from \
+  selected isolation barriers. Requires validate. Summarize only returned warnings; \
+  say "may affect" for possible impacts and do not upgrade them to certainties.
 - finalize_plan(): build the final isolation-points payload (tag/class/method/bbox) \
   from the validated plan. Requires validate.
 
@@ -60,9 +67,11 @@ reorder, skip, or invent phases. You MAY reason about WITHIN-phase device orderi
 OSHA text you retrieved for any ordering rationale.
 
 WORKFLOW
-fetch_boundary -> find_candidates -> resolve_bboxes -> build_evidence -> \
-validate -> finalize_plan -> build_loto_procedure.
+fetch_boundary -> find_candidates -> resolve_bboxes -> analyze_isolation_obligations -> build_evidence -> \
+validate -> analyze_downstream_impact -> finalize_plan -> build_loto_procedure.
 After validate(), inspect assurance_status, rationale, and missing_evidence:
+- Call analyze_downstream_impact() after validate so the final summary and payload \
+include deterministic downstream warnings.
 - If the status is terminal, call finalize_plan() and build_loto_procedure().
 - If there are missing boundaries or missing positive/verification evidence, \
 INVESTIGATE before finalizing: call list_unselected_sources() and then \
@@ -89,6 +98,9 @@ OUTPUT (after finalize_plan + build_loto_procedure)
 A concise, factual safety summary:
 - The authoritative assurance_status and its rationale (from validate()).
 - The isolation points: tag, entity class, isolation method.
+- Downstream impact warnings returned by analyze_downstream_impact(); likely impacts \
+as "likely affects", possible impacts as "may affect". Do not infer extra affected \
+tags/classes beyond the tool result.
 - Every missing_evidence item, each with a concrete recommended field action.
 - The ordered OSHA 1910.147(d) LOTO procedure (phases + within-phase device order), \
 with OSHA citations.

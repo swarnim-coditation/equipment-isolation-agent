@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field
+import json
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 
@@ -16,8 +17,9 @@ JOB_IDS_BY_NAME = {
 @dataclass(frozen=True)
 class GraphConfig:
     host: str = "44.217.77.13"
-    port: str = "8182"
-    project_id: str = "274"
+    port: str = "18182"
+    project_id: str = "9"
+    traversal_source_name: str = ""
 
     @property
     def gremlin_url(self) -> str:
@@ -25,6 +27,8 @@ class GraphConfig:
 
     @property
     def traversal_source(self) -> str:
+        if self.traversal_source_name.strip():
+            return self.traversal_source_name.strip()
         return f"graph{self.project_id.strip()}_traversal"
 
 
@@ -89,27 +93,73 @@ class RunConfig:
     equipment_tag: str
     job_name: str = ""
     job_id: str = ""
+    cnvrt_project_id: str = ""
+    job_ids_by_name: dict[str, str] = field(default_factory=dict)
     collection_id: str = "196"
     collection_name: str = "Unit"
     graph: GraphConfig = field(default_factory=GraphConfig)
     api: ApiConfig = field(default_factory=ApiConfig)
     policy: IsolationPolicy = field(default_factory=IsolationPolicy)
     work_scope: WorkScope = field(default_factory=WorkScope)
-    output_dir: Path = Path("/tmp/opencode/equipment_isolation_no_llm")
+    output_dir: Path = Path("/tmp/eia")
 
     @property
     def resolved_job_id(self) -> str:
-        return self.job_id or JOB_IDS_BY_NAME.get(self.job_name, "")
+        return self.job_id or self.job_ids_by_name.get(self.job_name, "") or JOB_IDS_BY_NAME.get(self.job_name, "")
 
     @property
     def context(self) -> dict:
         context = {
             "project_id": self.graph.project_id,
+            "unigraph_project_id": self.graph.project_id,
             "collection_id": self.collection_id,
             "collection_name": self.collection_name,
         }
+        if self.cnvrt_project_id:
+            context["cnvrt_project_id"] = self.cnvrt_project_id
         if self.job_name:
             context["job_name"] = self.job_name
         if self.resolved_job_id:
             context["job_id"] = self.resolved_job_id
         return context
+
+
+DEFAULT_PROJECT_CONFIG = Path(__file__).with_name("project_config.json")
+
+
+def load_project_profile(config_path="", profile_name=""):
+    path = Path(config_path or DEFAULT_PROJECT_CONFIG)
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    profiles = payload.get("profiles") or {}
+    selected = profile_name or payload.get("active_profile") or ""
+    if not selected:
+        return {}
+    if selected not in profiles:
+        raise ValueError(f"project profile {selected!r} not found in {path}")
+    profile = dict(profiles[selected] or {})
+    profile["profile_name"] = selected
+    profile["profile_path"] = str(path)
+    return profile
+
+
+def apply_project_profile(config, profile):
+    if not profile:
+        return config
+    graph_data = profile.get("graph") or {}
+    graph = replace(
+        config.graph,
+        host=str(graph_data.get("host") or config.graph.host),
+        port=str(graph_data.get("port") or config.graph.port),
+        project_id=str(profile.get("unigraph_project_id") or profile.get("project_id") or config.graph.project_id),
+        traversal_source_name=str(graph_data.get("traversal_source") or config.graph.traversal_source_name),
+    )
+    return replace(
+        config,
+        cnvrt_project_id=str(profile.get("cnvrt_project_id") or config.cnvrt_project_id),
+        collection_id=str(profile.get("collection_id") or config.collection_id),
+        collection_name=str(profile.get("collection_name") or config.collection_name),
+        job_ids_by_name={str(k): str(v) for k, v in (profile.get("job_ids_by_name") or {}).items()},
+        graph=graph,
+    )

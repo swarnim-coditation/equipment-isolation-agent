@@ -54,17 +54,27 @@ def build_evidence(candidate_data, config):
     if config.work_scope.requires_positive_isolation and not positive_ids:
         missing.append("Work scope requires positive isolation evidence, but no blind, spade, blank flange, disconnection, breaker, or equivalent was found.")
 
-    expected_boundary_count = _expected_boundary_count(candidate_data)
-    covered_count = len(covered_sources)
-    missing_boundary_count = max(expected_boundary_count - covered_count, 0) if expected_boundary_count is not None else None
+    obligations = candidate_data.get("isolation_obligations") or {}
+    obligation_counts = _obligation_counts(obligations)
+    expected_boundary_count = obligation_counts.get("expected")
+    covered_count = obligation_counts.get("covered", len(covered_sources))
+    missing_boundary_count = obligation_counts.get("missing")
+    if expected_boundary_count is None:
+        expected_boundary_count = _expected_boundary_count(candidate_data)
+        covered_count = len(covered_sources)
+        missing_boundary_count = max(expected_boundary_count - covered_count, 0) if expected_boundary_count is not None else None
     if missing_boundary_count:
         missing.append(f"{missing_boundary_count} equipment boundary path(s) do not have a selected isolation candidate.")
     unselected_sources = (candidate_data.get("debug") or {}).get("bbox_unselected_source_components") or []
+    unresolved_obligations = _unresolved_obligations(obligations)
     context_instruments = candidate_data.get("context_instruments") or (candidate_data.get("debug") or {}).get("context_instruments") or []
     boundary_context_sources = candidate_data.get("boundary_context_sources") or context_instruments
-    if unselected_sources:
+    if unselected_sources and (obligations.get("status") != "completed"):
         source_tags = ", ".join(_source_warning_label(item) for item in unselected_sources[:8])
         missing.append(f"Some equipment boundary source(s) were not selected because only distant or visually unresolved candidates were found: {source_tags}.")
+    if unresolved_obligations:
+        labels = ", ".join(_obligation_label(item) for item in unresolved_obligations[:8])
+        missing.append(f"Unresolved process isolation obligation(s): {labels}. Field/UI resolution is required.")
 
     evidence_state = {
         "code_version": "local_evidence_state_2026-06-29_v1",
@@ -77,6 +87,8 @@ def build_evidence(candidate_data, config):
         "unselected_boundary_sources": unselected_sources,
         "boundary_context_sources": boundary_context_sources,
         "context_instruments": context_instruments,
+        "isolation_obligations": obligations,
+        "unresolved_isolation_obligations": unresolved_obligations,
         "candidate_summaries": summaries,
         "barrier_candidate_ids": barrier_ids,
         "positive_candidate_ids": positive_ids,
@@ -93,6 +105,8 @@ def build_evidence(candidate_data, config):
             "evidence_positive_candidate_count": len(positive_ids),
             "evidence_verification_candidate_count": len(verification_ids),
             "evidence_missing_evidence_count": len(missing),
+            "evidence_isolation_obligation_count": obligation_counts.get("total"),
+            "evidence_unresolved_isolation_obligation_count": len(unresolved_obligations),
         }
     )
     return {**candidate_data, "debug": debug, "evidence_state": evidence_state, "missing_evidence": missing}
@@ -106,6 +120,36 @@ def _expected_boundary_count(candidate_data):
     if value is not None:
         return int(value)
     return None
+
+
+def _obligation_counts(obligations):
+    if (obligations or {}).get("status") != "completed":
+        return {}
+    items = obligations.get("items") or []
+    process_items = [item for item in items if item.get("source_type") == "process"]
+    return {
+        "total": len(items),
+        "expected": len(process_items),
+        "covered": sum(1 for item in process_items if item.get("status") == "isolated"),
+        "missing": sum(1 for item in process_items if item.get("status") == "unresolved"),
+    }
+
+
+def _unresolved_obligations(obligations):
+    if (obligations or {}).get("status") != "completed":
+        return []
+    return [
+        item
+        for item in obligations.get("items") or []
+        if item.get("source_type") == "process" and item.get("status") == "unresolved"
+    ]
+
+
+def _obligation_label(item):
+    label = str(item.get("source_component_tag") or "").strip()
+    if label:
+        return label
+    return str(item.get("source_component") or "unknown source")
 
 
 def _source_warning_label(item):

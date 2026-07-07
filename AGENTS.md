@@ -37,7 +37,8 @@ uv run python eval_compare.py BT-11 C-02
 | List equipment | `uv run python -m run --list-equipment [--equipment-limit N]` |
 | Eval agent vs baseline | `uv run python eval_compare.py <TAG>...` (or `--limit N`) |
 | With API auth | `PLANT360_AUTH_TOKEN=xxx uv run python -m run ...` or `--auth-token xxx` |
-| Custom graph host | `--host <IP> --port <PORT> --project-id <ID>` |
+| Project context | Edit `project_config.json` or pass `--project-profile <NAME>` |
+| Custom graph host/source | `--host <IP> --port <PORT> --project-id <UNIGRAPH_ID>`; traversal source defaults to `graph<UNIGRAPH_ID>_traversal` |
 | Custom output dir | `--output-dir /path/to/dir` |
 | Quiet mode | `--quiet` (prints only final paths/status) |
 
@@ -91,7 +92,9 @@ context small. Every tool call is recorded in an audit trace (`<TAG>_trace.json`
 
 ## Configuration Notes
 
-- Graph defaults: `host=44.217.77.13`, `port=8182`, `project_id=274`, traversal source `graph274_traversal`
+- Project context defaults come from `project_config.json`; active profile is `aker_277` (`cnvrt_project_id=277`, `collection_id=206`, Unigraph `project_id=13`, traversal source `graph13_traversal`)
+- Use `--project-profile biodiesel_graph9` to intentionally run the older biodiesel/FT-18 context
+- Override the derived traversal source only when needed with `--traversal-source <ALIAS>`
 - API base URL: `https://api.plant360.ai:8080`
 - Known job IDs in `config.py:JOB_IDS_BY_NAME` (pnid_1_bio_final=2099, pnid_2_bio_final=2100, etc.)
 - Deterministic output dir: `/tmp/opencode/equipment_isolation_no_llm`

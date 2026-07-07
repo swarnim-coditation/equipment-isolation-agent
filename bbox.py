@@ -73,6 +73,11 @@ def resolve_bboxes(candidate_data, config):
 
     candidates, resolved = _resolve_candidate_bboxes(candidate_data.get("candidates", []) or [], symbol_by_id, nozzle_symbol_by_parent_and_id)
     candidate_pool, pool_resolved = _resolve_candidate_bboxes(candidate_data.get("_candidate_pool", []) or [], symbol_by_id, nozzle_symbol_by_parent_and_id)
+    selected_equipment_overlays = _resolve_selected_equipment_overlays(
+        candidate_data.get("selected_equipment_nodes") or [],
+        symbols,
+        config.equipment_tag,
+    )
     candidate_pool = _mark_visible_source_labels(candidate_pool, symbols, text_items)
     candidate_pool = _attach_hilt_source_context(candidate_pool, hilt_source_context)
     flow_roles = classify_nozzle_flow(hilt_payload) if hilt_payload else {}
@@ -104,6 +109,7 @@ def resolve_bboxes(candidate_data, config):
     debug.update(
         {
             "bbox_resolved_count": resolved,
+            "target_equipment_bbox_resolved_count": len(selected_equipment_overlays),
             "bbox_candidate_pool_resolved_count": pool_resolved,
             "bbox_stlm_symbol_count": len(symbols),
             "hilt_graph_node_count": hilt_source_context.get("node_count", 0),
@@ -132,6 +138,8 @@ def resolve_bboxes(candidate_data, config):
         **candidate_data,
         "candidates": candidates,
         "_candidate_pool": candidate_pool,
+        "selected_equipment_nodes": candidate_data.get("selected_equipment_nodes") or [],
+        "selected_equipment_overlays": selected_equipment_overlays,
         "manual_visual_isolation_checks": manual_visual_checks,
         "boundary_context_sources": context_instruments,
         "context_instruments": context_instruments,
@@ -169,6 +177,71 @@ def _resolve_candidate_bboxes(candidates, symbol_by_id, nozzle_symbol_by_parent_
                 candidate["source_visual_distance"] = _bbox_distance(source_bbox, candidate.get("bbox"))
         result.append(candidate)
     return result, resolved
+
+
+def _resolve_selected_equipment_overlays(equipment_nodes, symbols, equipment_tag):
+    symbol_by_id = {}
+    equipment_symbols_by_tag = {}
+    symbols_by_tag = {}
+    for symbol in symbols:
+        bbox = _symbol_bbox(symbol)
+        if not bbox:
+            continue
+        for key in (symbol.get("uuid"), symbol.get("id"), symbol.get("source_id")):
+            if key:
+                symbol_by_id[_norm(key)] = symbol
+        tag = symbol.get("tag") or symbol.get("name") or symbol.get("label")
+        if tag:
+            symbols_by_tag.setdefault(_norm(tag), symbol)
+            if _norm(symbol.get("entity_type")) == "equipment":
+                equipment_symbols_by_tag.setdefault(_norm(tag), symbol)
+
+    overlays = []
+    seen = set()
+    for node in equipment_nodes:
+        properties = node.get("properties") or {}
+        symbol = None
+        for value in (
+            properties.get("node_id"),
+            properties.get("cnvrt_id"),
+            properties.get("source_id"),
+            properties.get("uuid"),
+            node.get("id"),
+        ):
+            symbol = symbol_by_id.get(_norm(value))
+            if symbol:
+                break
+        if not symbol:
+            tag = _equipment_tag(properties) or equipment_tag
+            symbol = equipment_symbols_by_tag.get(_norm(tag)) or symbols_by_tag.get(_norm(tag))
+        if not symbol:
+            continue
+        bbox = _symbol_bbox(symbol)
+        if not bbox:
+            continue
+        key = tuple(bbox)
+        if key in seen:
+            continue
+        seen.add(key)
+        overlays.append(
+            {
+                "equipment_id": node.get("id"),
+                "uuid": str(symbol.get("uuid") or symbol.get("id") or properties.get("node_id") or node.get("id") or ""),
+                "tag": _equipment_tag(properties) or symbol.get("tag") or equipment_tag,
+                "entity_class": properties.get("entity_class") or symbol.get("entity_class") or "equipment",
+                "bbox": bbox,
+                "reason": "Selected equipment of interest resolved from STLM symbol.",
+            }
+        )
+    return overlays
+
+
+def _equipment_tag(properties):
+    for key in ("tag", "tag_number", "name", "Equipment Name", "equipment_number", "System Number"):
+        value = properties.get(key)
+        if value not in (None, "", []):
+            return str(value).strip()
+    return ""
 
 
 def _select_visually_nearest_per_source(candidate_pool):

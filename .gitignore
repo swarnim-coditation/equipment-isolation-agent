@@ -47,6 +47,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+.plant360_job_cache.json
 
 # Database
 *.db

@@ -57,6 +57,8 @@ def validate(planner_data):
         "unselected_boundary_sources": evidence.get("unselected_boundary_sources") or [],
         "boundary_context_sources": evidence.get("boundary_context_sources") or evidence.get("context_instruments") or [],
         "context_instruments": evidence.get("context_instruments") or [],
+        "isolation_obligations": evidence.get("isolation_obligations") or {},
+        "unresolved_isolation_obligations": evidence.get("unresolved_isolation_obligations") or [],
         "barrier_candidate_ids": barrier_ids,
         "positive_candidate_ids": positive_ids,
         "verification_candidate_ids": verification_ids,

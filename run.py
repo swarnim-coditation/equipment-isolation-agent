@@ -9,10 +9,23 @@ from bbox import resolve_bboxes
 from bbox import _extract_symbols
 from boundary import fetch_boundaries
 from candidates import find_candidates
-from config import ApiConfig, GraphConfig, IsolationPolicy, JOB_IDS_BY_NAME, RunConfig, WorkScope
+from config import (
+    ApiConfig,
+    GraphConfig,
+    IsolationPolicy,
+    JOB_IDS_BY_NAME,
+    RunConfig,
+    WorkScope,
+    apply_project_profile,
+    load_project_profile,
+)
 from evidence import build_evidence
 from graph_client import GraphClient, normalize_vertex, props_only, vertex_id
 from image import resolve_pid_image
+from impact import analyze_downstream_impact
+from job_resolver import resolve_job_from_boundary
+from loto import build_loto_procedure
+from obligations import analyze_isolation_obligations
 from output import build_final_payload, write_json, write_viewer
 from planner import plan_requests
 from api_client import Plant360Client
@@ -43,18 +56,22 @@ def parse_args():
     parser.add_argument("--equipment", default="", help="Equipment tag, e.g. BT-11")
     parser.add_argument("--list-equipment", action="store_true", help="List available equipment tags and exit")
     parser.add_argument("--equipment-limit", type=int, default=0, help="Maximum equipment rows to list; 0 means all")
+    parser.add_argument("--project-config", default="project_config.json", help="Project profile JSON path")
+    parser.add_argument("--project-profile", default="", help="Project profile name from --project-config")
     parser.add_argument("--job-name", default="", help="P&ID/job name, e.g. pnid_2_bio_final")
     parser.add_argument("--job-id", default="", help="P&ID/job id, e.g. 2100")
-    parser.add_argument("--host", default="44.217.77.13")
-    parser.add_argument("--port", default="8182")
-    parser.add_argument("--project-id", default="274")
-    parser.add_argument("--collection-id", default="196")
-    parser.add_argument("--collection-name", default="Unit")
+    parser.add_argument("--host", default="", help="Override Gremlin host")
+    parser.add_argument("--port", default="", help="Override Gremlin port")
+    parser.add_argument("--project-id", default="", help="Override Unigraph project id")
+    parser.add_argument("--cnvrt-project-id", default="", help="Override CNVRT project id")
+    parser.add_argument("--traversal-source", default="", help="Override Gremlin traversal source alias")
+    parser.add_argument("--collection-id", default="", help="Override CNVRT collection id")
+    parser.add_argument("--collection-name", default="", help="Override CNVRT collection name")
     parser.add_argument("--api-base-url", default="https://api.plant360.ai:8080")
     parser.add_argument("--auth-token", default=os.environ.get("PLANT360_AUTH_TOKEN", ""))
     parser.add_argument("--no-verify-ssl", action="store_true")
     parser.add_argument("--max-depth", type=int, default=3)
-    parser.add_argument("--output-dir", default="/tmp/opencode/equipment_isolation_no_llm")
+    parser.add_argument("--output-dir", default="/tmp/eia")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")
     parser.add_argument("--non-intrusive", action="store_true")
     parser.add_argument("--not-high-risk", action="store_true")
@@ -76,13 +93,42 @@ def configure_logging(quiet=False):
 
 
 def build_config(args):
-    return RunConfig(
+    profile = load_project_profile(args.project_config, args.project_profile)
+    config = apply_project_profile(
+        RunConfig(
+            equipment_tag=args.equipment,
+            job_name=args.job_name,
+            job_id=args.job_id,
+            api=ApiConfig(
+                base_url=args.api_base_url,
+                auth_token=args.auth_token,
+                verify_ssl=not args.no_verify_ssl,
+            ),
+            policy=IsolationPolicy(max_traversal_depth=args.max_depth),
+            work_scope=WorkScope(
+                intrusive_work=not args.non_intrusive,
+                high_risk_service=not args.not_high_risk,
+            ),
+            output_dir=Path(args.output_dir),
+        ),
+        profile,
+    )
+    graph = replace(
+        config.graph,
+        host=args.host or config.graph.host,
+        port=args.port or config.graph.port,
+        project_id=args.project_id or config.graph.project_id,
+        traversal_source_name=args.traversal_source or config.graph.traversal_source_name,
+    )
+    return replace(
+        config,
         equipment_tag=args.equipment,
         job_name=args.job_name,
         job_id=args.job_id,
-        collection_id=args.collection_id,
-        collection_name=args.collection_name,
-        graph=GraphConfig(host=args.host, port=args.port, project_id=args.project_id),
+        cnvrt_project_id=args.cnvrt_project_id or config.cnvrt_project_id,
+        collection_id=args.collection_id or config.collection_id,
+        collection_name=args.collection_name or config.collection_name,
+        graph=graph,
         api=ApiConfig(
             base_url=args.api_base_url,
             auth_token=args.auth_token,
@@ -93,7 +139,6 @@ def build_config(args):
             intrusive_work=not args.non_intrusive,
             high_risk_service=not args.not_high_risk,
         ),
-        output_dir=Path(args.output_dir),
     )
 
 
@@ -123,13 +168,13 @@ def list_equipment(graph_config, limit=0):
     return items[:limit] if limit and limit > 0 else items
 
 
-def add_equipment_jobs(items, api_config):
+def add_equipment_jobs(items, api_config, job_ids_by_name=None):
     if not items or not api_config.auth_token:
         return items
 
     node_to_job = {}
     client = Plant360Client(api_config)
-    for job_name, job_id in JOB_IDS_BY_NAME.items():
+    for job_name, job_id in (job_ids_by_name or JOB_IDS_BY_NAME).items():
         try:
             payload = client.stlm_symbols(job_id)
         except Exception:
@@ -183,18 +228,37 @@ def _norm(value):
     return str(value or "").strip().lower()
 
 
+def _raise_fatal_job_resolution(config, job_debug):
+    pnid_names = ", ".join(str(item) for item in (job_debug.get("pnid_names") or [])) or "-"
+    message = job_debug.get("message") or job_debug.get("job_resolution_error") or "Job resolution failed."
+    raise RuntimeError(
+        "Configured CNVRT job resolution failed for "
+        f"equipment {config.equipment_tag}; pnid_names={pnid_names}; "
+        f"cnvrt_project_id={job_debug.get('cnvrt_project_id') or config.cnvrt_project_id or '-'}; "
+        f"collection_id={job_debug.get('collection_id') or config.collection_id or '-'}; "
+        f"reason={message}"
+    )
+
+
 def run(config, image_url=""):
     config.output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info("[1/9] Fetching equipment boundary from JanusGraph")
+    logger.info("[1/12] Fetching equipment boundary from JanusGraph")
     boundary_data = fetch_boundaries(config)
+    config, job_debug = resolve_job_from_boundary(config, boundary_data)
+    boundary_data["context"] = config.context
+    boundary_data.setdefault("debug", {}).update(job_debug)
+    if job_debug.get("fatal"):
+        _raise_fatal_job_resolution(config, job_debug)
     logger.info(
-        "      matched_equipment=%s traversal_limit_hit=%s",
+        "      matched_equipment=%s traversal_limit_hit=%s job=%s:%s",
         boundary_data.get("matched_equipment_count"),
         boundary_data.get("traversal_limit_hit"),
+        config.job_name or "-",
+        config.resolved_job_id or "-",
     )
 
-    logger.info("[2/9] Selecting deterministic isolation candidates")
+    logger.info("[2/12] Selecting deterministic isolation candidates")
     candidate_data = find_candidates(boundary_data, config.policy)
     logger.info(
         "      candidates=%s raw_candidates=%s",
@@ -202,7 +266,7 @@ def run(config, image_url=""):
         (candidate_data.get("debug") or {}).get("raw_candidate_count_before_dedupe"),
     )
 
-    inferred_config = _config_with_inferred_job(config, candidate_data)
+    inferred_config = _config_with_inferred_job(config, candidate_data, boundary_data)
     if inferred_config is not config:
         config = inferred_config
         candidate_data["context"] = config.context
@@ -212,7 +276,7 @@ def run(config, image_url=""):
             config.resolved_job_id,
         )
 
-    logger.info("[3/9] Resolving candidate bboxes from STLM")
+    logger.info("[3/12] Resolving candidate bboxes from STLM")
     bbox_data = resolve_bboxes(candidate_data, config)
     logger.info(
         "      bbox_resolved=%s stlm_symbols=%s",
@@ -220,7 +284,17 @@ def run(config, image_url=""):
         (bbox_data.get("debug") or {}).get("bbox_stlm_symbol_count"),
     )
 
-    logger.info("[4/9] Classifying deterministic evidence")
+    logger.info("[4/12] Analyzing isolation obligations")
+    bbox_data = analyze_isolation_obligations(bbox_data, config)
+    obligation_summary = ((bbox_data.get("isolation_obligations") or {}).get("summary") or {})
+    logger.info(
+        "      obligations=%s unresolved=%s manual_candidates=%s",
+        obligation_summary.get("process_obligation_count"),
+        obligation_summary.get("unresolved_count"),
+        obligation_summary.get("manual_candidate_count"),
+    )
+
+    logger.info("[5/12] Classifying deterministic evidence")
     evidence_data = build_evidence(bbox_data, config)
     evidence_debug = evidence_data.get("debug") or {}
     logger.info(
@@ -230,14 +304,14 @@ def run(config, image_url=""):
         evidence_debug.get("evidence_verification_candidate_count"),
     )
 
-    logger.info("[5/9] Planning required evidence checks")
+    logger.info("[6/12] Planning required evidence checks")
     planner_data = plan_requests(evidence_data, config)
     logger.info(
         "      required_checks=%s",
         (planner_data.get("debug") or {}).get("planner_required_evidence_check_count"),
     )
 
-    logger.info("[6/9] Validating isolation assurance")
+    logger.info("[7/12] Validating isolation assurance")
     validation_data = validate(planner_data)
     logger.info(
         "      assurance_status=%s terminal=%s",
@@ -245,14 +319,32 @@ def run(config, image_url=""):
         (validation_data.get("isolation_validation") or {}).get("terminal"),
     )
 
-    logger.info("[7/9] Building final UI JSON payload")
-    final_payload = build_final_payload(validation_data, config)
+    logger.info("[8/12] Analyzing downstream impact from selected barriers")
+    downstream_impact = analyze_downstream_impact(validation_data, config)
+    impact_debug = downstream_impact.get("debug") or {}
+    logger.info(
+        "      downstream_status=%s warnings=%s",
+        downstream_impact.get("status"),
+        impact_debug.get("warning_count"),
+    )
+
+    logger.info("[9/12] Building deterministic LOTO procedure")
+    loto_procedure = build_loto_procedure(validation_data, config)
+    logger.info(
+        "      loto_steps=%s order_source=%s",
+        len(loto_procedure.get("ordered_steps") or []),
+        loto_procedure.get("within_phase_order_source"),
+    )
+
+    logger.info("[10/12] Building final UI JSON payload")
+    final_payload = build_final_payload(validation_data, config, downstream_impact=downstream_impact)
+    final_payload.setdefault("data", [{}])[0]["loto_procedure"] = loto_procedure
 
     stem = config.equipment_tag.replace("/", "_").replace(" ", "_")
-    output_json = config.output_dir / f"{stem}_output.json"
-    viewer_html = config.output_dir / f"{stem}_viewer.html"
+    output_json = config.output_dir / f"{stem}.json"
+    viewer_html = config.output_dir / f"{stem}.html"
     if not image_url:
-        logger.info("[8/9] Downloading P&ID image from Plant360 API")
+        logger.info("[11/12] Downloading P&ID image from Plant360 API")
         image_url, image_debug = resolve_pid_image(config, config.output_dir, stem)
         final_payload.setdefault("debug", {}).update(image_debug)
         logger.info(
@@ -261,9 +353,9 @@ def run(config, image_url=""):
             image_debug.get("pid_image_bytes"),
         )
     else:
-        logger.info("[8/9] Using provided P&ID image URL")
+        logger.info("[11/12] Using provided P&ID image URL")
 
-    logger.info("[9/9] Writing JSON output and HTML viewer")
+    logger.info("[12/12] Writing JSON output and HTML viewer")
     write_json(output_json, final_payload)
     write_viewer(viewer_html, final_payload, image_url=image_url)
     return output_json, viewer_html, final_payload
@@ -272,19 +364,16 @@ def run(config, image_url=""):
 def main():
     args = parse_args()
     configure_logging(args.quiet)
+    config = build_config(args)
     if args.list_equipment:
-        items = list_equipment(GraphConfig(host=args.host, port=args.port, project_id=args.project_id), args.equipment_limit)
+        items = list_equipment(config.graph, args.equipment_limit)
         add_equipment_jobs(
             items,
-            ApiConfig(
-                base_url=args.api_base_url,
-                auth_token=args.auth_token,
-                verify_ssl=not args.no_verify_ssl,
-            ),
+            config.api,
+            config.job_ids_by_name or JOB_IDS_BY_NAME,
         )
         print_equipment(items)
         return
-    config = build_config(args)
     output_json, viewer_html, payload = run(config, image_url=args.image_url)
     data = payload.get("data", [{}])[0]
     print(f"assurance_status={data.get('assurance_status')}")
@@ -293,25 +382,116 @@ def main():
     print(f"viewer_html={viewer_html}")
 
 
-def _config_with_inferred_job(config, candidate_data):
+def _config_with_inferred_job(config, candidate_data, boundary_data=None):
     counts = {}
     for candidate in candidate_data.get("candidates", []) or []:
-        unit_name = (candidate.get("properties") or {}).get("unit_name")
-        if unit_name in JOB_IDS_BY_NAME:
-            counts[unit_name] = counts.get(unit_name, 0) + 1
+        job_name = _candidate_job_name(candidate, config.job_ids_by_name)
+        if job_name:
+            counts[job_name] = counts.get(job_name, 0) + 1
+    for job_name in _boundary_job_names(boundary_data, config.job_ids_by_name):
+        counts[job_name] = counts.get(job_name, 0) + 1
+    if not counts:
+        stlm_job_name = _infer_job_name_from_stlm(config, candidate_data, boundary_data)
+        if stlm_job_name:
+            counts[stlm_job_name] = counts.get(stlm_job_name, 0) + 1
     if not counts:
         return config
     inferred_job_name = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[0][0]
     if inferred_job_name == config.job_name:
         return config
-    inferred_job_id = JOB_IDS_BY_NAME.get(inferred_job_name, "")
+    inferred_job_id = config.job_ids_by_name.get(inferred_job_name, "") or JOB_IDS_BY_NAME.get(inferred_job_name, "")
     debug = candidate_data.setdefault("debug", {})
     debug["input_job_name"] = config.job_name
     debug["input_job_id"] = config.resolved_job_id
     debug["inferred_job_name"] = inferred_job_name
     debug["inferred_job_id"] = inferred_job_id
-    debug["inferred_job_source"] = "selected_candidate_unit_name"
+    debug["inferred_job_source"] = "selected_candidate_or_boundary_context"
     return replace(config, job_name=inferred_job_name, job_id=inferred_job_id)
+
+
+def _candidate_job_name(candidate, job_ids_by_name=None):
+    properties = candidate.get("properties") or {}
+    known_jobs = job_ids_by_name or JOB_IDS_BY_NAME
+    for key in ("unit_name", "pnid", "pnid_name", "job_name", "job"):
+        value = str(properties.get(key) or candidate.get(key) or "").strip()
+        if value in known_jobs:
+            return value
+    return ""
+
+
+def _boundary_job_names(boundary_data, job_ids_by_name=None):
+    if not boundary_data:
+        return []
+    known_jobs = job_ids_by_name or JOB_IDS_BY_NAME
+    names = []
+    for props in _boundary_properties(boundary_data):
+        for key in ("unit_name", "pnid", "pnid_name", "job_name", "job"):
+            value = str(props.get(key) or "").strip()
+            if value in known_jobs:
+                names.append(value)
+    return names
+
+
+def _infer_job_name_from_stlm(config, candidate_data, boundary_data):
+    if config.resolved_job_id or not config.api.auth_token:
+        return ""
+    ids = _job_lookup_ids(candidate_data, boundary_data)
+    if not ids:
+        return ""
+
+    client = Plant360Client(config.api)
+    for job_name, job_id in (config.job_ids_by_name or JOB_IDS_BY_NAME).items():
+        try:
+            payload = client.stlm_symbols(job_id)
+        except Exception:
+            continue
+        for symbol in _extract_symbols(payload):
+            for key in ("uuid", "id", "source_id", "associated_equipment_id", "parent"):
+                if _norm(symbol.get(key)) in ids:
+                    return job_name
+    return ""
+
+
+def _job_lookup_ids(candidate_data, boundary_data):
+    ids = set()
+    for candidate in candidate_data.get("candidates", []) or []:
+        for value in (
+            candidate.get("visual_id"),
+            candidate.get("source_visual_id"),
+            candidate.get("candidate_id"),
+            candidate.get("source_component_id"),
+            (candidate.get("properties") or {}).get("node_id"),
+            (candidate.get("properties") or {}).get("source_id"),
+            (candidate.get("properties") or {}).get("uuid"),
+        ):
+            key = _norm(value)
+            if key:
+                ids.add(key)
+    for props in _boundary_properties(boundary_data):
+        for key in ("node_id", "source_id", "uuid", "id", "name"):
+            value = props.get(key)
+            normalized = _norm(value)
+            if normalized:
+                ids.add(normalized)
+    return ids
+
+
+def _boundary_properties(boundary_data):
+    if not boundary_data:
+        return []
+    properties = []
+    for boundary in boundary_data.get("equipment_boundaries", []) or []:
+        equipment = boundary.get("equipment") or {}
+        props = dict(equipment.get("properties") or {})
+        if equipment.get("id") is not None:
+            props.setdefault("id", equipment.get("id"))
+        properties.append(props)
+        for component in boundary.get("components", []) or []:
+            props = dict(component.get("properties") or {})
+            if component.get("id") is not None:
+                props.setdefault("id", component.get("id"))
+            properties.append(props)
+    return properties
 
 
 if __name__ == "__main__":

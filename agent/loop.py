@@ -153,7 +153,12 @@ def _ensure_pipeline(session: AgentSession, validate_terminal: bool, on_event) -
         _emit(on_event, "guardrail", {"forced": name, "result": result})
         return result
 
-    if session.final_payload is not None and session.loto_procedure is not None:
+    if (
+        session.final_payload is not None
+        and session.loto_procedure is not None
+        and session.downstream_impact is not None
+        and session.isolation_obligations is not None
+    ):
         return forced
     if session.boundary_data is None:
         _run("fetch_boundary", {"equipment_tag": session.config.equipment_tag})
@@ -161,10 +166,14 @@ def _ensure_pipeline(session: AgentSession, validate_terminal: bool, on_event) -
         _run("find_candidates")
     if session.bbox_data is None:
         _run("resolve_bboxes")
+    if session.isolation_obligations is None and session.bbox_data is not None:
+        _run("analyze_isolation_obligations")
     if session.evidence_data is None:
         _run("build_evidence")
     if session.validation_data is None:
         _run("validate")
+    if session.downstream_impact is None and session.validation_data is not None:
+        _run("analyze_downstream_impact")
     if session.final_payload is None and session.validation_data is not None:
         _run("finalize_plan")
     if session.loto_procedure is None and session.validation_data is not None:

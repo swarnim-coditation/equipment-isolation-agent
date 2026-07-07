@@ -8,8 +8,16 @@ MAX_TOTAL_CANDIDATES = 20
 def find_candidates(boundary_data, policy):
     raw_candidates = []
     skipped_count = 0
+    selected_equipment_nodes = []
     for boundary in boundary_data.get("equipment_boundaries", []):
         equipment = boundary.get("equipment", {}) or {}
+        selected_equipment_nodes.append(
+            {
+                "id": equipment.get("id"),
+                "label": equipment.get("label"),
+                "properties": equipment.get("properties") or {},
+            }
+        )
         equipment_tag = _tag(equipment.get("properties", {}) or {}) or str(equipment.get("id"))
         for component_boundary in boundary.get("component_boundaries", []):
             component = component_boundary.get("component", {}) or {}
@@ -54,6 +62,7 @@ def find_candidates(boundary_data, policy):
         "all_candidates_before_ranking": len(deduped),
         "candidates": ranked,
         "_candidate_pool": raw_candidates,
+        "selected_equipment_nodes": selected_equipment_nodes,
         "context": boundary_data.get("context") or {},
         "debug": {
             "candidate_finder_mode": "local_nearest_boundary_candidate_per_source_component",

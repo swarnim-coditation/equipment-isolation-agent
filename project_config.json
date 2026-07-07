@@ -1,0 +1,37 @@
+{
+  "active_profile": "aker_277",
+  "profiles": {
+    "aker_277": {
+      "name": "Demo Aker",
+      "cnvrt_project_id": "277",
+      "unigraph_project_id": "13",
+      "collection_id": "206",
+      "collection_name": "Test",
+      "graph": {
+        "host": "44.217.77.13",
+        "port": "18182"
+      },
+      "job_ids_by_name": {}
+    },
+    "biodiesel_graph9": {
+      "name": "Biodiesel Plant",
+      "cnvrt_project_id": "",
+      "unigraph_project_id": "9",
+      "collection_id": "196",
+      "collection_name": "Unit",
+      "graph": {
+        "host": "44.217.77.13",
+        "port": "18182"
+      },
+      "job_ids_by_name": {
+        "pnid_1_bio_final": "2099",
+        "pnid_2_bio_final": "2100",
+        "pnid_3_bio_final": "2102",
+        "pnid_5_bio_final": "2103",
+        "pnid_7_bio_final": "2104",
+        "pnid_4_bio_final": "2105",
+        "pnid_6_bio_final": "2106"
+      }
+    }
+  }
+}

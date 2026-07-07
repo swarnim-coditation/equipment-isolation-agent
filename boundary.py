@@ -62,7 +62,7 @@ def fetch_boundaries(config):
 
 
 def _fetch_equipment_vertices(g, equipment_tag):
-    return (
+    rows = (
         g.V()
         .hasLabel("Equipment")
         .or_(
@@ -74,6 +74,36 @@ def _fetch_equipment_vertices(g, equipment_tag):
         .valueMap(True)
         .toList()
     )
+    if rows:
+        return rows
+
+    requested_key = _tag_key(equipment_tag)
+    if not requested_key:
+        return rows
+    fallback_rows = g.V().hasLabel("Equipment").valueMap(True).toList()
+    return [
+        row
+        for row in fallback_rows
+        if requested_key
+        in {
+            _tag_key(_raw_property(row, "tag")),
+            _tag_key(_raw_property(row, "tag_number")),
+            _tag_key(_raw_property(row, "Equipment Name")),
+            _tag_key(_raw_property(row, "name")),
+            _tag_key(_raw_property(row, "equipment_number")),
+        }
+    ]
+
+
+def _raw_property(row, key):
+    value = row.get(key)
+    if isinstance(value, list) and len(value) == 1:
+        return value[0]
+    return value
+
+
+def _tag_key(value):
+    return "".join(ch for ch in str(value or "").lower() if ch.isalnum())
 
 
 def _dedupe_vertices(vertices):

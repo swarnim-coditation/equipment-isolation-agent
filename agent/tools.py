@@ -20,7 +20,10 @@ from boundary import fetch_boundaries
 from candidates import find_candidates
 from config import RunConfig
 from evidence import build_evidence
+from impact import analyze_downstream_impact as _analyze_downstream_impact
+from job_resolver import resolve_job_from_boundary
 from loto import build_loto_procedure as _build_loto_procedure
+from obligations import analyze_isolation_obligations as _analyze_isolation_obligations
 from output import build_final_payload
 from planner import plan_requests
 from validator import validate
@@ -53,6 +56,9 @@ def t_fetch_boundary(session: AgentSession, equipment_tag: str = "") -> dict:
         return {"error": "equipment_tag is required"}
     config = replace(session.config, equipment_tag=tag)
     data = fetch_boundaries(config)
+    config, job_debug = resolve_job_from_boundary(config, data)
+    data["context"] = config.context
+    data.setdefault("debug", {}).update(job_debug)
     session.config = config
     session.boundary_data = data
     return _summarize_boundary(data)
@@ -77,9 +83,19 @@ def _summarize_boundary(data: dict) -> dict:
                     "nozzle": nozzle,
                 }
             )
+    debug = data.get("debug") or {}
     return {
         "matched_equipment_count": data.get("matched_equipment_count"),
         "traversal_limit_hit": data.get("traversal_limit_hit"),
+        "job_resolution": debug.get("job_resolution"),
+        "job_name": debug.get("job_name"),
+        "job_id": debug.get("job_id"),
+        "job_resolution_error": debug.get("job_resolution_error"),
+        "fatal": bool(debug.get("fatal")),
+        "message": debug.get("message"),
+        "pnid_names": debug.get("pnid_names") or [],
+        "cnvrt_project_id": debug.get("cnvrt_project_id"),
+        "collection_id": debug.get("collection_id"),
         "component_count": len(components),
         "boundary_source_count": len(sources),
         "components": components[:25],
@@ -87,9 +103,27 @@ def _summarize_boundary(data: dict) -> dict:
     }
 
 
+def _fatal_job_resolution(data: dict | None) -> dict:
+    debug = ((data or {}).get("debug") or {})
+    if not debug.get("fatal"):
+        return {}
+    return {
+        "error": "fatal_job_resolution",
+        "job_resolution": debug.get("job_resolution"),
+        "job_resolution_error": debug.get("job_resolution_error"),
+        "message": debug.get("message"),
+        "pnid_names": debug.get("pnid_names") or [],
+        "cnvrt_project_id": debug.get("cnvrt_project_id"),
+        "collection_id": debug.get("collection_id"),
+    }
+
+
 def t_find_candidates(session: AgentSession, **_) -> dict:
     if not session.boundary_data:
         return {"error": "call fetch_boundary first"}
+    fatal = _fatal_job_resolution(session.boundary_data)
+    if fatal:
+        return fatal
     data = find_candidates(session.boundary_data, session.config.policy)
     session.candidate_data = data
     return _summarize_candidates(data)
@@ -131,6 +165,49 @@ def t_resolve_bboxes(session: AgentSession, **_) -> dict:
     summary["job_name_used"] = session.config.job_name or ""
     summary["job_inferred_by_agent"] = inferred
     return summary
+
+
+def t_analyze_isolation_obligations(session: AgentSession, **_) -> dict:
+    if not session.bbox_data:
+        return {"error": "call resolve_bboxes first"}
+    data = _analyze_isolation_obligations(session.bbox_data, session.config)
+    session.bbox_data = data
+    session.isolation_obligations = data.get("isolation_obligations") or {}
+    if session.evidence_data:
+        session.evidence_data["isolation_obligations"] = session.isolation_obligations
+    if session.validation_data:
+        session.validation_data["isolation_obligations"] = session.isolation_obligations
+        session.validation_data.setdefault("isolation_validation", {})["isolation_obligations"] = session.isolation_obligations
+    if session.final_payload:
+        session.final_payload.setdefault("data", [{}])[0]["isolation_obligations"] = session.isolation_obligations
+    return _summarize_isolation_obligations(session.isolation_obligations)
+
+
+def _summarize_isolation_obligations(result: dict) -> dict:
+    summary = result.get("summary") or {}
+    items = result.get("items") or []
+    unresolved = [
+        item
+        for item in items
+        if item.get("source_type") == "process" and item.get("status") == "unresolved"
+    ]
+    return {
+        "status": result.get("status"),
+        "process_obligation_count": summary.get("process_obligation_count"),
+        "isolated_count": summary.get("isolated_count"),
+        "unresolved_count": summary.get("unresolved_count"),
+        "context_count": summary.get("context_count"),
+        "manual_candidate_count": summary.get("manual_candidate_count"),
+        "unresolved_sources": [
+            {
+                "source_component": item.get("source_component"),
+                "source_tag": item.get("source_component_tag"),
+                "manual_candidate_count": len(item.get("manual_candidates") or []),
+                "basis": item.get("basis"),
+            }
+            for item in unresolved[:12]
+        ],
+    }
 
 
 def _summarize_bbox(data: dict) -> dict:
@@ -234,6 +311,10 @@ def t_build_evidence(session: AgentSession, **_) -> dict:
     source = session.bbox_data or session.candidate_data
     if not source:
         return {"error": "call find_candidates (and optionally resolve_bboxes) first"}
+    if session.bbox_data and session.isolation_obligations is None:
+        source = _analyze_isolation_obligations(session.bbox_data, session.config)
+        session.bbox_data = source
+        session.isolation_obligations = source.get("isolation_obligations") or {}
     data = build_evidence(source, session.config)
     session.evidence_data = data
     return _summarize_evidence(data)
@@ -285,7 +366,7 @@ def _summarize_validation(data: dict) -> dict:
 def t_finalize_plan(session: AgentSession, **_) -> dict:
     if not session.validation_data:
         return {"error": "call validate first"}
-    payload = build_final_payload(session.validation_data, session.config)
+    payload = build_final_payload(session.validation_data, session.config, downstream_impact=session.downstream_impact)
     session.final_payload = payload
     return _summarize_payload(payload)
 
@@ -316,6 +397,45 @@ def t_get_osha_guidance(session: AgentSession, topic: str = "") -> dict:
     phase -- e.g. topic='stored energy', 'verification', 'isolation sequence'.
     """
     return osha.get_osha_guidance(topic)
+
+
+def t_analyze_downstream_impact(session: AgentSession, **_) -> dict:
+    """Analyze process-side assets reachable from selected isolation barriers.
+    Requires validate. Reachability is deterministic HILT graph data; the agent
+    may summarize it but must not promote possible impacts to certainties."""
+    if not session.validation_data:
+        return {"error": "call validate first"}
+    result = _analyze_downstream_impact(session.validation_data, session.config)
+    session.downstream_impact = result
+    if session.final_payload:
+        session.final_payload.setdefault("data", [{}])[0]["downstream_impact"] = result
+    return _summarize_downstream_impact(result)
+
+
+def _summarize_downstream_impact(result: dict) -> dict:
+    debug = result.get("debug") or {}
+    warnings = result.get("warnings") or []
+    return {
+        "status": result.get("status"),
+        "error": result.get("error"),
+        "warning_count": len(warnings),
+        "likely_count": sum(1 for item in warnings if item.get("severity") == "likely"),
+        "possible_count": sum(1 for item in warnings if item.get("severity") == "possible"),
+        "unknown_flow_path_count": debug.get("unknown_flow_path_count"),
+        "top_warnings": [
+            {
+                "severity": item.get("severity"),
+                "source_tag": item.get("source_tag"),
+                "affected_tag": item.get("affected_tag"),
+                "affected_class": item.get("affected_class"),
+                "affected_type": item.get("affected_type"),
+                "impact_type": item.get("impact_type"),
+                "path_hops": item.get("path_hops"),
+            }
+            for item in warnings[:8]
+        ],
+        "note": "Deterministic HILT reachability only. Say 'may affect' for possible impacts.",
+    }
 
 
 def t_build_loto_procedure(session: AgentSession, **_) -> dict:
@@ -436,6 +556,16 @@ TOOL_SPECS: list[dict] = [
         "fn": t_resolve_bboxes,
     },
     {
+        "name": "analyze_isolation_obligations",
+        "description": (
+            "Build deterministic boundary-source isolation obligations after bbox resolution. Returns "
+            "process obligation counts, unresolved source paths, and orange manual bypass/parallel-route "
+            "candidate counts. Requires resolve_bboxes and feeds build_evidence/validate."
+        ),
+        "parameters": {"type": "object", "properties": {}, "required": []},
+        "fn": t_analyze_isolation_obligations,
+    },
+    {
         "name": "list_unselected_sources",
         "description": (
             "List boundary source nozzles that have NO selected isolation candidate (the coverage gaps). "
@@ -536,6 +666,18 @@ TOOL_SPECS: list[dict] = [
             "required": ["ordered_uuids"],
         },
         "fn": t_set_isolation_order,
+    },
+    {
+        "name": "analyze_downstream_impact",
+        "description": (
+            "Run deterministic downstream reachability analysis from selected isolation barriers over the "
+            "HILT process-line graph. Requires validate. Returns compact counts and top warnings only; "
+            "full structured downstream_impact is stored in the final payload. The agent may summarize "
+            "possible impacts as 'may affect' and likely impacts as 'likely affects', but must not invent "
+            "or upgrade reachability."
+        ),
+        "parameters": {"type": "object", "properties": {}, "required": []},
+        "fn": t_analyze_downstream_impact,
     },
     {
         "name": "finalize_plan",

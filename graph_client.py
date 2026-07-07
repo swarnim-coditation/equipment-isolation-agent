@@ -1,5 +1,6 @@
 from contextlib import AbstractContextManager
 
+from gremlin_python.driver import serializer
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.process.traversal import T
@@ -15,6 +16,7 @@ class GraphClient(AbstractContextManager):
         self.connection = DriverRemoteConnection(
             self.graph_config.gremlin_url,
             self.graph_config.traversal_source,
+            message_serializer=serializer.GraphSONSerializersV3d0(),
         )
         self.g = traversal().withRemote(self.connection)
         return self
