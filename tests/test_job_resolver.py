@@ -60,6 +60,39 @@ class JobResolverTests(unittest.TestCase):
         self.assertFalse(debug["fatal"])
         self.assertEqual(FakePlant360Client.paths, ["/projects/277/collections/206/jobs?name=Janusz-2"])
 
+    def test_boundary_job_reference_resolves_when_job_is_in_metadata_map(self):
+        with tempfile.TemporaryDirectory() as tmp, patch("job_resolver.Plant360Client", FakePlant360Client):
+            resolved, debug = resolve_job_from_boundary(
+                config(
+                    cnvrt_project_id="277",
+                    collection_id="206",
+                    job_ids_by_name={"PID-0134-1": "2152"},
+                ),
+                boundary("pnid:job:2152"),
+                cache_path=Path(tmp) / "jobs.json",
+            )
+
+        self.assertEqual(resolved.resolved_job_id, "2152")
+        self.assertEqual(resolved.job_name, "PID-0134-1")
+        self.assertEqual(debug["job_resolution"], "boundary_job_reference")
+        self.assertEqual(FakePlant360Client.paths, [])
+
+    def test_boundary_job_reference_outside_metadata_map_is_fatal_for_configured_collection(self):
+        with tempfile.TemporaryDirectory() as tmp, patch("job_resolver.Plant360Client", FakePlant360Client):
+            resolved, debug = resolve_job_from_boundary(
+                config(
+                    cnvrt_project_id="277",
+                    collection_id="206",
+                    job_ids_by_name={"PID-0134-1": "2152"},
+                ),
+                boundary("pnid:job:9999"),
+                cache_path=Path(tmp) / "jobs.json",
+            )
+
+        self.assertEqual(resolved.resolved_job_id, "")
+        self.assertTrue(debug["fatal"])
+        self.assertEqual(debug["job_resolution_error"], "job_name_not_found_in_configured_collection")
+
     def test_configured_collection_miss_is_fatal_and_does_not_scan_global_jobs(self):
         with tempfile.TemporaryDirectory() as tmp, patch("job_resolver.Plant360Client", FakePlant360Client):
             resolved, debug = resolve_job_from_boundary(

@@ -1,25 +1,12 @@
 import html
 from dataclasses import dataclass
 
+from domain.enums import ImpactSeverity, ObligationStatus, OverlayKind, SourceType
+from domain.models import BBox, Overlay
 
 CANVAS_WIDTH = 5458
 CANVAS_HEIGHT = 3109
 VIEW_PADDING = 180
-
-
-@dataclass(frozen=True)
-class Overlay:
-    kind: str
-    bbox: list[int]
-    label: str
-    title: str
-    css_class: str
-    label_class: str
-    summary_seq: str
-    summary_uuid: str
-    summary_reason: str
-    severity: str = ""
-    badge: str = ""
 
 
 @dataclass(frozen=True)
@@ -64,6 +51,7 @@ def _collect_overlays(data):
     overlays.extend(_collect_obligation_manual_overlays(data))
     overlays.extend(_collect_manual_check_overlays(data))
     overlays.extend(_collect_context_overlays(data))
+    overlays.extend(_collect_instrument_overlays(data))
     return overlays
 
 
@@ -77,8 +65,8 @@ def _collect_target_overlays(data):
         title = f"Selected equipment of interest | {item.get('tag')} | class={item.get('entity_class')} | bbox={bbox}"
         overlays.append(
             Overlay(
-                kind="target",
-                bbox=bbox,
+                kind=OverlayKind.TARGET,
+                bbox=BBox.from_any(bbox),
                 label=label,
                 title=title,
                 css_class="target-box",
@@ -104,8 +92,8 @@ def _collect_isolation_overlays(data, seq_by_uuid):
         title = f"{label} | uuid={point.get('uuid')} | bbox={bbox}"
         overlays.append(
             Overlay(
-                kind="isolation",
-                bbox=bbox,
+                kind=OverlayKind.ISOLATION,
+                bbox=BBox.from_any(bbox),
                 label=label,
                 title=title,
                 css_class="box",
@@ -124,26 +112,26 @@ def _collect_impact_overlays(data):
     warnings = ((data.get("downstream_impact") or {}).get("warnings") or [])
     for index, warning_item in enumerate([item for item in warnings if _valid_bbox(item.get("affected_bbox"))], start=1):
         bbox = _minimum_display_bbox(_valid_bbox(warning_item.get("affected_bbox")), min_width=86, min_height=30)
-        severity = str(warning_item.get("severity") or "possible")
+        severity = ImpactSeverity(str(warning_item.get("severity") or ImpactSeverity.POSSIBLE.value))
         raw_label = warning_item.get("affected_tag") or warning_item.get("affected_id") or "downstream impact"
         source = warning_item.get("source_tag") or warning_item.get("source_candidate_tag") or "selected barrier"
-        wording = "likely affects" if severity == "likely" else "may affect"
+        wording = "likely affects" if severity == ImpactSeverity.LIKELY else "may affect"
         title = (
             f"Downstream impact | {source} {wording} {raw_label} | "
             f"class={warning_item.get('affected_class')} | original_bbox={warning_item.get('affected_bbox')}"
         )
         overlays.append(
             Overlay(
-                kind="impact",
-                bbox=bbox,
+                kind=OverlayKind.IMPACT,
+                bbox=BBox.from_any(bbox),
                 label=_impact_overlay_label(warning_item, index),
                 title=title,
-                css_class=f"impact-box impact-{severity}",
+                css_class=f"impact-box impact-{severity.value}",
                 label_class="impact-label",
                 summary_seq="",
                 summary_uuid=str(warning_item.get("affected_id") or ""),
                 summary_reason=title,
-                severity=severity,
+                severity=severity.value,
             )
         )
     return overlays
@@ -158,8 +146,8 @@ def _collect_manual_check_overlays(data):
         title = f"{check.get('entity_class')} | uuid={check.get('uuid')} | bbox={bbox}"
         overlays.append(
             Overlay(
-                kind="manual",
-                bbox=bbox,
+                kind=OverlayKind.MANUAL,
+                bbox=BBox.from_any(bbox),
                 label="manual check",
                 title=title,
                 css_class="manual-box",
@@ -193,8 +181,8 @@ def _collect_obligation_manual_overlays(data):
             )
             overlays.append(
                 Overlay(
-                    kind="obligation_manual",
-                    bbox=bbox,
+                    kind=OverlayKind.OBLIGATION_MANUAL,
+                    bbox=BBox.from_any(bbox),
                     label="manual isolation check",
                     title=title,
                     css_class="manual-box",
@@ -218,8 +206,8 @@ def _collect_context_overlays(data):
         title = f"boundary context | source={label} | class={context.get('classification')} | bbox={bbox}"
         overlays.append(
             Overlay(
-                kind="context",
-                bbox=bbox,
+                kind=OverlayKind.CONTEXT,
+                bbox=BBox.from_any(bbox),
                 label=label,
                 title=title,
                 css_class="context-box",
@@ -227,6 +215,33 @@ def _collect_context_overlays(data):
                 summary_seq="",
                 summary_uuid=str(context.get("source_component") or ""),
                 summary_reason=str(context.get("reason") or ""),
+            )
+        )
+    return overlays
+
+
+def _collect_instrument_overlays(data):
+    overlays = []
+    for instrument in ((data.get("instrument_context") or {}).get("instruments") or []):
+        bbox = _valid_bbox(instrument.get("bbox"))
+        if not bbox:
+            continue
+        label = str(instrument.get("tag") or instrument.get("name") or "instrument")
+        title = (
+            f"instrument context | {label} | variable={instrument.get('measured_variable')} | "
+            f"type={instrument.get('instrument_type')} | bbox={bbox}"
+        )
+        overlays.append(
+            Overlay(
+                kind=OverlayKind.INSTRUMENT,
+                bbox=BBox.from_any(bbox),
+                label=label,
+                title=title,
+                css_class="instrument-box",
+                label_class="instrument-label",
+                summary_seq="instrument",
+                summary_uuid=str(instrument.get("id") or ""),
+                summary_reason=str(instrument.get("verification_note") or title),
             )
         )
     return overlays
@@ -344,6 +359,8 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .manual-label { position: absolute; background: #92400e; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
 .context-box { position: absolute; border: 2px solid #2563eb; box-sizing: border-box; background: rgba(37,99,235,0.14); }
 .context-label { position: absolute; background: #1d4ed8; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
+.instrument-box { position: absolute; border: 3px solid #0891b2; box-sizing: border-box; background: rgba(8,145,178,0.12); z-index: 2; }
+.instrument-label { position: absolute; background: #0e7490; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; z-index: 6; }
 .procedure { margin: 0 0 18px; max-width: 1200px; border: 1px solid #d1d5db; border-radius: 6px; padding: 14px 18px; background: #fff; }
 .procedure h2 { margin: 0 0 4px; font-size: 17px; }
 .procedure h3 { margin: 14px 0 6px; font-size: 13px; color: #111827; }
@@ -353,10 +370,19 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .procedure .phase { display:inline-block; min-width: 230px; color: #1d4ed8; font-weight: 600; font-size: 12px; }
 .procedure .field-gap { color: #b45309; font-weight: 600; }
 .procedure .release { margin-top: 10px; font-size: 12px; color: #4b5563; border-top: 1px dashed #d1d5db; padding-top: 8px; }
+.procedure .status-callout { margin-top: 12px; padding: 12px 14px; border-radius: 6px; border: 1px solid #d1d5db; background: #f9fafb; }
+.procedure .status-callout h3 { margin: 0 0 4px; font-size: 15px; }
+.procedure .status-callout p { margin: 0; font-size: 13px; line-height: 1.4; }
+.procedure .status-not-isolated { border-color: #dc2626; background: #fef2f2; color: #7f1d1d; }
+.procedure .status-needs-confirmation { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+.procedure .status-complete { border-color: #16a34a; background: #f0fdf4; color: #14532d; }
+.procedure .status-unknown { border-color: #94a3b8; background: #f8fafc; color: #334155; }
 .procedure .alerts { margin-top: 12px; padding: 10px 12px; border: 1px solid #f59e0b; background: #fffbeb; color: #7c2d12; }
 .procedure .alerts h3 { margin-top: 0; color: #7c2d12; }
 .procedure .coverage { margin-top: 12px; padding: 10px 12px; border: 1px solid #d1d5db; background: #f9fafb; color: #111827; }
 .procedure .coverage h3 { margin-top: 0; }
+.procedure .step-detail { margin: 4px 0 8px 248px; color: #334155; }
+.procedure .step-detail li { font-size: 12px; margin: 2px 0; }
 .procedure .possible { color: #854d0e; }
 .procedure .likely { color: #991b1b; font-weight: 600; }
 table { border-collapse: collapse; margin-top: 16px; max-width: 1200px; font-size: 13px; }
@@ -472,7 +498,7 @@ def _render_isolation_procedure_panel(
     )
     coverage_html = _render_isolation_coverage(data.get("isolation_obligations") or {})
     steps = (procedure or {}).get("ordered_steps") or []
-    if not steps and not warning_html:
+    if not steps and not warning_html and not data.get("assurance_status"):
         return ""
 
     items = []
@@ -482,7 +508,7 @@ def _render_isolation_procedure_panel(
             f'<span class="phase">[Phase {step.get("phase")} | '
             f'{html.escape(str(step.get("ref") or ""))}] {html.escape(str(step.get("title") or ""))}</span>'
         )
-        items.append(f'<li{cls}>{phase} {html.escape(str(step.get("action") or ""))}</li>')
+        items.append(f'<li{cls}>{phase} {html.escape(str(step.get("action") or ""))}{_render_step_details(step)}</li>')
 
     standard = html.escape(str((procedure or {}).get("standard") or "29 CFR 1910.147"))
     release_ref = html.escape(str((procedure or {}).get("release_from_loto_ref") or "1910.147(e)"))
@@ -512,16 +538,86 @@ def _render_isolation_procedure_panel(
 
     assurance = html.escape(str(data.get("assurance_status") or "unknown"))
     selected = ", ".join(html.escape(str(item)) for item in data.get("selected_equipment") or [])
+    status_callout = _render_status_callout(data)
     return (
         f'<div class="procedure"><h2>Isolation Procedure</h2>'
         f'<p class="meta">Equipment: {selected or "unknown"}. Assurance: {assurance}. '
         f'Procedure basis: OSHA {standard}(d).</p>'
+        f'{status_callout}'
         f'{warning_html}'
         f'{coverage_html}'
         f'<h3>Sequencing Basis</h3><p class="meta">{html.escape(order_note)}</p>'
         f'{steps_html}'
-        f'<p class="release"><b>Release from isolation ({release_ref}):</b> {release}</p>'
+        f'{_render_release_from_isolation(release_ref, release, (procedure or {}).get("restoration_checks") or [])}'
         "</div>"
+    )
+
+
+def _render_status_callout(data):
+    status = str(data.get("assurance_status") or "").strip().lower()
+    obligations = data.get("isolation_obligations") or {}
+    summary = obligations.get("summary") or {}
+    unresolved = int(summary.get("unresolved_count") or 0)
+    manual = int(summary.get("manual_candidate_count") or 0)
+
+    if status == "not_isolated":
+        title = "Not isolated with current evidence"
+        if unresolved:
+            detail = f"{unresolved} process path still needs a selected isolation point before this can be treated as isolated."
+        else:
+            detail = "The available evidence does not show a complete isolation boundary for the selected equipment."
+        css = "status-not-isolated"
+    elif status == "provisional_unproven_isolation":
+        title = "Field confirmation required before work"
+        if manual:
+            detail = f"The graph found an isolation boundary, but {manual} additional field/manual check must be resolved before work proceeds."
+        else:
+            detail = "The graph found an isolation boundary, but required field verification or proof of zero energy is still missing."
+        css = "status-needs-confirmation"
+    elif status in {"isolated", "isolated_verified"}:
+        title = "Isolation boundary complete in available data"
+        detail = "All detected process paths have selected isolation points in the available graph and drawing data."
+        css = "status-complete"
+    else:
+        title = "Isolation status unknown"
+        detail = "The payload did not include enough validation information to state the isolation status."
+        css = "status-unknown"
+
+    return (
+        f'<div class="status-callout {css}">'
+        f"<h3>{html.escape(title)}</h3>"
+        f"<p>{html.escape(detail)}</p>"
+        "</div>"
+    )
+
+
+def _render_step_details(row):
+    details = []
+    for label, key in (
+        ("Purpose", "purpose"),
+        ("Meaning", "interpretation"),
+        ("Accept", "acceptance_criteria"),
+        ("Limit", "limitation"),
+    ):
+        value = str(row.get(key) or "").strip()
+        if value:
+            details.append(f"<li><b>{html.escape(label)}:</b> {html.escape(value)}</li>")
+    if not details:
+        return ""
+    return f'<ul class="step-detail">{"".join(details)}</ul>'
+
+
+def _render_release_from_isolation(release_ref, release, restoration_checks):
+    if not restoration_checks:
+        return f'<p class="release"><b>Release from isolation ({release_ref}):</b> {release}</p>'
+    items = []
+    for check in restoration_checks:
+        action = html.escape(str(check.get("action") or ""))
+        items.append(f"<li>{action}{_render_step_details(check)}</li>")
+    return (
+        f'<div class="release"><b>Release from isolation ({release_ref}):</b> {release}'
+        '<h3>Restoration / Re-Energization Checks</h3>'
+        f'<ul>{"".join(items)}</ul></div>'
     )
 
 
@@ -530,7 +626,7 @@ def _render_procedure_warnings(unselected_sources, manual_checks, context_instru
     unresolved_obligations = [
         item
         for item in (obligations.get("items") or [])
-        if item.get("source_type") == "process" and item.get("status") == "unresolved"
+        if item.get("source_type") == SourceType.PROCESS.value and item.get("status") == ObligationStatus.UNRESOLVED.value
     ]
     manual_candidate_count = _unique_manual_candidate_count(obligations)
     if unresolved_obligations:
@@ -629,8 +725,8 @@ def _render_downstream_impact_items(downstream_impact):
         return ""
 
     groups = [
-        ("likely", "Likely affects"),
-        ("possible", "May affect"),
+        (ImpactSeverity.LIKELY.value, "Likely affects"),
+        (ImpactSeverity.POSSIBLE.value, "May affect"),
     ]
     rows = []
     for severity, title in groups:
@@ -642,7 +738,7 @@ def _render_downstream_impact_items(downstream_impact):
             affected = html.escape(str(item.get("affected_tag") or "unknown"))
             affected_class = html.escape(str(item.get("affected_class") or item.get("affected_type") or "component"))
             hops = html.escape(str(item.get("path_hops") or ""))
-            wording = "likely affects" if severity == "likely" else "may affect"
+            wording = "likely affects" if severity == ImpactSeverity.LIKELY.value else "may affect"
             rows.append(
                 f'<li class="{severity}">Downstream impact ({html.escape(title)}): '
                 f"{source} {wording} {affected} ({affected_class}); HILT path hops: {hops}.</li>"

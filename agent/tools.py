@@ -19,8 +19,10 @@ from bbox import resolve_bboxes
 from boundary import fetch_boundaries
 from candidates import find_candidates
 from config import RunConfig
+from domain.enums import ImpactSeverity, ObligationStatus, SourceType
 from evidence import build_evidence
 from impact import analyze_downstream_impact as _analyze_downstream_impact
+from instrument_context import analyze_instrument_context as _analyze_instrument_context
 from job_resolver import resolve_job_from_boundary
 from loto import build_loto_procedure as _build_loto_procedure
 from obligations import analyze_isolation_obligations as _analyze_isolation_obligations
@@ -189,7 +191,7 @@ def _summarize_isolation_obligations(result: dict) -> dict:
     unresolved = [
         item
         for item in items
-        if item.get("source_type") == "process" and item.get("status") == "unresolved"
+        if item.get("source_type") == SourceType.PROCESS.value and item.get("status") == ObligationStatus.UNRESOLVED.value
     ]
     return {
         "status": result.get("status"),
@@ -315,6 +317,8 @@ def t_build_evidence(session: AgentSession, **_) -> dict:
         source = _analyze_isolation_obligations(session.bbox_data, session.config)
         session.bbox_data = source
         session.isolation_obligations = source.get("isolation_obligations") or {}
+    if session.instrument_context:
+        source["instrument_context"] = session.instrument_context
     data = build_evidence(source, session.config)
     session.evidence_data = data
     return _summarize_evidence(data)
@@ -367,6 +371,8 @@ def t_finalize_plan(session: AgentSession, **_) -> dict:
     if not session.validation_data:
         return {"error": "call validate first"}
     payload = build_final_payload(session.validation_data, session.config, downstream_impact=session.downstream_impact)
+    if session.instrument_context:
+        payload.setdefault("data", [{}])[0]["instrument_context"] = session.instrument_context
     session.final_payload = payload
     return _summarize_payload(payload)
 
@@ -412,6 +418,52 @@ def t_analyze_downstream_impact(session: AgentSession, **_) -> dict:
     return _summarize_downstream_impact(result)
 
 
+def t_analyze_instrument_context(session: AgentSession, **_) -> dict:
+    """Analyze HILT/STLM instruments relevant to the selected equipment.
+    Requires resolve_bboxes. The result is advisory SOP context only; it must not
+    change assurance status or be treated as proof of isolation."""
+    source = session.bbox_data or session.validation_data
+    if not source:
+        return {"error": "call resolve_bboxes first"}
+    result = _analyze_instrument_context(source, session.config)
+    session.instrument_context = result
+    for target in (session.bbox_data, session.evidence_data, session.planner_data, session.validation_data):
+        if target is not None:
+            target["instrument_context"] = result
+    if session.final_payload:
+        session.final_payload.setdefault("data", [{}])[0]["instrument_context"] = result
+    return _summarize_instrument_context(result)
+
+
+def _summarize_instrument_context(result: dict) -> dict:
+    instruments = result.get("instruments") or []
+    checks = result.get("checks") or {}
+    return {
+        "status": result.get("status"),
+        "error": result.get("error"),
+        "policy": result.get("policy"),
+        "instrument_count": len(instruments),
+        "check_counts": {key: len(value or []) for key, value in checks.items()},
+        "instruments": [
+            {
+                "tag": item.get("tag"),
+                "prefix": item.get("prefix"),
+                "name": item.get("name"),
+                "measured_variable": item.get("measured_variable"),
+                "instrument_type": item.get("instrument_type"),
+                "path_hops": item.get("path_hops"),
+            }
+            for item in instruments[:12]
+        ],
+        "top_checks": [
+            {"group": group, "tag": check.get("tag"), "action": _short(check.get("action"), 180)}
+            for group, rows in checks.items()
+            for check in (rows or [])[:3]
+        ][:10],
+        "note": "Advisory SOP context only. Do not use instruments to upgrade assurance_status.",
+    }
+
+
 def _summarize_downstream_impact(result: dict) -> dict:
     debug = result.get("debug") or {}
     warnings = result.get("warnings") or []
@@ -419,8 +471,8 @@ def _summarize_downstream_impact(result: dict) -> dict:
         "status": result.get("status"),
         "error": result.get("error"),
         "warning_count": len(warnings),
-        "likely_count": sum(1 for item in warnings if item.get("severity") == "likely"),
-        "possible_count": sum(1 for item in warnings if item.get("severity") == "possible"),
+        "likely_count": sum(1 for item in warnings if item.get("severity") == ImpactSeverity.LIKELY.value),
+        "possible_count": sum(1 for item in warnings if item.get("severity") == ImpactSeverity.POSSIBLE.value),
         "unknown_flow_path_count": debug.get("unknown_flow_path_count"),
         "top_warnings": [
             {
@@ -448,6 +500,8 @@ def t_build_loto_procedure(session: AgentSession, **_) -> dict:
     source = session.validation_data or session.planner_data or session.evidence_data
     if not source:
         return {"error": "call validate first"}
+    if session.instrument_context:
+        source["instrument_context"] = session.instrument_context
     procedure = _build_loto_procedure(source, session.config, isolation_order=session.isolation_order)
     session.loto_procedure = procedure
     return _summarize_loto(procedure)
@@ -471,6 +525,8 @@ def t_set_isolation_order(session: AgentSession, ordered_uuids: list | None = No
     # Rebuild the procedure immediately so the order is reflected.
     if session.loto_procedure is not None and (session.validation_data or session.evidence_data):
         source = session.validation_data or session.evidence_data
+        if session.instrument_context:
+            source["instrument_context"] = session.instrument_context
         session.loto_procedure = _build_loto_procedure(source, session.config, isolation_order=ordered)
     return {
         "accepted_order": ordered,
@@ -604,6 +660,16 @@ TOOL_SPECS: list[dict] = [
         ),
         "parameters": {"type": "object", "properties": {}, "required": []},
         "fn": t_build_evidence,
+    },
+    {
+        "name": "analyze_instrument_context",
+        "description": (
+            "Run deterministic instrument-context analysis over HILT/STLM for the selected equipment. "
+            "Requires resolve_bboxes. Returns compact counts and top advisory checks for PI/LI/PT/LT/"
+            "controllers/alarms. This context improves the SOP but must NOT change assurance_status."
+        ),
+        "parameters": {"type": "object", "properties": {}, "required": []},
+        "fn": t_analyze_instrument_context,
     },
     {
         "name": "validate",

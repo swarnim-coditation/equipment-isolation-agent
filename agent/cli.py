@@ -28,6 +28,7 @@ from config import (
     IsolationPolicy,
     RunConfig,
     WorkScope,
+    apply_graph_env,
     apply_project_profile,
     load_project_profile,
 )
@@ -64,7 +65,7 @@ def parse_args():
         help=f"Gemini model (default: {DEFAULT_MODEL}; override via GEMINI_MODEL env or --model)",
     )
     parser.add_argument("--max-steps", type=int, default=16, help="Cap on agent tool-calling iterations")
-    parser.add_argument("--max-depth", type=int, default=3)
+    parser.add_argument("--max-depth", type=int, default=None)
     parser.add_argument("--output-dir", default="/tmp/eia_agent")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")
     parser.add_argument("--non-intrusive", action="store_true")
@@ -100,7 +101,7 @@ def build_config(args) -> RunConfig:
                 auth_token=args.auth_token,
                 verify_ssl=True,
             ),
-            policy=IsolationPolicy(max_traversal_depth=args.max_depth),
+            policy=IsolationPolicy(),
             work_scope=WorkScope(
                 intrusive_work=not args.non_intrusive,
                 high_risk_service=not args.not_high_risk,
@@ -109,12 +110,13 @@ def build_config(args) -> RunConfig:
         ),
         profile,
     )
+    env_graph = apply_graph_env(config.graph)
     graph = replace(
-        config.graph,
-        host=args.host or config.graph.host,
-        port=args.port or config.graph.port,
-        project_id=args.project_id or config.graph.project_id,
-        traversal_source_name=args.traversal_source or config.graph.traversal_source_name,
+        env_graph,
+        host=args.host or env_graph.host,
+        port=args.port or env_graph.port,
+        project_id=args.project_id or env_graph.project_id,
+        traversal_source_name=args.traversal_source or env_graph.traversal_source_name,
     )
     return replace(
         config,
@@ -130,7 +132,7 @@ def build_config(args) -> RunConfig:
             auth_token=args.auth_token,
             verify_ssl=True,
         ),
-        policy=IsolationPolicy(max_traversal_depth=args.max_depth),
+        policy=replace(config.policy, max_traversal_depth=args.max_depth) if args.max_depth is not None else config.policy,
         work_scope=WorkScope(
             intrusive_work=not args.non_intrusive,
             high_risk_service=not args.not_high_risk,
@@ -228,6 +230,8 @@ def main():
 
     if session.loto_procedure:
         final_payload.setdefault("data", [{}])[0].setdefault("loto_procedure", session.loto_procedure)
+    if session.instrument_context:
+        final_payload.setdefault("data", [{}])[0].setdefault("instrument_context", session.instrument_context)
 
     image_url = args.image_url
     if not image_url:

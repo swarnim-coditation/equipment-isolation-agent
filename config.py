@@ -1,4 +1,5 @@
 import json
+import os
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
@@ -20,6 +21,8 @@ class GraphConfig:
     port: str = "18182"
     project_id: str = "9"
     traversal_source_name: str = ""
+    username: str = ""
+    password: str = ""
 
     @property
     def gremlin_url(self) -> str:
@@ -45,20 +48,47 @@ class IsolationPolicy:
     traversal_limit_per_depth: int = 200
     eligible_classes: tuple[str, ...] = (
         "valve",
+        "generic_inline_valve",
         "gate_valve",
         "ball_valve",
         "globe_valve",
-        "check_valve",
-        "control_valve",
         "blind",
         "spade",
         "flange",
+        "blank_flange",
+        "line_break_point",
         "breaker",
         "disconnect",
     )
-    excluded_classes: tuple[str, ...] = ("equipment", "pump", "tank", "vessel", "line", "pipe")
-    conditional_classes: tuple[str, ...] = ("check_valve", "control_valve")
+    excluded_classes: tuple[str, ...] = (
+        "equipment",
+        "pump",
+        "tank",
+        "vessel",
+        "line",
+        "pipe",
+        "instrument",
+        "instrument_loop",
+        "instrument_loops",
+        "locally_mounted_instrument",
+        "dcs_function_in_control_room",
+        "alarm",
+    )
+    conditional_classes: tuple[str, ...] = ("check_valve", "control_valve", "undefined_valve")
     include_conditional_candidates: bool = False
+    positive_isolation_classes: tuple[str, ...] = (
+        "blind",
+        "spade",
+        "spectacle",
+        "flange",
+        "blank_flange",
+        "line_break_point",
+        "disconnect",
+        "breaker",
+        "spool",
+    )
+    verification_classes: tuple[str, ...] = ("bleed", "vent", "drain", "gauge", "indicator", "test_point")
+    verification_tag_prefixes: tuple[str, ...] = ("pi", "pg")
     candidate_edge_labels: tuple[str, ...] = (
         "HAS_A",
         "STARTS_AT",
@@ -94,6 +124,7 @@ class RunConfig:
     job_name: str = ""
     job_id: str = ""
     cnvrt_project_id: str = ""
+    unigraph_api_base_url: str = "https://api.plant360.ai/plantgraph"
     job_ids_by_name: dict[str, str] = field(default_factory=dict)
     collection_id: str = "196"
     collection_name: str = "Unit"
@@ -139,6 +170,10 @@ def load_project_profile(config_path="", profile_name=""):
     if selected not in profiles:
         raise ValueError(f"project profile {selected!r} not found in {path}")
     profile = dict(profiles[selected] or {})
+    policy = dict(payload.get("isolation_policy") or {})
+    policy.update(profile.get("isolation_policy") or {})
+    if policy:
+        profile["isolation_policy"] = policy
     profile["profile_name"] = selected
     profile["profile_path"] = str(path)
     return profile
@@ -155,11 +190,74 @@ def apply_project_profile(config, profile):
         project_id=str(profile.get("unigraph_project_id") or profile.get("project_id") or config.graph.project_id),
         traversal_source_name=str(graph_data.get("traversal_source") or config.graph.traversal_source_name),
     )
+    policy = _apply_policy_profile(config.policy, profile.get("isolation_policy") or {})
     return replace(
         config,
         cnvrt_project_id=str(profile.get("cnvrt_project_id") or config.cnvrt_project_id),
+        unigraph_api_base_url=str(profile.get("unigraph_api_base_url") or config.unigraph_api_base_url),
         collection_id=str(profile.get("collection_id") or config.collection_id),
         collection_name=str(profile.get("collection_name") or config.collection_name),
         job_ids_by_name={str(k): str(v) for k, v in (profile.get("job_ids_by_name") or {}).items()},
         graph=graph,
+        policy=policy,
     )
+
+
+def apply_graph_env(graph):
+    updates = {}
+    url = os.environ.get("JANUSGRAPH_URL", "").strip()
+    if url:
+        host, port = _parse_janusgraph_url(url)
+        if host:
+            updates["host"] = host
+        if port:
+            updates["port"] = port
+    username = os.environ.get("JANUSGRAPH_USERNAME", "").strip()
+    password = os.environ.get("JANUSGRAPH_PASSWORD", "").strip()
+    if username:
+        updates["username"] = username
+    if password:
+        updates["password"] = password
+    return replace(graph, **updates) if updates else graph
+
+
+def _parse_janusgraph_url(url):
+    value = url.strip()
+    for prefix in ("ws://", "wss://", "http://", "https://"):
+        if value.startswith(prefix):
+            value = value[len(prefix) :]
+            break
+    value = value.removesuffix("/gremlin").rstrip("/")
+    if ":" not in value:
+        return value, ""
+    host, port = value.rsplit(":", 1)
+    return host.strip(), port.strip()
+
+
+def _apply_policy_profile(policy, policy_data):
+    if not policy_data:
+        return policy
+    fields = {
+        "max_traversal_depth": int,
+        "traversal_limit_per_depth": int,
+        "eligible_classes": tuple,
+        "excluded_classes": tuple,
+        "conditional_classes": tuple,
+        "include_conditional_candidates": bool,
+        "positive_isolation_classes": tuple,
+        "verification_classes": tuple,
+        "verification_tag_prefixes": tuple,
+        "candidate_edge_labels": tuple,
+    }
+    updates = {}
+    for key, caster in fields.items():
+        if key not in policy_data:
+            continue
+        value = policy_data[key]
+        if caster is tuple:
+            updates[key] = tuple(str(item).strip().lower() for item in (value or []) if str(item).strip())
+        elif caster is bool:
+            updates[key] = bool(value)
+        else:
+            updates[key] = caster(value)
+    return replace(policy, **updates)

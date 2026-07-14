@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from typing import Any
 
 from api_client import Plant360Client
+from domain.enums import FlowRole, ImpactSeverity
+from domain.models import BBox, DownstreamImpactWarning
 
 
 PROCESS_LINE_CLASSES = {
@@ -23,8 +25,8 @@ PROCESS_LINE_CLASSES = {
 
 MAX_IMPACT_HOPS = 24
 
-LIKELY = "likely"
-POSSIBLE = "possible"
+LIKELY = ImpactSeverity.LIKELY.value
+POSSIBLE = ImpactSeverity.POSSIBLE.value
 
 EQUIPMENT_CLASSES = {
     "vessel",
@@ -272,12 +274,12 @@ def _downstream_starts(candidate: dict, candidate_node: str, graph: ProcessGraph
     for neighbor in graph.undirected.get(candidate_node, set()):
         if neighbor in graph.likely.get(candidate_node, set()):
             starts.append((neighbor, LIKELY))
-        elif role == "inlet" and neighbor in source_neighbors:
+        elif role == FlowRole.INLET.value and neighbor in source_neighbors:
             starts.append((neighbor, POSSIBLE))
         elif neighbor not in source_neighbors:
             starts.append((neighbor, POSSIBLE))
     if not starts:
-        if role == "inlet" and source_neighbors:
+        if role == FlowRole.INLET.value and source_neighbors:
             starts.extend((neighbor, POSSIBLE) for neighbor in source_neighbors)
         else:
             external = [neighbor for neighbor in graph.undirected.get(candidate_node, set()) if neighbor not in source_neighbors]
@@ -397,25 +399,26 @@ def _impact_classification(node: dict | None) -> dict | None:
 def _warning(candidate: dict, item: dict, y_flip: float | None = None) -> dict:
     node = item.get("node") or {}
     affected_tag = _node_tag(node) or item.get("node_id")
-    severity = item["severity"]
-    return {
-        "severity": severity,
-        "source_candidate_id": str(candidate.get("candidate_id") or ""),
-        "source_candidate_tag": candidate.get("tag_number"),
-        "source_tag": _source_tag(candidate),
-        "affected_tag": affected_tag,
-        "affected_id": item.get("node_id"),
-        "affected_bbox": _node_bbox(node, y_flip),
-        "affected_class": item.get("affected_class"),
-        "affected_type": item.get("affected_type"),
-        "impact_type": item.get("impact_type"),
-        "basis": (
+    severity = ImpactSeverity(str(item["severity"]))
+    warning = DownstreamImpactWarning(
+        severity=severity,
+        source_candidate_id=str(candidate.get("candidate_id") or ""),
+        source_tag=_source_tag(candidate),
+        affected_tag=str(affected_tag or ""),
+        affected_id=str(item.get("node_id") or ""),
+        affected_bbox=BBox.from_any(_node_bbox(node, y_flip)),
+        affected_class=str(item.get("affected_class") or ""),
+        affected_type=str(item.get("affected_type") or ""),
+        impact_type=str(item.get("impact_type") or ""),
+        basis=(
             "reachable via one-way/arrow-grounded HILT process-line graph"
-            if severity == LIKELY
+            if severity == ImpactSeverity.LIKELY
             else "reachable via HILT process-line graph with unknown or weak flow direction"
         ),
-        "path_hops": item.get("path_hops"),
-    }
+        path_hops=int(item.get("path_hops") or 0),
+    ).to_dict()
+    warning["source_candidate_tag"] = candidate.get("tag_number")
+    return warning
 
 
 def _source_tag(candidate: dict) -> str:

@@ -26,6 +26,7 @@ class AgentSession:
         self.planner_data: dict | None = None
         self.validation_data: dict | None = None
         self.downstream_impact: dict | None = None
+        self.instrument_context: dict | None = None
         self.final_payload: dict | None = None
         self.loto_procedure: dict | None = None
         self.isolation_order: list | None = None

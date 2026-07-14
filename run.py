@@ -16,6 +16,7 @@ from config import (
     JOB_IDS_BY_NAME,
     RunConfig,
     WorkScope,
+    apply_graph_env,
     apply_project_profile,
     load_project_profile,
 )
@@ -23,12 +24,14 @@ from evidence import build_evidence
 from graph_client import GraphClient, normalize_vertex, props_only, vertex_id
 from image import resolve_pid_image
 from impact import analyze_downstream_impact
+from instrument_context import analyze_instrument_context
 from job_resolver import resolve_job_from_boundary
 from loto import build_loto_procedure
 from obligations import analyze_isolation_obligations
 from output import build_final_payload, write_json, write_viewer
 from planner import plan_requests
 from api_client import Plant360Client
+from unigraph_metadata import enrich_config_from_unigraph
 from validator import validate
 
 
@@ -68,9 +71,10 @@ def parse_args():
     parser.add_argument("--collection-id", default="", help="Override CNVRT collection id")
     parser.add_argument("--collection-name", default="", help="Override CNVRT collection name")
     parser.add_argument("--api-base-url", default="https://api.plant360.ai:8080")
+    parser.add_argument("--unigraph-api-base-url", default="")
     parser.add_argument("--auth-token", default=os.environ.get("PLANT360_AUTH_TOKEN", ""))
     parser.add_argument("--no-verify-ssl", action="store_true")
-    parser.add_argument("--max-depth", type=int, default=3)
+    parser.add_argument("--max-depth", type=int, default=None)
     parser.add_argument("--output-dir", default="/tmp/eia")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")
     parser.add_argument("--non-intrusive", action="store_true")
@@ -104,21 +108,23 @@ def build_config(args):
                 auth_token=args.auth_token,
                 verify_ssl=not args.no_verify_ssl,
             ),
-            policy=IsolationPolicy(max_traversal_depth=args.max_depth),
+            policy=IsolationPolicy(),
             work_scope=WorkScope(
                 intrusive_work=not args.non_intrusive,
                 high_risk_service=not args.not_high_risk,
             ),
             output_dir=Path(args.output_dir),
+            unigraph_api_base_url=args.unigraph_api_base_url or RunConfig(equipment_tag=args.equipment).unigraph_api_base_url,
         ),
         profile,
     )
+    env_graph = apply_graph_env(config.graph)
     graph = replace(
-        config.graph,
-        host=args.host or config.graph.host,
-        port=args.port or config.graph.port,
-        project_id=args.project_id or config.graph.project_id,
-        traversal_source_name=args.traversal_source or config.graph.traversal_source_name,
+        env_graph,
+        host=args.host or env_graph.host,
+        port=args.port or env_graph.port,
+        project_id=args.project_id or env_graph.project_id,
+        traversal_source_name=args.traversal_source or env_graph.traversal_source_name,
     )
     return replace(
         config,
@@ -126,6 +132,7 @@ def build_config(args):
         job_name=args.job_name,
         job_id=args.job_id,
         cnvrt_project_id=args.cnvrt_project_id or config.cnvrt_project_id,
+        unigraph_api_base_url=args.unigraph_api_base_url or config.unigraph_api_base_url,
         collection_id=args.collection_id or config.collection_id,
         collection_name=args.collection_name or config.collection_name,
         graph=graph,
@@ -134,7 +141,7 @@ def build_config(args):
             auth_token=args.auth_token,
             verify_ssl=not args.no_verify_ssl,
         ),
-        policy=IsolationPolicy(max_traversal_depth=args.max_depth),
+        policy=replace(config.policy, max_traversal_depth=args.max_depth) if args.max_depth is not None else config.policy,
         work_scope=WorkScope(
             intrusive_work=not args.non_intrusive,
             high_risk_service=not args.not_high_risk,
@@ -193,6 +200,18 @@ def add_equipment_jobs(items, api_config, job_ids_by_name=None):
     return items
 
 
+def add_equipment_jobs_from_metadata(items, job_ids_by_name):
+    if not items or not job_ids_by_name:
+        return items
+    by_name = {str(name).strip().lower(): (str(name), str(job_id)) for name, job_id in job_ids_by_name.items()}
+    for item in items:
+        job = by_name.get(str(item.get("job_name") or "").strip().lower())
+        if job:
+            item["job_name"] = job[0]
+            item["job_id"] = job[1]
+    return items
+
+
 def print_equipment(items):
     print(f"equipment_count={len(items)}")
     if not items:
@@ -240,10 +259,39 @@ def _raise_fatal_job_resolution(config, job_debug):
     )
 
 
+def _raise_fatal_project_metadata(config, metadata_debug):
+    message = metadata_debug.get("error") or "Project metadata resolution failed."
+    raise RuntimeError(
+        "Configured project metadata failed for "
+        f"equipment {config.equipment_tag or '-'}; "
+        f"unigraph_project_id={config.graph.project_id or '-'}; "
+        f"cnvrt_project_id={config.cnvrt_project_id or '-'}; "
+        f"collection_id={config.collection_id or '-'}; "
+        f"reason={message}"
+    )
+
+
+def resolve_project_metadata(config):
+    config, metadata_debug = enrich_config_from_unigraph(config)
+    if metadata_debug.get("fatal"):
+        _raise_fatal_project_metadata(config, metadata_debug)
+    return config, metadata_debug
+
+
 def run(config, image_url=""):
     config.output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info("[1/12] Fetching equipment boundary from JanusGraph")
+    logger.info("[1/14] Resolving Unigraph project metadata")
+    config, metadata_debug = resolve_project_metadata(config)
+    logger.info(
+        "      metadata_status=%s jobs=%s project=%s collection=%s",
+        metadata_debug.get("status"),
+        metadata_debug.get("job_count"),
+        config.graph.project_id or "-",
+        config.collection_id or "-",
+    )
+
+    logger.info("[2/14] Fetching equipment boundary from JanusGraph")
     boundary_data = fetch_boundaries(config)
     config, job_debug = resolve_job_from_boundary(config, boundary_data)
     boundary_data["context"] = config.context
@@ -258,7 +306,9 @@ def run(config, image_url=""):
         config.resolved_job_id or "-",
     )
 
-    logger.info("[2/12] Selecting deterministic isolation candidates")
+    boundary_data.setdefault("debug", {})["unigraph_metadata"] = metadata_debug
+
+    logger.info("[3/14] Selecting deterministic isolation candidates")
     candidate_data = find_candidates(boundary_data, config.policy)
     logger.info(
         "      candidates=%s raw_candidates=%s",
@@ -276,7 +326,7 @@ def run(config, image_url=""):
             config.resolved_job_id,
         )
 
-    logger.info("[3/12] Resolving candidate bboxes from STLM")
+    logger.info("[4/14] Resolving candidate bboxes from STLM/HILT")
     bbox_data = resolve_bboxes(candidate_data, config)
     logger.info(
         "      bbox_resolved=%s stlm_symbols=%s",
@@ -284,7 +334,7 @@ def run(config, image_url=""):
         (bbox_data.get("debug") or {}).get("bbox_stlm_symbol_count"),
     )
 
-    logger.info("[4/12] Analyzing isolation obligations")
+    logger.info("[5/14] Analyzing isolation obligations")
     bbox_data = analyze_isolation_obligations(bbox_data, config)
     obligation_summary = ((bbox_data.get("isolation_obligations") or {}).get("summary") or {})
     logger.info(
@@ -294,7 +344,18 @@ def run(config, image_url=""):
         obligation_summary.get("manual_candidate_count"),
     )
 
-    logger.info("[5/12] Classifying deterministic evidence")
+    logger.info("[6/14] Analyzing instrument context")
+    instrument_context = analyze_instrument_context(bbox_data, config)
+    bbox_data["instrument_context"] = instrument_context
+    bbox_data.setdefault("debug", {})["instrument_context_status"] = instrument_context.get("status")
+    bbox_data.setdefault("debug", {})["instrument_context_count"] = len(instrument_context.get("instruments") or [])
+    logger.info(
+        "      instrument_status=%s instruments=%s",
+        instrument_context.get("status"),
+        len(instrument_context.get("instruments") or []),
+    )
+
+    logger.info("[7/14] Classifying deterministic evidence")
     evidence_data = build_evidence(bbox_data, config)
     evidence_debug = evidence_data.get("debug") or {}
     logger.info(
@@ -304,14 +365,14 @@ def run(config, image_url=""):
         evidence_debug.get("evidence_verification_candidate_count"),
     )
 
-    logger.info("[6/12] Planning required evidence checks")
+    logger.info("[8/14] Planning required evidence checks")
     planner_data = plan_requests(evidence_data, config)
     logger.info(
         "      required_checks=%s",
         (planner_data.get("debug") or {}).get("planner_required_evidence_check_count"),
     )
 
-    logger.info("[7/12] Validating isolation assurance")
+    logger.info("[9/14] Validating isolation assurance")
     validation_data = validate(planner_data)
     logger.info(
         "      assurance_status=%s terminal=%s",
@@ -319,7 +380,7 @@ def run(config, image_url=""):
         (validation_data.get("isolation_validation") or {}).get("terminal"),
     )
 
-    logger.info("[8/12] Analyzing downstream impact from selected barriers")
+    logger.info("[10/14] Analyzing downstream impact from selected barriers")
     downstream_impact = analyze_downstream_impact(validation_data, config)
     impact_debug = downstream_impact.get("debug") or {}
     logger.info(
@@ -328,7 +389,9 @@ def run(config, image_url=""):
         impact_debug.get("warning_count"),
     )
 
-    logger.info("[9/12] Building deterministic LOTO procedure")
+    validation_data["instrument_context"] = instrument_context
+
+    logger.info("[11/14] Building deterministic LOTO procedure")
     loto_procedure = build_loto_procedure(validation_data, config)
     logger.info(
         "      loto_steps=%s order_source=%s",
@@ -336,15 +399,16 @@ def run(config, image_url=""):
         loto_procedure.get("within_phase_order_source"),
     )
 
-    logger.info("[10/12] Building final UI JSON payload")
+    logger.info("[12/14] Building final UI JSON payload")
     final_payload = build_final_payload(validation_data, config, downstream_impact=downstream_impact)
+    final_payload.setdefault("debug", {})["unigraph_metadata"] = metadata_debug
     final_payload.setdefault("data", [{}])[0]["loto_procedure"] = loto_procedure
 
     stem = config.equipment_tag.replace("/", "_").replace(" ", "_")
     output_json = config.output_dir / f"{stem}.json"
     viewer_html = config.output_dir / f"{stem}.html"
     if not image_url:
-        logger.info("[11/12] Downloading P&ID image from Plant360 API")
+        logger.info("[13/14] Downloading P&ID image from Plant360 API")
         image_url, image_debug = resolve_pid_image(config, config.output_dir, stem)
         final_payload.setdefault("debug", {}).update(image_debug)
         logger.info(
@@ -353,9 +417,9 @@ def run(config, image_url=""):
             image_debug.get("pid_image_bytes"),
         )
     else:
-        logger.info("[11/12] Using provided P&ID image URL")
+        logger.info("[13/14] Using provided P&ID image URL")
 
-    logger.info("[12/12] Writing JSON output and HTML viewer")
+    logger.info("[14/14] Writing JSON output and HTML viewer")
     write_json(output_json, final_payload)
     write_viewer(viewer_html, final_payload, image_url=image_url)
     return output_json, viewer_html, final_payload
@@ -366,7 +430,15 @@ def main():
     configure_logging(args.quiet)
     config = build_config(args)
     if args.list_equipment:
+        config, metadata_debug = resolve_project_metadata(config)
+        if not args.quiet:
+            logger.info(
+                "metadata_status=%s jobs=%s",
+                metadata_debug.get("status"),
+                metadata_debug.get("job_count"),
+            )
         items = list_equipment(config.graph, args.equipment_limit)
+        add_equipment_jobs_from_metadata(items, config.job_ids_by_name)
         add_equipment_jobs(
             items,
             config.api,

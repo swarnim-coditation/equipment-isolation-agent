@@ -1,3 +1,6 @@
+from domain.enums import ObligationStatus, SourceType
+
+
 HILT_PROCESS_LINE_CLASSES = {"primary_process_line", "secondary_process_line", "main_process_line", "process_line"}
 HILT_CONTEXT_LINE_CLASSES = {
     "piping_to_instrument_line",
@@ -18,10 +21,50 @@ def analyze_isolation_obligations(candidate_data, config):
     debug = candidate_data.get("debug") or {}
     candidates = candidate_data.get("candidates") or []
     candidate_pool = candidate_data.get("_candidate_pool") or candidates
-    selected_ids = {_norm(candidate.get("candidate_id")) for candidate in candidates if candidate.get("candidate_id")}
+    selected_ids = {
+        _norm(value)
+        for candidate in candidates
+        for value in (candidate.get("candidate_id"), candidate.get("visual_id"))
+        if value
+    }
     pool_by_source = _pool_by_source(candidate_pool)
     items = []
     seen_sources = set()
+
+    for source in candidate_data.get("hilt_branch_obligations") or []:
+        source_key = _source_key_from_item(
+            {
+                "equipment_tag": source.get("equipment_tag"),
+                "source_component": source.get("source_component"),
+                "source_component_tag": source.get("source_component_tag"),
+            }
+        )
+        if not source_key:
+            continue
+        seen_sources.add(source_key)
+        for branch in source.get("branches") or []:
+            valve = branch.get("valve") or {}
+            selected_for_branch = [str(valve.get("valve_id"))] if branch.get("status") == ObligationStatus.ISOLATED.value and valve.get("valve_id") else []
+            manual_candidates = []
+            items.append(
+                {
+                    "equipment_tag": source_key[0],
+                    "source_component": source_key[1],
+                    "source_component_tag": source.get("source_component_tag") or source_key[1],
+                    "source_visual_id": source.get("source_visual_id"),
+                    "source_type": SourceType.PROCESS.value,
+                    "status": branch.get("status") or ObligationStatus.UNRESOLVED.value,
+                    "selected_candidate_ids": selected_for_branch,
+                    "manual_candidates": manual_candidates,
+                    "manual_candidate_count": len(manual_candidates),
+                    "branch_id": branch.get("branch_id"),
+                    "branch_index": branch.get("branch_index"),
+                    "branch_path_node_ids": branch.get("path_node_ids") or [],
+                    "branch_path_node_classes": branch.get("path_node_classes") or [],
+                    "branch_context_devices": branch.get("context_devices") or [],
+                    "basis": branch.get("basis") or "HILT branch-level process isolation obligation",
+                }
+            )
 
     for sample in debug.get("bbox_source_visual_selection_samples") or []:
         source_key = _source_key_from_item(sample)
@@ -35,8 +78,8 @@ def analyze_isolation_obligations(candidate_data, config):
                 "equipment_tag": source_key[0],
                 "source_component": source_key[1],
                 "source_component_tag": _source_label(sample, pool_by_source.get(source_key) or []),
-                "source_type": "process",
-                "status": "isolated",
+                "source_type": SourceType.PROCESS.value,
+                "status": ObligationStatus.ISOLATED.value,
                 "selected_candidate_ids": selected_for_source,
                 "manual_candidates": manual_candidates,
                 "manual_candidate_count": len(manual_candidates),
@@ -49,22 +92,22 @@ def analyze_isolation_obligations(candidate_data, config):
         if not source_key or source_key in seen_sources:
             continue
         seen_sources.add(source_key)
-        line_kind = _line_kind(source.get("source_hilt_lines") or [])
+        line_kind = "context" if source.get("source_context_type") else _line_kind(source.get("source_hilt_lines") or [])
         source_pool = pool_by_source.get(source_key) or []
         shared_selected_ids = _selected_candidate_ids_for_source(source_pool, selected_ids)
         manual_candidates = _manual_candidates_for_source(source_pool, selected_ids)
-        source_type = "process" if line_kind != "context" else "instrument_context"
-        if source_type == "process" and shared_selected_ids:
-            status = "isolated"
+        source_type = SourceType.PROCESS if line_kind != "context" else SourceType.INSTRUMENT_CONTEXT
+        if source_type == SourceType.PROCESS and shared_selected_ids:
+            status = ObligationStatus.ISOLATED
         else:
-            status = "unresolved" if source_type == "process" else "context"
+            status = ObligationStatus.UNRESOLVED if source_type == SourceType.PROCESS else ObligationStatus.CONTEXT
         items.append(
             {
                 "equipment_tag": source_key[0],
                 "source_component": source_key[1],
                 "source_component_tag": source.get("source_component_tag") or source.get("source_component_tag_raw"),
-                "source_type": source_type,
-                "status": status,
+                "source_type": source_type.value,
+                "status": status.value,
                 "selected_candidate_ids": shared_selected_ids,
                 "manual_candidates": manual_candidates,
                 "manual_candidate_count": len(manual_candidates),
@@ -86,8 +129,8 @@ def analyze_isolation_obligations(candidate_data, config):
                 "equipment_tag": source_key[0],
                 "source_component": source_key[1],
                 "source_component_tag": context.get("source_component_tag"),
-                "source_type": "instrument_context",
-                "status": "context",
+                "source_type": SourceType.INSTRUMENT_CONTEXT.value,
+                "status": ObligationStatus.CONTEXT.value,
                 "selected_candidate_ids": [],
                 "manual_candidates": [],
                 "manual_candidate_count": 0,
@@ -95,8 +138,8 @@ def analyze_isolation_obligations(candidate_data, config):
             }
         )
 
-    process_items = [item for item in items if item.get("source_type") == "process"]
-    unresolved_items = [item for item in process_items if item.get("status") == "unresolved"]
+    process_items = [item for item in items if item.get("source_type") == SourceType.PROCESS.value]
+    unresolved_items = [item for item in process_items if item.get("status") == ObligationStatus.UNRESOLVED.value]
     manual_candidate_count = sum(len(item.get("manual_candidates") or []) for item in items)
     result = {
         "status": "completed",
@@ -104,9 +147,9 @@ def analyze_isolation_obligations(candidate_data, config):
         "summary": {
             "obligation_count": len(items),
             "process_obligation_count": len(process_items),
-            "isolated_count": sum(1 for item in process_items if item.get("status") == "isolated"),
+            "isolated_count": sum(1 for item in process_items if item.get("status") == ObligationStatus.ISOLATED.value),
             "unresolved_count": len(unresolved_items),
-            "context_count": sum(1 for item in items if item.get("status") == "context"),
+            "context_count": sum(1 for item in items if item.get("status") == ObligationStatus.CONTEXT.value),
             "manual_candidate_count": manual_candidate_count,
         },
         "debug": {
@@ -134,9 +177,10 @@ def _manual_candidates_for_source(items, selected_ids, include_selected=False, l
     seen = set()
     for candidate in sorted(items or [], key=_candidate_sort_key):
         candidate_id = _norm(candidate.get("candidate_id") or candidate.get("visual_id"))
+        candidate_keys = {_norm(value) for value in (candidate.get("candidate_id"), candidate.get("visual_id")) if value}
         if not candidate_id or candidate_id in seen:
             continue
-        if not include_selected and candidate_id in selected_ids:
+        if not include_selected and candidate_keys & selected_ids:
             continue
         bbox = _valid_bbox(candidate.get("bbox"))
         if not bbox:
@@ -164,7 +208,8 @@ def _selected_candidate_ids_for_source(items, selected_ids):
     seen = set()
     for candidate in sorted(items or [], key=_candidate_sort_key):
         candidate_id = _norm(candidate.get("candidate_id") or candidate.get("visual_id"))
-        if not candidate_id or candidate_id not in selected_ids or candidate_id in seen:
+        candidate_keys = {_norm(value) for value in (candidate.get("candidate_id"), candidate.get("visual_id")) if value}
+        if not candidate_id or not (candidate_keys & selected_ids) or candidate_id in seen:
             continue
         seen.add(candidate_id)
         result.append(str(candidate.get("candidate_id") or candidate.get("visual_id") or ""))
@@ -184,9 +229,9 @@ def _line_kind(lines):
 
 
 def _unselected_basis(status, line_kind):
-    if status == "context":
+    if status == ObligationStatus.CONTEXT:
         return "source lines are non-process instrument/context lines"
-    if status == "isolated":
+    if status == ObligationStatus.ISOLATED:
         return "source is covered by an isolation candidate selected for another boundary source"
     if line_kind == "unknown":
         return "source has no selected drawable isolation candidate; HILT line class is unknown"

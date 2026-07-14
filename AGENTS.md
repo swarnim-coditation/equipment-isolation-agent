@@ -103,6 +103,59 @@ context small. Every tool call is recorded in an audit trace (`<TAG>_trace.json`
 - Isolation policy: max depth 3, eligible classes (valves, blinds, flanges, breakers, disconnects)
 - Work scope defaults: intrusive=true, high_risk_service=true → requires positive isolation
 
+## Unigraph Backend Route Reference
+
+Local backend repo: `../../graph-convert`
+
+Route registration: `../../graph-convert/unigraph/api/routes.py`
+
+Main Flask route prefixes:
+
+```text
+/api/projects
+/api/projects/<project_id>/pnids
+/api/projects/<project_id>/collections
+/api/projects/<project_id>/graph-views
+/api/files
+/api/query
+/api/hitl
+/api/internal
+/api/processes
+/api/health
+```
+
+Useful routes for project/job/P&ID debugging:
+
+```text
+GET    /api/projects
+POST   /api/projects
+GET    /api/projects/<project_id>
+PUT    /api/projects/<project_id>
+DELETE /api/projects/<project_id>
+
+GET    /api/projects/by-cnvrt?cnvrt_project_id=<id>&cnvrt_collection_id=<id>
+GET    /api/projects/<project_id>/export-from-janusgraph
+POST   /api/projects/<project_id>/import-to-janusgraph
+
+GET    /api/projects/<project_id>/collections
+POST   /api/projects/<project_id>/collections
+GET    /api/projects/<project_id>/collections/<collection_id>/pnids
+GET    /api/projects/<project_id>/collections/<collection_id>/view/networkx
+
+GET    /api/projects/<project_id>/pnids/<pnid_id>/direction-review
+POST   /api/projects/<project_id>/pnids/<pnid_id>/links/<link_id>/direction
+
+POST   /api/query/<project_id>/execute
+
+GET    /api/projects/<project_id>/graph-views
+POST   /api/projects/<project_id>/graph-views
+GET    /api/projects/<project_id>/graph-views/<view_id>
+POST   /api/projects/<project_id>/graph-views/execute-query
+GET    /api/projects/<project_id>/graph-views/node/<cnvrt_id>
+```
+
+The `by-cnvrt` route is the likely entry point for mapping a CNVRT project/collection to Unigraph project metadata instead of hardcoding `unigraph_project_id`.
+
 ## Pipeline Steps (from run.py)
 
 1. Fetch equipment boundary from JanusGraph

@@ -1,5 +1,6 @@
 import json
 
+from domain.serialization import to_jsonable
 from viewer import render_viewer_html
 
 
@@ -11,6 +12,7 @@ def build_final_payload(validation_data, config, downstream_impact=None):
     boundary_context_sources = (validation_data.get("isolation_validation") or {}).get("boundary_context_sources") or validation_data.get("boundary_context_sources") or context_instruments
     selected_equipment_overlays = validation_data.get("selected_equipment_overlays") or []
     isolation_obligations = validation_data.get("isolation_obligations") or (validation_data.get("isolation_validation") or {}).get("isolation_obligations") or {}
+    instrument_context = validation_data.get("instrument_context") or {}
     isolation_points = []
     for candidate in candidates:
         properties = candidate.get("properties", {}) or {}
@@ -23,6 +25,18 @@ def build_final_payload(validation_data, config, downstream_impact=None):
                 "tag_number": candidate.get("tag_number"),
                 "energy_type": (candidate.get("energy_type") or ["process"])[0],
                 "isolation_method": candidate.get("isolation_method"),
+                "policy_decision": candidate.get("policy_decision") or (candidate.get("classification") or {}).get("decision"),
+                "requires_manual_review": bool(candidate.get("requires_manual_review")),
+                "source_component": candidate.get("source_component_id") or candidate.get("source_component_tag"),
+                "source_component_tag": candidate.get("source_component_tag"),
+                "source_visual_id": candidate.get("source_visual_id"),
+                "required_branch_isolation": bool(candidate.get("required_branch_isolation")),
+                "branch_id": candidate.get("branch_id"),
+                "branch_status": candidate.get("branch_status"),
+                "branch_basis": candidate.get("branch_basis"),
+                "branch_path_node_ids": candidate.get("branch_path_node_ids") or [],
+                "branch_path_node_classes": candidate.get("branch_path_node_classes") or [],
+                "branch_context_devices": candidate.get("branch_context_devices") or [],
                 "reason": f"{candidate.get('reason')}. Candidate vertex id: {candidate.get('candidate_id')}. Source component: {candidate.get('source_component_tag')}.",
             }
         )
@@ -50,17 +64,18 @@ def build_final_payload(validation_data, config, downstream_impact=None):
                 "isolation_points": isolation_points,
                 "isolation_obligations": isolation_obligations,
                 "downstream_impact": downstream_impact or validation_data.get("downstream_impact"),
+                "instrument_context": instrument_context,
             }
         ],
     }
 
 
 def write_json(path, payload):
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(to_jsonable(payload), indent=2) + "\n", encoding="utf-8")
 
 
 def write_viewer(path, payload, image_url=""):
-    path.write_text(render_viewer_html(payload, image_url=image_url), encoding="utf-8")
+    path.write_text(render_viewer_html(to_jsonable(payload), image_url=image_url), encoding="utf-8")
 
 
 def _int_or_text(value):

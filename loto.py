@@ -11,7 +11,8 @@ This is decision support for a POC, not a certified LOTO procedure.
 """
 from __future__ import annotations
 
-from evidence import BARRIER_KEYWORDS, POSITIVE_ENTITY_KEYWORDS
+from domain.enums import FlowRole
+from evidence import candidate_flags
 
 STANDARD = "29 CFR 1910.147"
 
@@ -26,10 +27,12 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     candidates = validation_data.get("candidates", []) or []
     evidence = validation_data.get("evidence_state") or {}
     validation = validation_data.get("isolation_validation") or {}
+    instrument_context = validation_data.get("instrument_context") or {}
+    instrument_checks = instrument_context.get("checks") or {}
     work_scope = (config.work_scope.__dict__ if hasattr(config.work_scope, "__dict__") else {})
     energy_types = sorted({(c.get("energy_type") or ["process"])[0] for c in candidates} or ["process"])
 
-    isolation_devices, positive_devices = _devices(candidates, BARRIER_KEYWORDS, POSITIVE_ENTITY_KEYWORDS)
+    isolation_devices, positive_devices = _devices(candidates, config.policy if hasattr(config, "policy") else None)
     relief_devices, verify_devices = _relief_and_verify(candidates)
     # NOTE: OSHA 1910.147 prescribes only the PHASE order, NOT the within-phase
     # device order. Resolution order:
@@ -37,7 +40,8 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     #   2. flow-grounded default (inlet/upstream first) from HILT-parsed flow direction
     #   3. engine candidate order (no flow data, agent has not proposed)
     has_known_flow = any(
-        d.get("source_flow_role") in ("inlet", "outlet", "bidirectional") for d in isolation_devices
+        d.get("source_flow_role") in (FlowRole.INLET.value, FlowRole.OUTLET.value, FlowRole.BIDIRECTIONAL.value)
+        for d in isolation_devices
     )
     if isolation_order:
         isolation_devices = _apply_order(isolation_devices, isolation_order)
@@ -53,12 +57,12 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     missing_evidence = validation.get("missing_evidence") or evidence.get("missing_evidence") or []
 
     phases = [
-        _phase_1_preparation(config, energy_types, work_scope, isolation_devices),
-        _phase_2_shutdown(),
+        _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks),
+        _phase_2_shutdown(instrument_checks),
         _phase_3_isolation(isolation_devices, positive_devices, order_source),
         _phase_4_lockout(isolation_devices, positive_devices),
-        _phase_5_stored_energy(relief_devices, evidence),
-        _phase_6_verification(verify_devices, evidence),
+        _phase_5_stored_energy(relief_devices, evidence, instrument_checks),
+        _phase_6_verification(verify_devices, evidence, instrument_checks),
     ]
 
     procedure = {
@@ -74,8 +78,9 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
         "phases": phases,
         "ordered_steps": _ordered_steps(phases),
         "release_from_loto_ref": "1910.147(e)",
-        "release_note": "On completion: inspect area, ensure personnel clear, verify controls neutral, "
-        "remove locks (reverse order), re-energize, notify affected employees.",
+        "release_note": _release_note(instrument_checks),
+        "restoration_checks": instrument_checks.get("restoration_reenergization") or [],
+        "instrument_context": instrument_context,
         "open_gaps": _open_gaps(missing_evidence, relief_devices, verify_devices),
     }
     return procedure
@@ -127,6 +132,9 @@ def _ordered_steps(phases: list) -> list:
             else:
                 n += 1
                 steps.append(_step(n, phase_num, ref, title, "Relieve stored/residual energy. FIELD GAP: no bleed/vent/drain on P&ID -- field-locate one.", field_gap=True))
+            for check in phase.get("instrument_checks") or []:
+                n += 1
+                steps.append(_step(n, phase_num, ref, title, _instrument_action(check), instrument=check))
         elif phase_num == 6:
             verifies = phase.get("verify_devices") or []
             if verifies:
@@ -136,21 +144,47 @@ def _ordered_steps(phases: list) -> list:
             else:
                 n += 1
                 steps.append(_step(n, phase_num, ref, title, "Verify isolation & de-energization. FIELD GAP: no gauge/test point on P&ID -- field-verify zero energy.", field_gap=True))
+            for check in phase.get("instrument_checks") or []:
+                n += 1
+                steps.append(_step(n, phase_num, ref, title, _instrument_action(check), instrument=check, advisory=True))
         else:
             n += 1
             steps.append(_step(n, phase_num, ref, title, f"{title}."))
+            for check in phase.get("instrument_checks") or []:
+                n += 1
+                steps.append(_step(n, phase_num, ref, title, _instrument_action(check), instrument=check, advisory=True))
     return steps
 
 
-def _step(n, phase, ref, title, action, device=None, field_gap=False):
+def _step(n, phase, ref, title, action, device=None, field_gap=False, instrument=None, advisory=False):
     step = {"step": n, "phase": phase, "ref": ref, "title": title, "action": action}
     if device:
         step["device_uuid"] = device.get("uuid")
         step["device_tag"] = device.get("tag")
         step["source"] = device.get("source_component")
+    if instrument:
+        step["instrument_id"] = instrument.get("instrument_id")
+        step["instrument_tag"] = instrument.get("tag")
+        step["instrument_type"] = instrument.get("instrument_type")
+        step["measured_variable"] = instrument.get("measured_variable")
+        for key in ("purpose", "interpretation", "acceptance_criteria", "limitation"):
+            if instrument.get(key):
+                step[key] = instrument.get(key)
+        step["advisory"] = True
     if field_gap:
         step["field_gap"] = True
+    if advisory:
+        step["advisory"] = True
     return step
+
+
+def _instrument_action(check):
+    action = str(check.get("action") or "").strip()
+    if not action:
+        action = f"Check {check.get('tag') or check.get('instrument_id')} as supporting instrument context."
+    if "supporting" not in action.lower() and "advisory" not in action.lower():
+        action = f"{action} Instrument context is advisory and does not prove isolation by itself."
+    return action
 
 
 def _device_action(phase_num, device):
@@ -162,14 +196,13 @@ def _device_action(phase_num, device):
     return f"{verb} {device.get('entity_class') or 'valve'} {tag} (source {source}{role_str})"
 
 
-def _devices(candidates, barrier_kw, positive_kw):
+def _devices(candidates, policy):
     isolation = []
     positive = []
     for candidate in candidates:
-        entity_text = _entity_text(candidate)
-        props = candidate.get("properties") or {}
-        is_barrier = any(kw in entity_text for kw in barrier_kw) or "close and lock" in str(candidate.get("isolation_method", "")).lower()
-        is_positive = any(kw in entity_text for kw in positive_kw)
+        flags = candidate_flags(candidate, policy)
+        is_barrier = flags["barrier"]
+        is_positive = flags["positive"]
         device = _device_summary(candidate)
         if is_positive:
             positive.append(device)
@@ -209,7 +242,12 @@ def _device_summary(candidate):
     }
 
 
-_FLOW_ROLE_RANK = {"inlet": 0, "bidirectional": 1, "outlet": 2, "unknown": 3}
+_FLOW_ROLE_RANK = {
+    FlowRole.INLET.value: 0,
+    FlowRole.BIDIRECTIONAL.value: 1,
+    FlowRole.OUTLET.value: 2,
+    FlowRole.UNKNOWN.value: 3,
+}
 
 
 def _flow_default_order(devices):
@@ -219,7 +257,7 @@ def _flow_default_order(devices):
     return sorted(devices, key=lambda d: (_FLOW_ROLE_RANK.get(d.get("source_flow_role"), 3), str(d.get("source_component") or "")))
 
 
-def _phase_1_preparation(config, energy_types, work_scope, isolation_devices):
+def _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks):
     requires_positive = any((work_scope or {}).get(k) for k in ("intrusive_work", "confined_space_entry", "hot_work", "high_risk_service"))
     return {
         "phase": 1,
@@ -234,10 +272,11 @@ def _phase_1_preparation(config, energy_types, work_scope, isolation_devices):
         "field_action_required": [
             "Confirm actual energy type and magnitude (pressure/temperature) at the equipment.",
         ],
+        "instrument_checks": instrument_checks.get("before_isolation") or [],
     }
 
 
-def _phase_2_shutdown():
+def _phase_2_shutdown(instrument_checks):
     return {
         "phase": 2,
         "ref": "1910.147(d)(2)",
@@ -248,6 +287,7 @@ def _phase_2_shutdown():
             "Follow the plant's established shutdown procedure for this equipment "
             "(not derivable from the P&ID graph). An orderly shutdown avoids additional hazard.",
         ],
+        "instrument_checks": instrument_checks.get("control_state") or [],
     }
 
 
@@ -286,7 +326,7 @@ def _phase_4_lockout(isolation_devices, positive_devices):
     }
 
 
-def _phase_5_stored_energy(relief_devices, evidence):
+def _phase_5_stored_energy(relief_devices, evidence, instrument_checks):
     has_relief = bool(relief_devices)
     return {
         "phase": 5,
@@ -299,10 +339,11 @@ def _phase_5_stored_energy(relief_devices, evidence):
             "field-verify a means to bleed/vent before beginning work, and continue monitoring if "
             "reaccumulation is possible (1910.147(d)(5)(ii)).",
         ],
+        "instrument_checks": instrument_checks.get("stored_energy_relief") or [],
     }
 
 
-def _phase_6_verification(verify_devices, evidence):
+def _phase_6_verification(verify_devices, evidence, instrument_checks):
     has_verify = bool(verify_devices)
     return {
         "phase": 6,
@@ -314,7 +355,23 @@ def _phase_6_verification(verify_devices, evidence):
             "NO pressure gauge / indicator / test point was found on the P&ID near the isolated section. "
             "Field-verify zero energy by an approved method before starting work.",
         ],
+        "instrument_checks": instrument_checks.get("verification_before_work") or [],
     }
+
+
+def _release_note(instrument_checks):
+    checks = instrument_checks.get("restoration_reenergization") or []
+    base = (
+        "On completion: inspect area, ensure personnel clear, verify controls neutral, "
+        "remove locks (reverse order), re-energize, notify affected employees."
+    )
+    if not checks:
+        return base
+    tags = ", ".join(str(check.get("tag") or check.get("instrument_id")) for check in checks[:6])
+    return (
+        f"{base} Before lock removal and after controlled re-energization, review supporting "
+        f"instrument indications/alarms ({tags}) for expected safe conditions."
+    )
 
 
 def _open_gaps(missing_evidence, relief_devices, verify_devices):

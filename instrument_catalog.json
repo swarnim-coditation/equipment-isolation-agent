@@ -1,0 +1,135 @@
+{
+  "version": "instrument_catalog_2026_07_v1",
+  "defaults": {
+    "evidence_policy": "advisory_only",
+    "relevance_scope": "hilt_connected"
+  },
+  "prefixes": {
+    "PG": {
+      "name": "pressure gauge",
+      "measured_variable": "pressure",
+      "instrument_type": "local_indicator",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "verification_support", "restoration_monitoring"],
+      "verification_note": "Local pressure indication supports zero-pressure verification but does not prove isolation by itself."
+    },
+    "PI": {
+      "name": "pressure indicator",
+      "measured_variable": "pressure",
+      "instrument_type": "local_indicator",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "verification_support", "restoration_monitoring"],
+      "verification_note": "Local pressure indication supports zero-pressure verification but does not prove isolation by itself."
+    },
+    "PT": {
+      "name": "pressure transmitter",
+      "measured_variable": "pressure",
+      "instrument_type": "transmitter",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "restoration_monitoring"],
+      "verification_note": "Remote pressure transmission is supporting context only unless site procedure accepts it."
+    },
+    "PIC": {
+      "name": "pressure indicating controller",
+      "measured_variable": "pressure",
+      "instrument_type": "controller",
+      "sop_uses": ["control_state"],
+      "verification_note": "Controller state is not an energy-isolating device and does not prove isolation."
+    },
+    "LG": {
+      "name": "level gauge",
+      "measured_variable": "level",
+      "instrument_type": "local_indicator",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "verification_support", "restoration_monitoring"],
+      "verification_note": "Level indication supports inventory/drain-down checks but does not prove zero pressure."
+    },
+    "LI": {
+      "name": "level indicator",
+      "measured_variable": "level",
+      "instrument_type": "local_indicator",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "verification_support", "restoration_monitoring"],
+      "verification_note": "Level indication supports inventory/drain-down checks but does not prove zero pressure."
+    },
+    "LT": {
+      "name": "level transmitter",
+      "measured_variable": "level",
+      "instrument_type": "transmitter",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "restoration_monitoring"],
+      "verification_note": "Remote level transmission is supporting context only unless site procedure accepts it."
+    },
+    "LIC": {
+      "name": "level indicating controller",
+      "measured_variable": "level",
+      "instrument_type": "controller",
+      "sop_uses": ["control_state"],
+      "verification_note": "Controller state is not an energy-isolating device and does not prove isolation."
+    },
+    "FI": {
+      "name": "flow indicator",
+      "measured_variable": "flow",
+      "instrument_type": "local_indicator",
+      "sop_uses": ["pre_isolation_reading", "verification_support", "restoration_monitoring"],
+      "verification_note": "No-flow indication is supporting context only and does not prove isolation."
+    },
+    "FT": {
+      "name": "flow transmitter",
+      "measured_variable": "flow",
+      "instrument_type": "transmitter",
+      "sop_uses": ["pre_isolation_reading", "restoration_monitoring"],
+      "verification_note": "Remote flow transmission is supporting context only."
+    },
+    "FIC": {
+      "name": "flow indicating controller",
+      "measured_variable": "flow",
+      "instrument_type": "controller",
+      "sop_uses": ["control_state"],
+      "verification_note": "Controller state is not an energy-isolating device and does not prove isolation."
+    },
+    "TI": {
+      "name": "temperature indicator",
+      "measured_variable": "temperature",
+      "instrument_type": "local_indicator",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "restoration_monitoring"],
+      "verification_note": "Temperature indication supports cooldown checks but does not prove process isolation."
+    },
+    "TT": {
+      "name": "temperature transmitter",
+      "measured_variable": "temperature",
+      "instrument_type": "transmitter",
+      "sop_uses": ["pre_isolation_reading", "stored_energy_monitoring", "restoration_monitoring"],
+      "verification_note": "Remote temperature transmission is supporting context only."
+    },
+    "TIC": {
+      "name": "temperature indicating controller",
+      "measured_variable": "temperature",
+      "instrument_type": "controller",
+      "sop_uses": ["control_state"],
+      "verification_note": "Controller state is not an energy-isolating device and does not prove isolation."
+    },
+    "PAH": {
+      "name": "pressure alarm high",
+      "measured_variable": "pressure",
+      "instrument_type": "alarm",
+      "sop_uses": ["alarm_context", "restoration_monitoring"],
+      "verification_note": "Alarm state is supporting context only."
+    },
+    "PAL": {
+      "name": "pressure alarm low",
+      "measured_variable": "pressure",
+      "instrument_type": "alarm",
+      "sop_uses": ["alarm_context", "restoration_monitoring"],
+      "verification_note": "Alarm state is supporting context only."
+    },
+    "LAH": {
+      "name": "level alarm high",
+      "measured_variable": "level",
+      "instrument_type": "alarm",
+      "sop_uses": ["alarm_context", "restoration_monitoring"],
+      "verification_note": "Alarm state is supporting context only."
+    },
+    "LAL": {
+      "name": "level alarm low",
+      "measured_variable": "level",
+      "instrument_type": "alarm",
+      "sop_uses": ["alarm_context", "restoration_monitoring"],
+      "verification_note": "Alarm state is supporting context only."
+    }
+  }
+}

@@ -33,6 +33,44 @@ class ObligationTests(unittest.TestCase):
         self.assertEqual(result["summary"]["manual_candidate_count"], 1)
         self.assertEqual(result["items"][0]["manual_candidates"][0]["uuid"], "valve-2")
 
+    def test_hilt_branch_obligations_are_first_class_and_exclude_selected_visual_ids(self):
+        data = analyze_isolation_obligations(
+            {
+                "candidates": [
+                    {"candidate_id": "uuid-valve-1", "visual_id": "uuid-valve-1"},
+                    {"candidate_id": "uuid-valve-2", "visual_id": "uuid-valve-2"},
+                ],
+                "_candidate_pool": [
+                    _candidate("source-1", "graph-valve-1", [10, 10, 20, 20], visual_id="uuid-valve-1"),
+                    _candidate("source-1", "graph-valve-2", [40, 10, 20, 20], visual_id="uuid-valve-2"),
+                    _candidate("source-1", "extra-valve", [80, 10, 20, 20]),
+                ],
+                "hilt_branch_obligations": [
+                    {
+                        "equipment_tag": "EQ-1",
+                        "source_component": "source-1",
+                        "source_component_tag": "N1_EQ1",
+                        "source_visual_id": "source-uuid",
+                        "branches": [
+                            {"status": "isolated", "branch_id": "b1", "valve": {"valve_id": "uuid-valve-1"}, "basis": "first branch valve"},
+                            {"status": "isolated", "branch_id": "b2", "valve": {"valve_id": "uuid-valve-2"}, "basis": "first branch valve"},
+                        ],
+                    }
+                ],
+                "debug": {},
+            },
+            config=None,
+        )
+
+        result = data["isolation_obligations"]
+        self.assertEqual(result["summary"]["process_obligation_count"], 2)
+        self.assertEqual(result["summary"]["isolated_count"], 2)
+        self.assertEqual(result["summary"]["manual_candidate_count"], 0)
+        self.assertEqual(result["items"][0]["branch_id"], "b1")
+        self.assertEqual(result["items"][1]["branch_id"], "b2")
+        self.assertEqual(result["items"][0]["manual_candidates"], [])
+        self.assertEqual(result["items"][1]["manual_candidates"], [])
+
     def test_unselected_process_source_is_unresolved(self):
         data = analyze_isolation_obligations(
             {
@@ -125,12 +163,13 @@ class ObligationTests(unittest.TestCase):
         self.assertEqual(item["source_type"], "instrument_context")
 
 
-def _candidate(source, candidate_id, bbox):
+def _candidate(source, candidate_id, bbox, visual_id=None):
     return {
         "equipment_tag": "EQ-1",
         "source_component_id": source,
         "source_component_tag": source,
         "candidate_id": candidate_id,
+        "visual_id": visual_id or candidate_id,
         "bbox": bbox,
         "candidate_label": "gate_valve",
         "traversal_depth": 1,

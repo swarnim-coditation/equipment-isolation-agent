@@ -1,0 +1,806 @@
+{
+  "equipment": {
+    "base_attributes": [
+      {
+        "attribute_name": "tag_number",
+        "description": "Unique equipment identifier from the Aker P&ID drawing.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "ATO01",
+        "notes": "Maps from drawing attribute 'tag'."
+      },
+      {
+        "attribute_name": "system_number",
+        "description": "System number associated with the equipment package or train.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "1EKG10",
+        "notes": "Maps from drawing attribute 'System Number'."
+      },
+      {
+        "attribute_name": "equipment_code",
+        "description": "Project equipment code where available.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "GT",
+        "notes": "Maps from drawing attribute 'Equipment Code'."
+      },
+      {
+        "attribute_name": "equipment_name",
+        "description": "Descriptive name of the equipment.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "ATO01",
+        "notes": "Maps from drawing attribute 'Equipment Name'."
+      },
+      {
+        "attribute_name": "equipment_type",
+        "description": "Equipment type stated in source data or inferred from taxonomy path.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Gas Turbine, Cartridge Filter",
+        "notes": "Maps from drawing attribute 'Type' when present."
+      },
+      {
+        "attribute_name": "location_area",
+        "description": "Plant area or module location for the equipment.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Area A",
+        "notes": "Maps from drawing attribute 'Location'."
+      },
+      {
+        "attribute_name": "process_function",
+        "description": "Process or package function performed by the equipment.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Transfer of crude oil",
+        "notes": "Maps from drawing attribute 'Function'."
+      },
+      {
+        "attribute_name": "capacity",
+        "description": "Rated or stated capacity of the equipment.",
+        "data_type": "Text",
+        "unit": "Varies",
+        "example_value": "500 cubic meters per hour",
+        "notes": "Keep source unit text when the unit is embedded in the value."
+      },
+      {
+        "attribute_name": "material",
+        "description": "Primary material of construction.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Stainless Steel",
+        "notes": "Maps from drawing attribute 'Material'."
+      },
+      {
+        "attribute_name": "manufacturer",
+        "description": "Equipment manufacturer.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "ABC Pumps",
+        "notes": "Maps from drawing attribute 'Manufacturer'."
+      },
+      {
+        "attribute_name": "installation_date",
+        "description": "Installation date from source data.",
+        "data_type": "Date",
+        "unit": "N/A",
+        "example_value": "January 2020",
+        "notes": "Source may be free text rather than ISO date."
+      },
+      {
+        "attribute_name": "maintenance_schedule",
+        "description": "Planned maintenance frequency or schedule.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Every 6 months",
+        "notes": "Maps from drawing attribute 'Maintenance Schedule'."
+      }
+    ],
+    "subtypes": {
+      "equipment.turbine": {
+        "base_attributes": [
+          {
+            "attribute_name": "turbine_type",
+            "description": "Type of turbine package.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Gas Turbine",
+            "notes": "Derived from taxonomy path."
+          },
+          {
+            "attribute_name": "driver_service",
+            "description": "Service driven by the turbine, when known.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "Compressor Drive, Generator Drive",
+            "notes": ""
+          },
+          {
+            "attribute_name": "rated_power",
+            "description": "Rated output power of the turbine package.",
+            "data_type": "Decimal",
+            "unit": "kW / MW",
+            "example_value": "25 MW",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "equipment.turbine.gas_turbine": {
+            "base_attributes": [
+              {
+                "attribute_name": "fuel_gas_system",
+                "description": "Fuel gas system or source connected to the gas turbine.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Fuel Gas Header",
+                "notes": ""
+              },
+              {
+                "attribute_name": "exhaust_system",
+                "description": "Exhaust or ventilation system associated with the turbine.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Exhaust Stack",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "gas_turbine"
+            ]
+          }
+        }
+      },
+      "equipment.filter": {
+        "base_attributes": [
+          {
+            "attribute_name": "filter_type",
+            "description": "Type of filter package.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Cartridge Filter",
+            "notes": "Derived from taxonomy path."
+          },
+          {
+            "attribute_name": "filtration_rating",
+            "description": "Filter rating.",
+            "data_type": "Decimal",
+            "unit": "micron",
+            "example_value": "10",
+            "notes": ""
+          },
+          {
+            "attribute_name": "design_flow_rate",
+            "description": "Design flow through the filter.",
+            "data_type": "Decimal",
+            "unit": "m3/h",
+            "example_value": "500",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "equipment.filter.cartridge_filter": {
+            "base_attributes": [
+              {
+                "attribute_name": "cartridge_material",
+                "description": "Material of the installed filter cartridges.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Stainless Steel",
+                "notes": ""
+              },
+              {
+                "attribute_name": "number_of_cartridges",
+                "description": "Number of cartridges in the filter housing.",
+                "data_type": "Integer",
+                "unit": "N/A",
+                "example_value": "6",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "cartridge_filter"
+            ]
+          }
+        }
+      },
+      "equipment.component": {
+        "base_attributes": [
+          {
+            "attribute_name": "tag_number",
+            "description": "Component tag or nozzle identifier.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "N1",
+            "notes": "Maps from drawing attribute 'tag'."
+          },
+          {
+            "attribute_name": "parent_equipment_tag",
+            "description": "Tag of the equipment to which the component belongs.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "ATO01",
+            "notes": "May be inferred from topology or containment."
+          }
+        ],
+        "subtypes": {
+          "equipment.component.equipment_nozzle": {
+            "base_attributes": [
+              {
+                "attribute_name": "nozzle_service",
+                "description": "Nozzle process service or duty.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Inlet, Outlet, Drain, Vent",
+                "notes": ""
+              },
+              {
+                "attribute_name": "nominal_diameter",
+                "description": "Nozzle nominal diameter.",
+                "data_type": "Decimal",
+                "unit": "mm / inch",
+                "example_value": "25",
+                "notes": ""
+              },
+              {
+                "attribute_name": "connection_type",
+                "description": "Nozzle end connection type.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Flanged",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "equipment_nozzle"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "piping": {
+    "base_attributes": [
+      {
+        "attribute_name": "tag_number",
+        "description": "Piping component tag.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "2EKG10-AA526",
+        "notes": "Maps from drawing attribute 'tag'."
+      },
+      {
+        "attribute_name": "sequence_number",
+        "description": "Aker system or sequence number associated with the component.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "2EKG10",
+        "notes": "Maps from drawing attribute 'SequenceNumber'."
+      },
+      {
+        "attribute_name": "line_number",
+        "description": "Line number or line-number assignment class.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "33",
+        "notes": "Maps from 'LineNumberAssignmentClass' or segment 'tag'."
+      },
+      {
+        "attribute_name": "nominal_diameter",
+        "description": "Nominal diameter for the line or component.",
+        "data_type": "Decimal",
+        "unit": "mm / inch",
+        "example_value": "25",
+        "notes": "Maps from 'Nominal Diameter'."
+      },
+      {
+        "attribute_name": "fluid_code",
+        "description": "Fluid code assigned to the piping segment.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "EKG",
+        "notes": "Maps from drawing attribute 'Fluid Code'."
+      },
+      {
+        "attribute_name": "service_designation",
+        "description": "Service designation inherited from the piping network system.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Fuel Gas",
+        "notes": "Maps from drawing attribute 'ServiceDesignation'."
+      },
+      {
+        "attribute_name": "line_specification",
+        "description": "Piping line specification or class.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "CS150",
+        "notes": "Maps from drawing attribute 'Line Specification'."
+      },
+      {
+        "attribute_name": "insulation_code",
+        "description": "Insulation code for the piping segment.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "H",
+        "notes": "Maps from drawing attribute 'Insulation Code'."
+      },
+      {
+        "attribute_name": "plant_area",
+        "description": "Plant area associated with the piping segment.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "A",
+        "notes": "Maps from drawing attribute 'Plant Area'."
+      },
+      {
+        "attribute_name": "p_and_id_symbol",
+        "description": "Symbol class from the source P&ID extraction.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "ball_valve",
+        "notes": "Maps from drawing field 'entity_class'."
+      }
+    ],
+    "subtypes": {
+      "piping.valve": {
+        "base_attributes": [
+          {
+            "attribute_name": "valve_type",
+            "description": "Valve type derived from the taxonomy path or source symbol.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "ball_valve",
+            "notes": "Required for valve symbols."
+          },
+          {
+            "attribute_name": "valve_code",
+            "description": "Project valve code parsed from label text.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "AA526",
+            "notes": "Maps from drawing attribute 'ValveType' when present."
+          },
+          {
+            "attribute_name": "actuation",
+            "description": "Manual or automated actuation style.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Manual, Pneumatic, Electric",
+            "notes": ""
+          },
+          {
+            "attribute_name": "fail_position",
+            "description": "Fail-safe valve position where applicable.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Fail Closed, Fail Open, Fail Last",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "piping.valve.ball_valve": {
+            "base_attributes": [
+              {
+                "attribute_name": "bore_type",
+                "description": "Ball valve bore type.",
+                "data_type": "Enumerated List",
+                "unit": "N/A",
+                "example_value": "Full Bore, Reduced Bore",
+                "notes": ""
+              },
+              {
+                "attribute_name": "seat_material",
+                "description": "Seat material for the ball valve.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "PTFE",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "ball_valve"
+            ]
+          }
+        }
+      },
+      "piping.fitting": {
+        "base_attributes": [
+          {
+            "attribute_name": "fitting_type",
+            "description": "Fitting type derived from taxonomy path.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "tee",
+            "notes": ""
+          },
+          {
+            "attribute_name": "connection_type",
+            "description": "Connection type for the fitting.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "Welded, Flanged, Threaded",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "piping.fitting.tee": {
+            "base_attributes": [
+              {
+                "attribute_name": "tee_type",
+                "description": "Specific tee style.",
+                "data_type": "Enumerated List",
+                "unit": "N/A",
+                "example_value": "Straight Tee, Reducing Tee",
+                "notes": ""
+              },
+              {
+                "attribute_name": "branch_diameter",
+                "description": "Nominal diameter of the tee branch.",
+                "data_type": "Decimal",
+                "unit": "mm / inch",
+                "example_value": "25",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "tee"
+            ]
+          }
+        }
+      },
+      "piping.line": {
+        "base_attributes": [
+          {
+            "attribute_name": "line_type",
+            "description": "Type of line representation in the P&ID.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Insulated Line",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "piping.line.insulated_line": {
+            "base_attributes": [
+              {
+                "attribute_name": "insulation_type",
+                "description": "Type or class of insulation.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Heat Conservation",
+                "notes": ""
+              },
+              {
+                "attribute_name": "insulation_thickness",
+                "description": "Insulation thickness.",
+                "data_type": "Decimal",
+                "unit": "mm",
+                "example_value": "50",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "insulated_line"
+            ]
+          }
+        }
+      },
+      "piping.connectivity_node": {
+        "base_attributes": [
+          {
+            "attribute_name": "node_type",
+            "description": "Non-physical graph node used to preserve P&ID piping connectivity.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "junction",
+            "notes": "Connectivity nodes are not equipment or isolation devices."
+          }
+        ],
+        "subtypes": {
+          "piping.connectivity_node.junction": {
+            "base_attributes": [],
+            "aliases": [
+              "junction"
+            ],
+            "notes": "Internal graph junction extracted from the P&ID."
+          },
+          "piping.connectivity_node.null_node": {
+            "base_attributes": [],
+            "aliases": [
+              "null_node"
+            ],
+            "notes": "Internal placeholder node extracted from the P&ID."
+          }
+        }
+      },
+      "piping.reference": {
+        "base_attributes": [
+          {
+            "attribute_name": "reference_type",
+            "description": "Drawing reference or continuation marker.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "off_or_on_page_connector",
+            "notes": "Reference markers connect drawing sheets or continuation points."
+          }
+        ],
+        "subtypes": {
+          "piping.reference.off_or_on_page_connector": {
+            "base_attributes": [
+              {
+                "attribute_name": "referenced_drawing",
+                "description": "Target drawing or continuation reference if present.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "PID-0303",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "off_or_on_page_connector"
+            ]
+          }
+        }
+      },
+      "piping.specialty_component": {
+        "base_attributes": [
+          {
+            "attribute_name": "component_type",
+            "description": "Specialty piping component type.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "condensate_trap_drain",
+            "notes": "Derived from taxonomy path."
+          }
+        ],
+        "subtypes": {
+          "piping.specialty_component.condensate_trap_drain": {
+            "base_attributes": [
+              {
+                "attribute_name": "drain_service",
+                "description": "Drain or trap service description.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Condensate Drain",
+                "notes": ""
+              },
+              {
+                "attribute_name": "pot_number",
+                "description": "Condensate drain pot number where shown on the drawing.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "NO.1",
+                "notes": "May be parsed from text labels."
+              }
+            ],
+            "aliases": [
+              "condensate_trap_drain"
+            ]
+          },
+          "piping.specialty_component.diaphragm_actuator_symbol": {
+            "base_attributes": [
+              {
+                "attribute_name": "actuator_tag_number",
+                "description": "Associated actuator tag when the actuator is extracted as a piping symbol.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "-",
+                "notes": "Use instrumentation.actuator.diaphragm_actuator for normalized actuator records."
+              }
+            ],
+            "aliases": [
+              "diaphgram_actuator"
+            ],
+            "notes": "Source class contains the spelling 'diaphgram_actuator'."
+          }
+        }
+      }
+    }
+  },
+  "instrumentation": {
+    "base_attributes": [
+      {
+        "attribute_name": "tag_number",
+        "description": "Instrument, actuator, or control function tag.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "FT3005-1EKG10CF001",
+        "notes": "Maps from drawing attribute 'tag'."
+      },
+      {
+        "attribute_name": "area_code",
+        "description": "Displayed instrument prefix or area/function code.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "FT-3005",
+        "notes": "Maps from drawing attribute 'area_code'."
+      },
+      {
+        "attribute_name": "function",
+        "description": "Instrument function or loop identifier.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "1EKG10CF001",
+        "notes": "Maps from drawing attribute 'function'."
+      },
+      {
+        "attribute_name": "panel_identification_code",
+        "description": "Panel identification code where shown.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "PANEL-01",
+        "notes": "Maps from drawing attribute 'PanelIdentificationCode'."
+      },
+      {
+        "attribute_name": "fluid_code_assignment_class",
+        "description": "Fluid code assignment associated with the instrument.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "EKG",
+        "notes": "Maps from drawing attribute 'FluidCodeAssignmentClass'."
+      },
+      {
+        "attribute_name": "port_status_specialization",
+        "description": "Port status specialization where present.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "Open, Closed",
+        "notes": "Maps from drawing attribute 'PortStatusSpecialization'."
+      },
+      {
+        "attribute_name": "p_and_id_symbol",
+        "description": "Symbol class from the source P&ID extraction.",
+        "data_type": "Text",
+        "unit": "N/A",
+        "example_value": "locally_mounted_instrument",
+        "notes": "Maps from drawing field 'entity_class'."
+      }
+    ],
+    "subtypes": {
+      "instrumentation.field_instrument": {
+        "base_attributes": [
+          {
+            "attribute_name": "mounting_location",
+            "description": "Mounting location for the instrument.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Local, Control Room, Panel",
+            "notes": ""
+          },
+          {
+            "attribute_name": "instrument_discipline_type",
+            "description": "Instrument type inferred from tag prefix.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "Flow Transmitter, Level Gauge, Position Switch",
+            "notes": "Examples in 1915.json include FT, LG, DT, XV, ZSC."
+          }
+        ],
+        "subtypes": {
+          "instrumentation.field_instrument.locally_mounted_instrument": {
+            "base_attributes": [
+              {
+                "attribute_name": "display_or_sensor_type",
+                "description": "Local instrument display, sensor, or switch type.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Flow Transmitter, Level Gauge, Position Switch",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "locally_mounted_instrument"
+            ]
+          }
+        }
+      },
+      "instrumentation.control_unit": {
+        "base_attributes": [
+          {
+            "attribute_name": "control_unit_type",
+            "description": "Control unit type derived from taxonomy path.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "local_dcs_function",
+            "notes": ""
+          },
+          {
+            "attribute_name": "control_system",
+            "description": "Control system associated with this function.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "DCS",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "instrumentation.control_unit.local_dcs_function": {
+            "base_attributes": [
+              {
+                "attribute_name": "local_function_code",
+                "description": "Local DCS function code.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "XC-3007",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "local_dcs_function"
+            ]
+          },
+          "instrumentation.control_unit.dcs_function_in_control_room": {
+            "base_attributes": [
+              {
+                "attribute_name": "control_room_function_code",
+                "description": "DCS function identifier displayed in the control room.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "DPI-3008",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "dcs_function_in_control_room"
+            ]
+          }
+        }
+      },
+      "instrumentation.actuator": {
+        "base_attributes": [
+          {
+            "attribute_name": "actuator_type",
+            "description": "Type of actuator.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Diaphragm, Electric, Hydraulic",
+            "notes": "Derived from taxonomy path."
+          },
+          {
+            "attribute_name": "valve_tag_number",
+            "description": "Associated valve tag.",
+            "data_type": "Text",
+            "unit": "N/A",
+            "example_value": "2EKG10-AA526",
+            "notes": "May be inferred from topology or nearby symbol."
+          },
+          {
+            "attribute_name": "fail_position",
+            "description": "Fail-safe actuator or valve position.",
+            "data_type": "Enumerated List",
+            "unit": "N/A",
+            "example_value": "Fail Open, Fail Closed, Fail Last",
+            "notes": ""
+          }
+        ],
+        "subtypes": {
+          "instrumentation.actuator.diaphragm_actuator": {
+            "base_attributes": [
+              {
+                "attribute_name": "actuation_medium",
+                "description": "Medium used to actuate the diaphragm.",
+                "data_type": "Text",
+                "unit": "N/A",
+                "example_value": "Instrument Air",
+                "notes": ""
+              },
+              {
+                "attribute_name": "supply_pressure",
+                "description": "Actuator supply pressure.",
+                "data_type": "Decimal",
+                "unit": "bar / psi",
+                "example_value": "6 bar",
+                "notes": ""
+              }
+            ],
+            "aliases": [
+              "diaphragm_actuator"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,69 @@
 {
   "active_profile": "aker_277",
+  "isolation_policy": {
+    "eligible_classes": [
+      "gate_valve",
+      "ball_valve",
+      "globe_valve",
+      "valve",
+      "generic_inline_valve",
+      "blind",
+      "spade",
+      "flange",
+      "blank_flange",
+      "line_break_point",
+      "breaker",
+      "disconnect"
+    ],
+    "conditional_classes": [
+      "check_valve",
+      "control_valve",
+      "undefined_valve"
+    ],
+    "excluded_classes": [
+      "equipment",
+      "pump",
+      "tank",
+      "vessel",
+      "line",
+      "pipe",
+      "instrument",
+      "instrument_loop",
+      "instrument_loops",
+      "locally_mounted_instrument",
+      "dcs_function_in_control_room",
+      "alarm"
+    ],
+    "include_conditional_candidates": false,
+    "positive_isolation_classes": [
+      "blind",
+      "spade",
+      "spectacle",
+      "flange",
+      "blank_flange",
+      "line_break_point",
+      "disconnect",
+      "breaker",
+      "spool"
+    ],
+    "verification_classes": [
+      "bleed",
+      "vent",
+      "drain",
+      "gauge",
+      "indicator",
+      "test_point"
+    ],
+    "verification_tag_prefixes": [
+      "pi",
+      "pg"
+    ]
+  },
   "profiles": {
     "aker_277": {
-      "name": "Demo Aker",
+      "name": "Aker 277 Project 15",
       "cnvrt_project_id": "277",
-      "unigraph_project_id": "13",
+      "unigraph_project_id": "15",
       "collection_id": "206",
       "collection_name": "Test",
       "graph": {

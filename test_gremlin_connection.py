@@ -14,13 +14,15 @@ Examples:
 from __future__ import annotations
 
 import argparse
+import os
 import signal
 import socket
 import sys
 import time
+from pathlib import Path
 
 try:
-    from config import GraphConfig
+    from config import GraphConfig, apply_graph_env
     from gremlin_python.driver import serializer
     from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
     from gremlin_python.process.anonymous_traversal import traversal
@@ -41,14 +43,32 @@ except ModuleNotFoundError as exc:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Test a Gremlin websocket endpoint with one simple traversal.")
-    defaults = GraphConfig()
+    load_dotenv()
+    defaults = apply_graph_env(GraphConfig())
     parser.add_argument("--host", default=defaults.host)
     parser.add_argument("--port", default=defaults.port)
     parser.add_argument("--project-id", default=defaults.project_id)
     parser.add_argument("--traversal-source", default="", help="Override Gremlin traversal source alias")
+    parser.add_argument("--username", default=defaults.username, help="Gremlin username; defaults to JANUSGRAPH_USERNAME")
+    parser.add_argument("--password", default=defaults.password, help="Gremlin password; defaults to JANUSGRAPH_PASSWORD")
     parser.add_argument("--tcp-timeout", type=float, default=8.0)
     parser.add_argument("--gremlin-timeout", type=int, default=20)
     return parser.parse_args()
+
+
+def load_dotenv():
+    for env_path in (Path.cwd() / ".env", Path(__file__).resolve().parents[1] / ".env"):
+        if not env_path.exists():
+            continue
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = value
 
 
 def tcp_probe(host: str, port: str, timeout: float) -> bool:
@@ -66,7 +86,7 @@ def _timeout_handler(signum, frame):
     raise TimeoutError("Gremlin probe timed out")
 
 
-def gremlin_probe(host: str, port: str, traversal_source: str, timeout: int) -> bool:
+def gremlin_probe(host: str, port: str, traversal_source: str, username: str, password: str, timeout: int) -> bool:
     url = f"ws://{host}:{port}/gremlin"
     print(f"Gremlin URL: {url}")
     print(f"Traversal source: {traversal_source}")
@@ -78,6 +98,8 @@ def gremlin_probe(host: str, port: str, traversal_source: str, timeout: int) -> 
         conn = DriverRemoteConnection(
             url,
             traversal_source,
+            username=username,
+            password=password,
             message_serializer=serializer.GraphSONSerializersV3d0(),
         )
         g = traversal().withRemote(conn)
@@ -105,7 +127,7 @@ def main() -> int:
     tcp_ok = tcp_probe(args.host, args.port, args.tcp_timeout)
     if not tcp_ok:
         return 2
-    gremlin_ok = gremlin_probe(args.host, args.port, traversal_source, args.gremlin_timeout)
+    gremlin_ok = gremlin_probe(args.host, args.port, traversal_source, args.username, args.password, args.gremlin_timeout)
     return 0 if gremlin_ok else 3
 
 

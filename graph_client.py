@@ -16,6 +16,8 @@ class GraphClient(AbstractContextManager):
         self.connection = DriverRemoteConnection(
             self.graph_config.gremlin_url,
             self.graph_config.traversal_source,
+            username=self.graph_config.username,
+            password=self.graph_config.password,
             message_serializer=serializer.GraphSONSerializersV3d0(),
         )
         self.g = traversal().withRemote(self.connection)

@@ -1,6 +1,10 @@
-BARRIER_KEYWORDS = {"valve", "blind", "spade", "disconnect", "breaker"}
-POSITIVE_ENTITY_KEYWORDS = {"blind", "spade", "spectacle", "blank", "disconnect", "breaker", "spool"}
-VERIFICATION_ENTITY_KEYWORDS = {"bleed", "vent", "drain", "gauge", "indicator", "test point"}
+from domain.classification import classify_candidate
+from domain.enums import IsolationDecision, ObligationStatus, SourceType
+
+
+BARRIER_KEYWORDS = {"valve", "generic_inline_valve", "gate_valve", "ball_valve", "globe_valve", "blind", "spade", "flange", "blank_flange", "line_break_point", "disconnect", "breaker"}
+POSITIVE_ENTITY_KEYWORDS = {"blind", "spade", "spectacle", "flange", "blank_flange", "line_break_point", "disconnect", "breaker", "spool"}
+VERIFICATION_ENTITY_KEYWORDS = {"bleed", "vent", "drain", "gauge", "indicator", "test_point"}
 VERIFICATION_TAG_PREFIXES = {"pi", "pg"}
 
 
@@ -12,6 +16,8 @@ def build_evidence(candidate_data, config):
     barrier_ids = []
     positive_ids = []
     verification_ids = []
+    manual_review_ids = []
+    manual_review_labels = []
     unresolved_bbox_ids = []
 
     for candidate in candidates:
@@ -20,13 +26,16 @@ def build_evidence(candidate_data, config):
             if key:
                 source_keys.add(key)
                 covered_sources.add(key)
-        flags = _flags(candidate)
+        flags = candidate_flags(candidate, config.policy)
         if flags["barrier"]:
             barrier_ids.append(candidate.get("candidate_id"))
         if flags["positive"]:
             positive_ids.append(candidate.get("candidate_id"))
         if flags["verification"]:
             verification_ids.append(candidate.get("candidate_id"))
+        if _requires_manual_review(candidate):
+            manual_review_ids.append(candidate.get("candidate_id"))
+            manual_review_labels.append(_candidate_review_label(candidate))
         if not candidate.get("bbox"):
             unresolved_bbox_ids.append(candidate.get("candidate_id"))
         summaries.append(
@@ -40,6 +49,8 @@ def build_evidence(candidate_data, config):
                 "source_path_count": candidate.get("source_path_count", 1),
                 "traversal_depth": candidate.get("traversal_depth"),
                 "bbox_resolved": bool(candidate.get("bbox")),
+                "policy_decision": candidate.get("policy_decision") or (candidate.get("classification") or {}).get("decision"),
+                "requires_manual_review": bool(candidate.get("requires_manual_review")),
                 "barrier_evidence": flags["barrier"],
                 "positive_isolation_evidence": flags["positive"],
                 "verification_evidence": flags["verification"],
@@ -53,6 +64,10 @@ def build_evidence(candidate_data, config):
         missing.append("No bleed, vent, drain, gauge, pressure indicator, or approved test-point evidence was found.")
     if config.work_scope.requires_positive_isolation and not positive_ids:
         missing.append("Work scope requires positive isolation evidence, but no blind, spade, blank flange, disconnection, breaker, or equivalent was found.")
+    if manual_review_ids:
+        labels = ", ".join(label for label in manual_review_labels[:8] if label)
+        suffix = f": {labels}" if labels else ""
+        missing.append(f"Selected conditional isolation candidate(s) require manual review before acceptance{suffix}.")
 
     obligations = candidate_data.get("isolation_obligations") or {}
     obligation_counts = _obligation_counts(obligations)
@@ -93,6 +108,7 @@ def build_evidence(candidate_data, config):
         "barrier_candidate_ids": barrier_ids,
         "positive_candidate_ids": positive_ids,
         "verification_candidate_ids": verification_ids,
+        "manual_review_candidate_ids": manual_review_ids,
         "bypass_candidate_ids": [],
         "unresolved_bbox_candidate_ids": unresolved_bbox_ids,
         "missing_evidence": missing,
@@ -104,6 +120,7 @@ def build_evidence(candidate_data, config):
             "evidence_barrier_candidate_count": len(barrier_ids),
             "evidence_positive_candidate_count": len(positive_ids),
             "evidence_verification_candidate_count": len(verification_ids),
+            "evidence_manual_review_candidate_count": len(manual_review_ids),
             "evidence_missing_evidence_count": len(missing),
             "evidence_isolation_obligation_count": obligation_counts.get("total"),
             "evidence_unresolved_isolation_obligation_count": len(unresolved_obligations),
@@ -126,12 +143,12 @@ def _obligation_counts(obligations):
     if (obligations or {}).get("status") != "completed":
         return {}
     items = obligations.get("items") or []
-    process_items = [item for item in items if item.get("source_type") == "process"]
+    process_items = [item for item in items if item.get("source_type") == SourceType.PROCESS.value]
     return {
         "total": len(items),
         "expected": len(process_items),
-        "covered": sum(1 for item in process_items if item.get("status") == "isolated"),
-        "missing": sum(1 for item in process_items if item.get("status") == "unresolved"),
+        "covered": sum(1 for item in process_items if item.get("status") == ObligationStatus.ISOLATED.value),
+        "missing": sum(1 for item in process_items if item.get("status") == ObligationStatus.UNRESOLVED.value),
     }
 
 
@@ -141,7 +158,7 @@ def _unresolved_obligations(obligations):
     return [
         item
         for item in obligations.get("items") or []
-        if item.get("source_type") == "process" and item.get("status") == "unresolved"
+        if item.get("source_type") == SourceType.PROCESS.value and item.get("status") == ObligationStatus.UNRESOLVED.value
     ]
 
 
@@ -161,21 +178,70 @@ def _source_warning_label(item):
     return str(item.get("source_component") or "unknown source")
 
 
-def _flags(candidate):
-    properties = candidate.get("properties", {}) or {}
-    entity_text = " ".join(
-        str(properties.get(key) or candidate.get(key) or "").lower()
-        for key in ("entity_class", "candidate_label", "type", "entity_type", "valve_type", "category")
+def _requires_manual_review(candidate):
+    decision = str(candidate.get("policy_decision") or (candidate.get("classification") or {}).get("decision") or "")
+    return bool(candidate.get("requires_manual_review")) or decision == IsolationDecision.CONDITIONAL_MANUAL_REVIEW.value
+
+
+def _candidate_review_label(candidate):
+    properties = candidate.get("properties") or {}
+    label = (
+        candidate.get("tag_number")
+        or properties.get("tag")
+        or properties.get("entity_class")
+        or candidate.get("candidate_label")
+        or candidate.get("candidate_id")
     )
+    source = candidate.get("source_component_tag")
+    if source:
+        return f"{label} for {source}"
+    return str(label or "")
+
+
+def candidate_flags(candidate, policy=None):
+    classification = _candidate_classification(candidate, policy)
+    return {
+        "barrier": classification.is_barrier,
+        "positive": classification.is_positive_isolation,
+        "verification": classification.is_verification,
+    }
+
+
+def _candidate_classification(candidate, policy=None):
+    existing = candidate.get("classification") or {}
+    if existing and existing.get("decision"):
+        return _classification_from_payload(existing)
+    if policy is None:
+        policy = _FallbackPolicy()
+    properties = candidate.get("properties", {}) or {}
     method_text = " ".join(str(candidate.get(key) or "").lower() for key in ("isolation_method", "reason"))
     tag_prefix = _tag_prefix(properties.get("tag") or candidate.get("tag_number"))
-    barrier = any(keyword in entity_text for keyword in BARRIER_KEYWORDS) or "close and lock" in method_text
-    positive = any(keyword in entity_text for keyword in POSITIVE_ENTITY_KEYWORDS)
-    verification = any(keyword in entity_text for keyword in VERIFICATION_ENTITY_KEYWORDS) or tag_prefix in VERIFICATION_TAG_PREFIXES
-    if "valve" in entity_text:
-        positive = any(keyword in entity_text for keyword in POSITIVE_ENTITY_KEYWORDS)
-        verification = tag_prefix in VERIFICATION_TAG_PREFIXES or any(keyword in entity_text for keyword in VERIFICATION_ENTITY_KEYWORDS)
-    return {"barrier": barrier, "positive": positive, "verification": verification}
+    return classify_candidate(properties, candidate.get("candidate_label"), policy, method_text=method_text, tag_prefix=tag_prefix)
+
+
+def _classification_from_payload(payload):
+    from domain.models import CandidateClassification
+
+    return CandidateClassification(
+        raw_entity_class=str(payload.get("raw_entity_class") or ""),
+        raw_entity_type=str(payload.get("raw_entity_type") or ""),
+        class_values=tuple(payload.get("class_values") or ()),
+        matched_policy_classes=tuple(payload.get("matched_policy_classes") or ()),
+        decision=IsolationDecision(str(payload.get("decision") or IsolationDecision.NOT_ISOLATION.value)),
+        is_barrier=bool(payload.get("is_barrier")),
+        is_positive_isolation=bool(payload.get("is_positive_isolation")),
+        is_verification=bool(payload.get("is_verification")),
+    )
+
+
+class _FallbackPolicy:
+    eligible_classes = tuple(BARRIER_KEYWORDS)
+    excluded_classes = ()
+    conditional_classes = ()
+    include_conditional_candidates = False
+    positive_isolation_classes = tuple(POSITIVE_ENTITY_KEYWORDS)
+    verification_classes = tuple(VERIFICATION_ENTITY_KEYWORDS)
+    verification_tag_prefixes = tuple(VERIFICATION_TAG_PREFIXES)
 
 
 def _tag_prefix(value):

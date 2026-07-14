@@ -1,0 +1,4189 @@
+{
+	"equipment": {
+		"base_attributes": [
+			{
+				"attribute_name": "tag_number",
+				"description": "Unique identifier assigned to the equipment.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "TK-101",
+				"notes": "Plant-wide unique identifier."
+			},
+			{
+				"attribute_name": "equipment_name",
+				"description": "Descriptive name of the equipment.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "Storage Tank 101",
+				"notes": "User-friendly name."
+			},
+			{
+				"attribute_name": "equipment_description",
+				"description": "Detailed description of the equipment.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "Fixed Roof Storage Tank for Methanol",
+				"notes": "More extensive description."
+			},
+			{
+				"attribute_name": "manufacturer",
+				"description": "Name of the equipment manufacturer.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "XYZ Industries",
+				"notes": "Manufacturer company name."
+			},
+			{
+				"attribute_name": "model_number",
+				"description": "Manufacturer's model number for the equipment.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "ST-2000",
+				"notes": "Manufacturer's model identifier."
+			},
+			{
+				"attribute_name": "serial_number",
+				"description": "Unique serial number assigned by the manufacturer.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "SN123456",
+				"notes": "Manufacturer's serial identifier."
+			},
+			{
+				"attribute_name": "installation_date",
+				"description": "Date of equipment installation.",
+				"data_type": "Date",
+				"unit": "N/A",
+				"example_value": "2023-08-15",
+				"notes": "Date format: YYYY-MM-DD."
+			},
+			{
+				"attribute_name": "location_area",
+				"description": "Plant area where the equipment is located.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "Process Area 1",
+				"notes": "Plant area designation."
+			},
+			{
+				"attribute_name": "location_process_unit",
+				"description": "Process unit where the equipment is located.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "Methanol Synthesis",
+				"notes": "Process unit designation."
+			},
+			{
+				"attribute_name": "location_elevation",
+				"description": "Elevation of the equipment.",
+				"data_type": "Decimal",
+				"unit": "m",
+				"example_value": "15.2",
+				"notes": "Meters above sea level or plant datum."
+			},
+			{
+				"attribute_name": "asset_criticality",
+				"description": "Criticality level of the equipment to operations.",
+				"data_type": "Enumerated List",
+				"unit": "N/A",
+				"example_value": "High, Medium, Low",
+				"notes": "Categorization of importance."
+			},
+			{
+				"attribute_name": "maintenance_schedule",
+				"description": "Frequency of planned maintenance activities.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "Monthly, Quarterly",
+				"notes": "Schedule description."
+			},
+			{
+				"attribute_name": "commissioning_date",
+				"description": "Date of equipment commissioning.",
+				"data_type": "Date",
+				"unit": "N/A",
+				"example_value": "2023-09-01",
+				"notes": "Date format: YYYY-MM-DD."
+			},
+			{
+				"attribute_name": "decommissioning_date",
+				"description": "Date of equipment decommissioning (if applicable).",
+				"data_type": "Date",
+				"unit": "N/A",
+				"example_value": "2030-12-31",
+				"notes": "Date format: YYYY-MM-DD."
+			},
+			{
+				"attribute_name": "design_code",
+				"description": "Design code used for equipment construction.",
+				"data_type": "Text",
+				"unit": "N/A",
+				"example_value": "ASME Section VIII Div 1",
+				"notes": "Standard design code."
+			},
+			{
+				"attribute_name": "design_life",
+				"description": "Expected design life of the equipment.",
+				"data_type": "Integer",
+				"unit": "years",
+				"example_value": "20",
+				"notes": "In years."
+			},
+			{
+				"attribute_name": "operating_status",
+				"description": "Current operational status of the equipment.",
+				"data_type": "Enumerated List",
+				"unit": "N/A",
+				"example_value": "Operating, Standby, Maintenance, Shutdown",
+				"notes": "Current operational state."
+			}
+		],
+		"subtypes": {
+			"equipment.vessel": {
+				"base_attributes": [
+					{
+						"attribute_name": "vessel_type",
+						"description": "Type of vessel (Storage Tank, Reactor, Separator, Column).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Storage Tank",
+						"notes": "Categorization of vessel type."
+					},
+					{
+						"attribute_name": "vessel_orientation",
+						"description": "Orientation of the vessel.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Vertical, Horizontal",
+						"notes": "Vessel orientation in space."
+					},
+					{
+						"attribute_name": "nominal_volume",
+						"description": "Nominal volume capacity of the vessel.",
+						"data_type": "Decimal",
+						"unit": "m³",
+						"example_value": "100",
+						"notes": "Volumetric capacity."
+					},
+					{
+						"attribute_name": "design_pressure",
+						"description": "Maximum allowable pressure at design temperature.",
+						"data_type": "Decimal",
+						"unit": "bar g",
+						"example_value": "10",
+						"notes": "Gauge pressure."
+					},
+					{
+						"attribute_name": "design_temperature",
+						"description": "Maximum/Minimum allowable temperature.",
+						"data_type": "Decimal",
+						"unit": "°C",
+						"example_value": "200 / -20",
+						"notes": "Temperature range."
+					},
+					{
+						"attribute_name": "operating_pressure",
+						"description": "Normal operating pressure of the vessel.",
+						"data_type": "Decimal",
+						"unit": "bar g",
+						"example_value": "5",
+						"notes": "Gauge pressure."
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Normal operating temperature of the vessel.",
+						"data_type": "Decimal",
+						"unit": "°C",
+						"example_value": "150",
+						"notes": "Temperature."
+					},
+					{
+						"attribute_name": "material_of_construction",
+						"description": "Material used for vessel construction.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Carbon Steel",
+						"notes": "Material specification."
+					},
+					{
+						"attribute_name": "corrosion_allowance",
+						"description": "Thickness allowance for corrosion.",
+						"data_type": "Decimal",
+						"unit": "mm",
+						"example_value": "3",
+						"notes": "Thickness added for corrosion."
+					},
+					{
+						"attribute_name": "insulation_type",
+						"description": "Type of insulation used (if any).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Mineral Wool",
+						"notes": "Insulation material type."
+					},
+					{
+						"attribute_name": "insulation_thickness",
+						"description": "Thickness of insulation (if applicable).",
+						"data_type": "Decimal",
+						"unit": "mm",
+						"example_value": "50",
+						"notes": "Insulation thickness."
+					}
+				],
+				"subtypes": {
+					"equipment.vessel.storage_tank": {
+						"base_attributes": [
+							{
+								"attribute_name": "tank_type",
+								"description": "Type of storage tank (Fixed Roof, Floating Roof, Pressure Vessel, Cryogenic Tank).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Fixed Roof",
+								"notes": "Storage tank category."
+							},
+							{
+								"attribute_name": "tank_diameter",
+								"description": "Diameter of the storage tank.",
+								"data_type": "Decimal",
+								"unit": "m",
+								"example_value": "15",
+								"notes": "Tank diameter."
+							},
+							{
+								"attribute_name": "tank_height",
+								"description": "Height of the storage tank.",
+								"data_type": "Decimal",
+								"unit": "m",
+								"example_value": "10",
+								"notes": "Tank height."
+							},
+							{
+								"attribute_name": "shell_thickness",
+								"description": "Thickness of the tank shell.",
+								"data_type": "Decimal",
+								"unit": "mm",
+								"example_value": "10",
+								"notes": "Shell thickness."
+							},
+							{
+								"attribute_name": "roof_type",
+								"description": "Type of roof for the storage tank.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Fixed",
+								"notes": "Roof configuration."
+							},
+							{
+								"attribute_name": "venting_type",
+								"description": "Type of venting provided for the tank.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Atmospheric",
+								"notes": "Venting mechanism."
+							}
+						],
+						"subtypes": {
+							"equipment.vessel.storage_tank.fixed_roof": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.vessel.storage_tank.floating_roof": {
+								"base_attributes": [
+									{
+										"attribute_name": "roof_seal_type",
+										"description": "Type of seal used for the floating roof.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Mechanical Shoe Seal",
+										"notes": "Roof seal mechanism."
+									},
+									{
+										"attribute_name": "roof_material",
+										"description": "Material of construction for the floating roof.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Aluminum",
+										"notes": "Roof material specification."
+									},
+									{
+										"attribute_name": "internal_pontoon_count",
+										"description": "Number of pontoons (if internal).",
+										"data_type": "Integer",
+										"unit": "N/A",
+										"example_value": "10",
+										"notes": "Number of internal pontoons."
+									}
+								]
+							},
+							"equipment.vessel.storage_tank.pressure_vessel": {
+								"base_attributes": [
+									{
+										"attribute_name": "pressure_vessel_code",
+										"description": "Pressure vessel design code (e.g., ASME, PD 5500).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "ASME Section VIII Div 1",
+										"notes": "Design standard code."
+									},
+									{
+										"attribute_name": "mdmt",
+										"description": "Minimum Design Metal Temperature.",
+										"data_type": "Decimal",
+										"unit": "°C",
+										"example_value": "-30",
+										"notes": "Minimum permissible metal temperature."
+									},
+									{
+										"attribute_name": "hydrotest_pressure",
+										"description": "Hydrostatic test pressure applied.",
+										"data_type": "Decimal",
+										"unit": "bar g",
+										"example_value": "15",
+										"notes": "Pressure for hydrotest."
+									}
+								]
+							},
+							"equipment.vessel.storage_tank.cryogenic_tank": {
+								"base_attributes": [
+									{
+										"attribute_name": "cryogenic_type",
+										"description": "Type of cryogenic tank (e.g., LNG, Liquid Nitrogen).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "LNG",
+										"notes": "Cryogenic fluid type."
+									},
+									{
+										"attribute_name": "operating_temperature_min",
+										"description": "Minimum operating temperature.",
+										"data_type": "Decimal",
+										"unit": "°C",
+										"example_value": "-196",
+										"notes": "Minimum operating temperature."
+									},
+									{
+										"attribute_name": "vacuum_level",
+										"description": "Vacuum level in the insulation space.",
+										"data_type": "Decimal",
+										"unit": "mbar",
+										"example_value": "0.1",
+										"notes": "Vacuum for insulation."
+									},
+									{
+										"attribute_name": "inner_vessel_material",
+										"description": "Material of inner vessel.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Stainless Steel 304L",
+										"notes": "Inner vessel material."
+									},
+									{
+										"attribute_name": "outer_vessel_material",
+										"description": "Material of outer vessel.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Carbon Steel",
+										"notes": "Outer vessel material."
+									}
+								]
+							}
+						}
+					},
+					"equipment.vessel.reactor": {
+						"base_attributes": [
+							{
+								"attribute_name": "reactor_type",
+								"description": "Type of reactor (Stirred Tank, Tubular, Batch, Continuous).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Stirred Tank",
+								"notes": "Reactor category."
+							},
+							{
+								"attribute_name": "reactor_volume",
+								"description": "Reactor volume.",
+								"data_type": "Decimal",
+								"unit": "m³",
+								"example_value": "5",
+								"notes": "Reactor volume."
+							},
+							{
+								"attribute_name": "agitator_type",
+								"description": "Type of agitator (if applicable).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Impeller",
+								"notes": "Agitator type."
+							},
+							{
+								"attribute_name": "heating_cooling_system",
+								"description": "Type of heating/cooling system.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Jacketed",
+								"notes": "Heating/cooling method."
+							},
+							{
+								"attribute_name": "catalyst_type",
+								"description": "Type of catalyst used (if applicable).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Zeolite",
+								"notes": "Catalyst specification."
+							},
+							{
+								"attribute_name": "reaction_type",
+								"description": "Type of reaction performed.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Esterification",
+								"notes": "Reaction process type."
+							}
+						],
+						"subtypes": {
+							"equipment.vessel.reactor.stirred_tank_reactor": {
+								"base_attributes": [
+									{
+										"attribute_name": "agitator_speed_range",
+										"description": "Operating speed range of the agitator.",
+										"data_type": "Text",
+										"unit": "rpm",
+										"example_value": "0-300",
+										"notes": "Agitator speed range."
+									},
+									{
+										"attribute_name": "baffle_count",
+										"description": "Number of baffles in the reactor.",
+										"data_type": "Integer",
+										"unit": "N/A",
+										"example_value": "4",
+										"notes": "Number of baffles."
+									},
+									{
+										"attribute_name": "jacket_type",
+										"description": "Type of jacket (if jacketed).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Dimpled",
+										"notes": "Jacket configuration."
+									},
+									{
+										"attribute_name": "jacket_material",
+										"description": "Material of jacket construction (if jacketed).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Carbon Steel",
+										"notes": "Jacket material."
+									}
+								]
+							},
+							"equipment.vessel.reactor.tubular_reactor": {
+								"base_attributes": [
+									{
+										"attribute_name": "tube_count",
+										"description": "Number of tubes in the reactor.",
+										"data_type": "Integer",
+										"unit": "N/A",
+										"example_value": "100",
+										"notes": "Number of tubes."
+									},
+									{
+										"attribute_name": "tube_diameter",
+										"description": "Diameter of each tube.",
+										"data_type": "Decimal",
+										"unit": "mm",
+										"example_value": "25",
+										"notes": "Tube diameter."
+									},
+									{
+										"attribute_name": "tube_length",
+										"description": "Length of each tube.",
+										"data_type": "Decimal",
+										"unit": "m",
+										"example_value": "5",
+										"notes": "Tube length."
+									},
+									{
+										"attribute_name": "heat_transfer_area",
+										"description": "Total heat transfer area of the reactor.",
+										"data_type": "Decimal",
+										"unit": "m²",
+										"example_value": "50",
+										"notes": "Heat transfer area."
+									}
+								]
+							},
+							"equipment.vessel.reactor.batch_reactor": {
+								"base_attributes": [
+									{
+										"attribute_name": "batch_cycle_time",
+										"description": "Typical time for one batch cycle.",
+										"data_type": "Decimal",
+										"unit": "hours",
+										"example_value": "8",
+										"notes": "Batch cycle duration."
+									},
+									{
+										"attribute_name": "batch_capacity",
+										"description": "Amount of product produced per batch.",
+										"data_type": "Decimal",
+										"unit": "kg",
+										"example_value": "1000",
+										"notes": "Batch production quantity."
+									}
+								]
+							},
+							"equipment.vessel.reactor.continuous_reactor": {
+								"base_attributes": [
+									{
+										"attribute_name": "residence_time",
+										"description": "Average residence time of material in reactor.",
+										"data_type": "Decimal",
+										"unit": "minutes",
+										"example_value": "30",
+										"notes": "Residence time in reactor."
+									},
+									{
+										"attribute_name": "feed_flow_rate",
+										"description": "Normal feed flow rate to the reactor.",
+										"data_type": "Decimal",
+										"unit": "kg/h",
+										"example_value": "500",
+										"notes": "Feed flow rate."
+									}
+								]
+							}
+						}
+					},
+					"equipment.vessel.separator": {
+						"base_attributes": [
+							{
+								"attribute_name": "separator_type",
+								"description": "Type of separator (Gas-Liquid, Liquid-Liquid, Cyclone, Filter).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Gas-Liquid",
+								"notes": "Separator category."
+							},
+							{
+								"attribute_name": "design_flow_rate",
+								"description": "Design flow rate for separation.",
+								"data_type": "Decimal",
+								"unit": "m³/h",
+								"example_value": "1000",
+								"notes": "Design flow capacity."
+							},
+							{
+								"attribute_name": "separation_efficiency",
+								"description": "Expected separation efficiency.",
+								"data_type": "Decimal",
+								"unit": "%",
+								"example_value": "99.9",
+								"notes": "Separation performance."
+							}
+						],
+						"subtypes": {
+							"equipment.vessel.separator.gas_liquid_separator": {
+								"base_attributes": [
+									{
+										"attribute_name": "separator_mechanism",
+										"description": "Mechanism of gas-liquid separation.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Gravity Settling",
+										"notes": "Separation principle."
+									},
+									{
+										"attribute_name": "inlet_nozzle_size",
+										"description": "Size of the inlet nozzle.",
+										"data_type": "Decimal",
+										"unit": "inch",
+										"example_value": "6",
+										"notes": "Inlet connection size."
+									},
+									{
+										"attribute_name": "gas_outlet_nozzle_size",
+										"description": "Size of the gas outlet nozzle.",
+										"data_type": "Decimal",
+										"unit": "inch",
+										"example_value": "4",
+										"notes": "Gas outlet connection size."
+									},
+									{
+										"attribute_name": "liquid_outlet_nozzle_size",
+										"description": "Size of the liquid outlet nozzle.",
+										"data_type": "Decimal",
+										"unit": "inch",
+										"example_value": "3",
+										"notes": "Liquid outlet connection size."
+									}
+								]
+							},
+							"equipment.vessel.separator.liquid_liquid_separator": {
+								"base_attributes": [
+									{
+										"attribute_name": "density_difference_min",
+										"description": "Minimum density difference for separation.",
+										"data_type": "Decimal",
+										"unit": "kg/m³",
+										"example_value": "100",
+										"notes": "Required density difference."
+									},
+									{
+										"attribute_name": "interface_control_type",
+										"description": "Type of interface level control.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Float",
+										"notes": "Interface level control method."
+									},
+									{
+										"attribute_name": "coalescer_type",
+										"description": "Type of coalescer used (if applicable).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Mesh Pad",
+										"notes": "Coalescing element type."
+									}
+								]
+							},
+							"equipment.vessel.separator.cyclone_separator": {
+								"base_attributes": [
+									{
+										"attribute_name": "cyclone_diameter",
+										"description": "Diameter of the cyclone separator.",
+										"data_type": "Decimal",
+										"unit": "mm",
+										"example_value": "500",
+										"notes": "Cyclone diameter."
+									},
+									{
+										"attribute_name": "number_of_cyclones",
+										"description": "Number of cyclones in a multi-cyclone unit.",
+										"data_type": "Integer",
+										"unit": "N/A",
+										"example_value": "10",
+										"notes": "Number of cyclone elements."
+									},
+									{
+										"attribute_name": "particle_size_cutoff",
+										"description": "Particle size for 50% removal efficiency.",
+										"data_type": "Decimal",
+										"unit": "µm",
+										"example_value": "10",
+										"notes": "Particle size separation limit."
+									}
+								]
+							},
+							"equipment.vessel.separator.filter_separator": {
+								"base_attributes": [
+									{
+										"attribute_name": "filter_element_type",
+										"description": "Type of filter element used.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Coalescing Filter",
+										"notes": "Filter element type."
+									},
+									{
+										"attribute_name": "filtration_size_rating",
+										"description": "Nominal filtration size rating.",
+										"data_type": "Decimal",
+										"unit": "µm",
+										"example_value": "5",
+										"notes": "Filtration particle size rating."
+									},
+									{
+										"attribute_name": "differential_pressure_max",
+										"description": "Maximum allowable differential pressure across filter.",
+										"data_type": "Decimal",
+										"unit": "bar",
+										"example_value": "1",
+										"notes": "Maximum pressure drop across filter."
+									}
+								]
+							}
+						}
+					},
+					"equipment.vessel.column": {
+						"base_attributes": [
+							{
+								"attribute_name": "column_type",
+								"description": "Type of column (Distillation, Absorption, Stripping).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Distillation",
+								"notes": "Column category."
+							},
+							{
+								"attribute_name": "column_diameter",
+								"description": "Diameter of the column.",
+								"data_type": "Decimal",
+								"unit": "m",
+								"example_value": "2",
+								"notes": "Column diameter."
+							},
+							{
+								"attribute_name": "column_height",
+								"description": "Height of the column.",
+								"data_type": "Decimal",
+								"unit": "m",
+								"example_value": "20",
+								"notes": "Column height."
+							},
+							{
+								"attribute_name": "number_of_trays_stages",
+								"description": "Number of trays or theoretical stages.",
+								"data_type": "Integer",
+								"unit": "N/A",
+								"example_value": "30",
+								"notes": "Stages for separation."
+							},
+							{
+								"attribute_name": "packing_type",
+								"description": "Type of packing used (if packed column).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Structured Packing",
+								"notes": "Packing material type."
+							},
+							{
+								"attribute_name": "feed_stage",
+								"description": "Stage number where feed enters the column.",
+								"data_type": "Integer",
+								"unit": "N/A",
+								"example_value": "15",
+								"notes": "Feed inlet stage."
+							},
+							{
+								"attribute_name": "reboiler_type",
+								"description": "Type of reboiler used (if applicable).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Thermosiphon",
+								"notes": "Reboiler type."
+							},
+							{
+								"attribute_name": "condenser_type",
+								"description": "Type of condenser used (if applicable).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Air-Cooled",
+								"notes": "Condenser type."
+							}
+						],
+						"subtypes": {
+							"equipment.vessel.column.distillation_column": {
+								"base_attributes": [
+									{
+										"attribute_name": "reflux_ratio",
+										"description": "Operating reflux ratio.",
+										"data_type": "Decimal",
+										"unit": "N/A",
+										"example_value": "2.5",
+										"notes": "Reflux to distillate ratio."
+									},
+									{
+										"attribute_name": "top_pressure",
+										"description": "Pressure at the top of the column.",
+										"data_type": "Decimal",
+										"unit": "bar g",
+										"example_value": "1.5",
+										"notes": "Column top pressure."
+									},
+									{
+										"attribute_name": "bottom_pressure",
+										"description": "Pressure at the bottom of the column.",
+										"data_type": "Decimal",
+										"unit": "bar g",
+										"example_value": "2.0",
+										"notes": "Column bottom pressure."
+									}
+								]
+							},
+							"equipment.vessel.column.absorption_column": {
+								"base_attributes": [
+									{
+										"attribute_name": "solvent_type",
+										"description": "Type of solvent used for absorption.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Water",
+										"notes": "Absorption solvent."
+									},
+									{
+										"attribute_name": "solvent_flow_rate",
+										"description": "Flow rate of solvent to the column.",
+										"data_type": "Decimal",
+										"unit": "m³/h",
+										"example_value": "50",
+										"notes": "Solvent flow rate."
+									}
+								]
+							},
+							"equipment.vessel.column.stripping_column": {
+								"base_attributes": [
+									{
+										"attribute_name": "stripping_agent_type",
+										"description": "Type of stripping agent used.",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Steam",
+										"notes": "Stripping agent."
+									},
+									{
+										"attribute_name": "stripping_agent_flow_rate",
+										"description": "Flow rate of stripping agent to the column.",
+										"data_type": "Decimal",
+										"unit": "kg/h",
+										"example_value": "1000",
+										"notes": "Stripping agent flow rate."
+									}
+								]
+							}
+						}
+					}
+				}
+			},
+			"equipment.pump": {
+				"base_attributes": [
+					{
+						"attribute_name": "pump_type",
+						"description": "Type of pump (Centrifugal, Positive Displacement).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Centrifugal",
+						"notes": "Pump category."
+					},
+					{
+						"attribute_name": "design_flow_rate",
+						"description": "Design flow rate of the pump.",
+						"data_type": "Decimal",
+						"unit": "m³/h",
+						"example_value": "50",
+						"notes": "Design flow capacity."
+					},
+					{
+						"attribute_name": "design_head",
+						"description": "Design head of the pump.",
+						"data_type": "Decimal",
+						"unit": "m",
+						"example_value": "100",
+						"notes": "Design pressure head."
+					},
+					{
+						"attribute_name": "motor_power",
+						"description": "Power rating of the pump motor.",
+						"data_type": "Decimal",
+						"unit": "kW",
+						"example_value": "30",
+						"notes": "Motor power."
+					},
+					{
+						"attribute_name": "nominal_speed",
+						"description": "Nominal operating speed of the pump.",
+						"data_type": "Decimal",
+						"unit": "rpm",
+						"example_value": "1450",
+						"notes": "Pump speed."
+					},
+					{
+						"attribute_name": "npsh_required",
+						"description": "Net Positive Suction Head Required.",
+						"data_type": "Decimal",
+						"unit": "m",
+						"example_value": "3",
+						"notes": "NPSHR value."
+					},
+					{
+						"attribute_name": "efficiency",
+						"description": "Pump efficiency at design point.",
+						"data_type": "Decimal",
+						"unit": "%",
+						"example_value": "75",
+						"notes": "Pump efficiency."
+					},
+					{
+						"attribute_name": "fluid_type",
+						"description": "Type of fluid being pumped.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Water",
+						"notes": "Fluid name."
+					},
+					{
+						"attribute_name": "fluid_density",
+						"description": "Density of the fluid being pumped.",
+						"data_type": "Decimal",
+						"unit": "kg/m³",
+						"example_value": "1000",
+						"notes": "Fluid density."
+					},
+					{
+						"attribute_name": "fluid_viscosity",
+						"description": "Viscosity of the fluid being pumped.",
+						"data_type": "Decimal",
+						"unit": "cP",
+						"example_value": "1",
+						"notes": "Fluid viscosity."
+					}
+				],
+				"subtypes": {
+					"equipment.pump.centrifugal_pump": {
+						"base_attributes": [
+							{
+								"attribute_name": "centrifugal_pump_type",
+								"description": "Type of centrifugal pump (Horizontal, Vertical, Submersible).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Horizontal",
+								"notes": "Centrifugal pump subtype."
+							},
+							{
+								"attribute_name": "number_of_stages",
+								"description": "Number of stages in a multi-stage pump.",
+								"data_type": "Integer",
+								"unit": "N/A",
+								"example_value": "1",
+								"notes": "Number of stages."
+							},
+							{
+								"attribute_name": "impeller_type",
+								"description": "Type of impeller used.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Closed",
+								"notes": "Impeller design."
+							},
+							{
+								"attribute_name": "casing_type",
+								"description": "Type of pump casing.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Volute",
+								"notes": "Casing design."
+							}
+						],
+						"subtypes": {
+							"equipment.pump.centrifugal_pump.horizontal_pump": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.pump.centrifugal_pump.vertical_pump": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.pump.centrifugal_pump.submersible_pump": {
+								"base_attributes": [
+									{
+										"attribute_name": "submersible_depth_max",
+										"description": "Maximum submersible depth.",
+										"data_type": "Decimal",
+										"unit": "m",
+										"example_value": "10",
+										"notes": "Maximum immersion depth."
+									},
+									{
+										"attribute_name": "motor_cooling_type",
+										"description": "Type of motor cooling (e.g., Oil-filled).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Oil-Filled",
+										"notes": "Motor cooling method."
+									}
+								]
+							}
+						}
+					},
+					"equipment.pump.positive_displacement_pump": {
+						"base_attributes": [
+							{
+								"attribute_name": "positive_displacement_pump_type",
+								"description": "Type of positive displacement pump (Reciprocating, Rotary).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Reciprocating",
+								"notes": "Positive displacement pump subtype."
+							},
+							{
+								"attribute_name": "pump_displacement",
+								"description": "Volume displaced per revolution or stroke.",
+								"data_type": "Decimal",
+								"unit": "cm³/rev",
+								"example_value": "50",
+								"notes": "Volume displaced per cycle."
+							},
+							{
+								"attribute_name": "max_operating_pressure",
+								"description": "Maximum operating pressure.",
+								"data_type": "Decimal",
+								"unit": "bar g",
+								"example_value": "50",
+								"notes": "Maximum pressure capability."
+							},
+							{
+								"attribute_name": "viscosity_range_recommended",
+								"description": "Recommended viscosity range for operation.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "1-1000 cP",
+								"notes": "Viscosity operating limits."
+							}
+						],
+						"subtypes": {
+							"equipment.pump.positive_displacement_pump.reciprocating_pump": {
+								"base_attributes": [
+									{
+										"attribute_name": "reciprocating_pump_type",
+										"description": "Type of reciprocating pump (Piston, Plunger, Diaphragm).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Piston",
+										"notes": "Reciprocating pump subtype."
+									},
+									{
+										"attribute_name": "number_of_cylinders",
+										"description": "Number of cylinders or pistons.",
+										"data_type": "Integer",
+										"unit": "N/A",
+										"example_value": "3",
+										"notes": "Number of pumping elements."
+									},
+									{
+										"attribute_name": "stroke_length",
+										"description": "Length of piston or plunger stroke.",
+										"data_type": "Decimal",
+										"unit": "mm",
+										"example_value": "50",
+										"notes": "Stroke length."
+									},
+									{
+										"attribute_name": "strokes_per_minute",
+										"description": "Number of strokes per minute.",
+										"data_type": "Decimal",
+										"unit": "spm",
+										"example_value": "100",
+										"notes": "Stroke rate."
+									}
+								],
+								"subtypes": {
+									"equipment.pump.positive_displacement_pump.reciprocating_pump.piston_pump": {
+										"base_attributes": [],
+										"notes": "No specific attributes beyond its parent types."
+									},
+									"equipment.pump.positive_displacement_pump.reciprocating_pump.plunger_pump": {
+										"base_attributes": [],
+										"notes": "No specific attributes beyond its parent types."
+									},
+									"equipment.pump.positive_displacement_pump.reciprocating_pump.diaphragm_pump": {
+										"base_attributes": [
+											{
+												"attribute_name": "diaphragm_material",
+												"description": "Material of the diaphragm.",
+												"data_type": "Text",
+												"unit": "N/A",
+												"example_value": "PTFE",
+												"notes": "Diaphragm material."
+											},
+											{
+												"attribute_name": "max_solid_size",
+												"description": "Maximum solid particle size that can be handled.",
+												"data_type": "Decimal",
+												"unit": "mm",
+												"example_value": "5",
+												"notes": "Solid handling capability."
+											}
+										]
+									}
+								}
+							},
+							"equipment.pump.positive_displacement_pump.rotary_pump": {
+								"base_attributes": [
+									{
+										"attribute_name": "rotary_pump_type",
+										"description": "Type of rotary pump (Gear, Lobe, Screw, Vane).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Gear",
+										"notes": "Rotary pump subtype."
+									},
+									{
+										"attribute_name": "rotor_material",
+										"description": "Material of the rotor(s).",
+										"data_type": "Text",
+										"unit": "N/A",
+										"example_value": "Steel",
+										"notes": "Rotor material."
+									},
+									{
+										"attribute_name": "max_speed",
+										"description": "Maximum operating speed.",
+										"data_type": "Decimal",
+										"unit": "rpm",
+										"example_value": "500",
+										"notes": "Maximum speed limit."
+									}
+								],
+								"subtypes": {
+									"equipment.pump.positive_displacement_pump.rotary_pump.gear_pump": {
+										"base_attributes": [],
+										"notes": "No specific attributes beyond its parent types."
+									},
+									"equipment.pump.positive_displacement_pump.rotary_pump.lobe_pump": {
+										"base_attributes": [],
+										"notes": "No specific attributes beyond its parent types."
+									},
+									"equipment.pump.positive_displacement_pump.rotary_pump.screw_pump": {
+										"base_attributes": [
+											{
+												"attribute_name": "number_of_screws",
+												"description": "Number of screws in the pump.",
+												"data_type": "Integer",
+												"unit": "N/A",
+												"example_value": "2",
+												"notes": "Screw count."
+											},
+											{
+												"attribute_name": "screw_pitch",
+												"description": "Pitch of the screw thread.",
+												"data_type": "Decimal",
+												"unit": "mm",
+												"example_value": "20",
+												"notes": "Screw thread pitch."
+											}
+										]
+									},
+									"equipment.pump.positive_displacement_pump.rotary_pump.vane_pump": {
+										"base_attributes": [
+											{
+												"attribute_name": "vane_material",
+												"description": "Material of the vanes.",
+												"data_type": "Text",
+												"unit": "N/A",
+												"example_value": "Carbon",
+												"notes": "Vane material."
+											},
+											{
+												"attribute_name": "vane_count",
+												"description": "Number of vanes.",
+												"data_type": "Integer",
+												"unit": "N/A",
+												"example_value": "8",
+												"notes": "Vane count."
+											}
+										]
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"equipment.compressor": {
+				"base_attributes": [
+					{
+						"attribute_name": "compressor_type",
+						"description": "Category of compressor",
+						"data_type": "Enumerated List",
+						"notes": "Options: Centrifugal, Axial, Positive Displacement"
+					},
+					{
+						"attribute_name": "design_capacity",
+						"description": "Design capacity of the compressor.",
+						"data_type": "Decimal",
+						"unit": "m³/h"
+					},
+					{
+						"attribute_name": "discharge_pressure",
+						"description": "Discharge pressure of the compressor.",
+						"data_type": "Decimal",
+						"unit": "bar g"
+					},
+					{
+						"attribute_name": "inlet_pressure",
+						"description": "Inlet pressure of the compressor.",
+						"data_type": "Decimal",
+						"unit": "bar g"
+					},
+					{
+						"attribute_name": "power_consumption",
+						"description": "Power consumption of the compressor.",
+						"data_type": "Decimal",
+						"unit": "kW"
+					},
+					{
+						"attribute_name": "number_of_stages",
+						"description": "Number of stages in the compressor.",
+						"data_type": "Integer"
+					},
+					{
+						"attribute_name": "compression_ratio",
+						"description": "Compression ratio of the compressor.",
+						"data_type": "Decimal"
+					}
+				],
+				"subtypes": {
+					"equipment.compressor.centrifugal_compressor": {
+						"base_attributes": [
+							{
+								"attribute_name": "impeller_diameter",
+								"description": "Diameter of the impeller.",
+								"data_type": "Decimal",
+								"unit": "mm"
+							},
+							{
+								"attribute_name": "number_of_impellers",
+								"description": "Number of impellers in the compressor.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "inlet_guide_vanes",
+								"description": "Presence of inlet guide vanes.",
+								"data_type": "Boolean"
+							}
+						]
+					},
+					"equipment.compressor.axial_compressor": {
+						"base_attributes": [
+							{
+								"attribute_name": "rotor_blade_material",
+								"description": "Material of the rotor blades.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "stator_blade_material",
+								"description": "Material of the stator blades.",
+								"data_type": "Text"
+							}
+						]
+					},
+					"equipment.compressor.positive_displacement_compressor": {
+						"base_attributes": [
+							{
+								"attribute_name": "positive_displacement_compressor_type",
+								"description": "Type of positive displacement compressor.",
+								"data_type": "Enumerated List",
+								"notes": "Options: Reciprocating, Rotary Screw, Rotary Vane, Rotary Lobe"
+							}
+						],
+						"subtypes": {
+							"equipment.compressor.positive_displacement_compressor.reciprocating_compressor": {
+								"base_attributes": [
+									{
+										"attribute_name": "cylinder_bore",
+										"description": "Diameter of the cylinder bore.",
+										"data_type": "Decimal",
+										"unit": "mm"
+									},
+									{
+										"attribute_name": "stroke",
+										"description": "Length of the stroke.",
+										"data_type": "Decimal",
+										"unit": "mm"
+									}
+								]
+							},
+							"equipment.compressor.positive_displacement_compressor.rotary_screw_compressor": {
+								"base_attributes": [
+									{
+										"attribute_name": "screw_rotor_profile",
+										"description": "Profile of the screw rotor.",
+										"data_type": "Text"
+									},
+									{
+										"attribute_name": "oil_injection_type",
+										"description": "Type of oil injection system.",
+										"data_type": "Text"
+									}
+								]
+							},
+							"equipment.compressor.positive_displacement_compressor.rotary_vane_compressor": {
+								"base_attributes": [
+									{
+										"attribute_name": "vane_material",
+										"description": "Material of the vanes.",
+										"data_type": "Text"
+									}
+								]
+							},
+							"equipment.compressor.positive_displacement_compressor.rotary_lobe_compressor": {
+								"base_attributes": [
+									{
+										"attribute_name": "lobe_profile",
+										"description": "Profile of the lobes.",
+										"data_type": "Text"
+									}
+								]
+							}
+						}
+					}
+				}
+			},
+			"equipment.heat_exchanger": {
+				"base_attributes": [
+					{
+						"attribute_name": "heat_exchanger_type",
+						"description": "Type of heat exchanger.",
+						"data_type": "Enumerated List",
+						"notes": "Options: Shell and Tube, Plate, Air Cooler, Fin Fan Cooler"
+					},
+					{
+						"attribute_name": "heat_transfer_area",
+						"description": "Area available for heat transfer.",
+						"data_type": "Decimal",
+						"unit": "m²"
+					},
+					{
+						"attribute_name": "design_duty",
+						"description": "Designed heat transfer duty.",
+						"data_type": "Decimal",
+						"unit": "kW"
+					},
+					{
+						"attribute_name": "tube_side_fluid",
+						"description": "Fluid flowing through the tubes.",
+						"data_type": "Text"
+					},
+					{
+						"attribute_name": "shell_side_fluid",
+						"description": "Fluid flowing through the shell.",
+						"data_type": "Text"
+					},
+					{
+						"attribute_name": "number_of_passes",
+						"description": "Number of passes for the fluid.",
+						"data_type": "Integer"
+					}
+				],
+				"subtypes": {
+					"equipment.heat_exchanger.shell_and_tube_exchanger": {
+						"base_attributes": [
+							{
+								"attribute_name": "shell_type",
+								"description": "TEMA type of the shell (e.g., E, J, G, H).",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "tube_layout",
+								"description": "Layout of the tubes (e.g., Triangular, Square).",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "tube_diameter",
+								"description": "Outer diameter of the tubes.",
+								"data_type": "Decimal",
+								"unit": "mm"
+							},
+							{
+								"attribute_name": "tube_length",
+								"description": "Length of the tubes.",
+								"data_type": "Decimal",
+								"unit": "m"
+							},
+							{
+								"attribute_name": "tube_material",
+								"description": "Material of construction for the tubes.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "shell_material",
+								"description": "Material of construction for the shell.",
+								"data_type": "Text"
+							}
+						],
+						"subtypes": {
+							"equipment.heat_exchanger.shell_and_tube_exchanger.fixed_tubesheet": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.heat_exchanger.shell_and_tube_exchanger.floating_head": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.heat_exchanger.shell_and_tube_exchanger.u_tube": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							}
+						}
+					},
+					"equipment.heat_exchanger.plate_exchanger": {
+						"base_attributes": [
+							{
+								"attribute_name": "plate_type",
+								"description": "Type of plate construction.",
+								"data_type": "Enumerated List",
+								"notes": "Options: Gasketed, Brazed, Welded"
+							},
+							{
+								"attribute_name": "number_of_plates",
+								"description": "Total number of plates.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "plate_material",
+								"description": "Material of construction for the plates.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "plate_thickness",
+								"description": "Thickness of each plate.",
+								"data_type": "Decimal",
+								"unit": "mm"
+							}
+						],
+						"subtypes": {
+							"equipment.heat_exchanger.plate_exchanger.gasketed_plate": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.heat_exchanger.plate_exchanger.brazed_plate": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.heat_exchanger.plate_exchanger.welded_plate": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							}
+						}
+					},
+					"equipment.heat_exchanger.air_cooler": {
+						"base_attributes": []
+					},
+					"equipment.heat_exchanger.fin_fan_cooler": {
+						"base_attributes": [
+							{
+								"attribute_name": "fan_diameter",
+								"description": "Diameter of the fans.",
+								"data_type": "Decimal",
+								"unit": "m"
+							},
+							{
+								"attribute_name": "number_of_fans",
+								"description": "Total number of fans.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "fin_material",
+								"description": "Material of construction for the fins.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "fin_pitch",
+								"description": "Pitch of the fins.",
+								"data_type": "Decimal",
+								"unit": "mm"
+							}
+						]
+					}
+				}
+			},
+			"equipment.furnace": {
+				"base_attributes": [
+					{
+						"attribute_name": "furnace_type",
+						"description": "Type of furnace.",
+						"data_type": "Enumerated List",
+						"notes": "Options: Fired Heater, Electric Heater"
+					},
+					{
+						"attribute_name": "heat_duty",
+						"description": "Heat duty of the furnace.",
+						"data_type": "Decimal",
+						"unit": "MW"
+					},
+					{
+						"attribute_name": "fuel_type",
+						"description": "Type of fuel used (e.g., Natural Gas, Electricity).",
+						"data_type": "Text"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Operating temperature of the furnace.",
+						"data_type": "Decimal",
+						"unit": "°C"
+					}
+				],
+				"subtypes": {
+					"equipment.furnace.fired_heater": {
+						"base_attributes": [
+							{
+								"attribute_name": "number_of_burners",
+								"description": "Total number of burners.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "burner_type",
+								"description": "Type of burners used.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "firebox_material",
+								"description": "Material of construction for the firebox.",
+								"data_type": "Text"
+							}
+						]
+					},
+					"equipment.furnace.electric_heater": {
+						"base_attributes": [
+							{
+								"attribute_name": "heating_element_type",
+								"description": "Type of heating elements.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "power_rating",
+								"description": "Power rating of the heater.",
+								"data_type": "Decimal",
+								"unit": "kW"
+							}
+						]
+					}
+				}
+			},
+			"equipment.filter": {
+				"base_attributes": [
+					{
+						"attribute_name": "filter_type",
+						"description": "Type of filter.",
+						"data_type": "Enumerated List",
+						"notes": "Options: Strainer, Cartridge Filter, Bag Filter"
+					},
+					{
+						"attribute_name": "filtration_rating",
+						"description": "Filtration rating of the filter.",
+						"data_type": "Decimal",
+						"unit": "µm"
+					},
+					{
+						"attribute_name": "design_pressure_drop",
+						"description": "Design pressure drop across the filter.",
+						"data_type": "Decimal",
+						"unit": "bar"
+					},
+					{
+						"attribute_name": "max_flow_rate",
+						"description": "Maximum allowable flow rate.",
+						"data_type": "Decimal",
+						"unit": "m³/h"
+					}
+				],
+				"subtypes": {
+					"equipment.filter.strainer": {
+						"base_attributes": [
+							{
+								"attribute_name": "strainer_type",
+								"description": "Type of strainer.",
+								"data_type": "Enumerated List",
+								"notes": "Options: Y-Strainer, Basket Strainer, T-Strainer"
+							},
+							{
+								"attribute_name": "mesh_size",
+								"description": "Mesh size of the screen.",
+								"data_type": "Text",
+								"unit": "Mesh"
+							},
+							{
+								"attribute_name": "material_screen",
+								"description": "Material of the strainer screen.",
+								"data_type": "Text"
+							}
+						],
+						"subtypes": {
+							"equipment.filter.strainer.y_strainer": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.filter.strainer.basket_strainer": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							},
+							"equipment.filter.strainer.t_strainer": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							}
+						}
+					},
+					"equipment.filter.cartridge_filter": {
+						"base_attributes": [
+							{
+								"attribute_name": "cartridge_material",
+								"description": "Material of the filter cartridges.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "number_of_cartridges",
+								"description": "Total number of cartridges.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "cartridge_length",
+								"description": "Length of the cartridges.",
+								"data_type": "Decimal",
+								"unit": "inch"
+							}
+						]
+					},
+					"equipment.filter.bag_filter": {
+						"base_attributes": [
+							{
+								"attribute_name": "bag_material",
+								"description": "Material of the filter bags.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "number_of_bags",
+								"description": "Total number of bags.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "bag_size",
+								"description": "Size of the filter bags.",
+								"data_type": "Text",
+								"unit": "inch"
+							}
+						]
+					}
+				}
+			},
+			"equipment.dryer": {
+				"base_attributes": [
+					{
+						"attribute_name": "dryer_type",
+						"description": "Type of dryer.",
+						"data_type": "Enumerated List",
+						"notes": "Options: Rotary Dryer, Fluid Bed Dryer, Spray Dryer"
+					},
+					{
+						"attribute_name": "drying_capacity",
+						"description": "Drying capacity of the dryer.",
+						"data_type": "Decimal",
+						"unit": "kg/h"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Operating temperature of the dryer.",
+						"data_type": "Decimal",
+						"unit": "°C"
+					},
+					{
+						"attribute_name": "heat_source",
+						"description": "Source of heat for drying (e.g., Steam, Hot Air).",
+						"data_type": "Text"
+					}
+				],
+				"subtypes": {
+					"equipment.dryer.rotary_dryer": {
+						"base_attributes": [
+							{
+								"attribute_name": "drum_diameter",
+								"description": "Diameter of the rotating drum.",
+								"data_type": "Decimal",
+								"unit": "m"
+							},
+							{
+								"attribute_name": "drum_length",
+								"description": "Length of the rotating drum.",
+								"data_type": "Decimal",
+								"unit": "m"
+							},
+							{
+								"attribute_name": "rotation_speed",
+								"description": "Rotational speed of the drum.",
+								"data_type": "Decimal",
+								"unit": "rpm"
+							}
+						]
+					},
+					"equipment.dryer.fluid_bed_dryer": {
+						"base_attributes": [
+							{
+								"attribute_name": "bed_area",
+								"description": "Area of the fluidization bed.",
+								"data_type": "Decimal",
+								"unit": "m²"
+							},
+							{
+								"attribute_name": "air_flow_rate",
+								"description": "Flow rate of the fluidizing air.",
+								"data_type": "Decimal",
+								"unit": "m³/h"
+							}
+						]
+					},
+					"equipment.dryer.spray_dryer": {
+						"base_attributes": [
+							{
+								"attribute_name": "nozzle_type",
+								"description": "Type of spray nozzle.",
+								"data_type": "Text"
+							},
+							{
+								"attribute_name": "inlet_air_temperature",
+								"description": "Temperature of the inlet air.",
+								"data_type": "Decimal",
+								"unit": "°C"
+							},
+							{
+								"attribute_name": "outlet_air_temperature",
+								"description": "Temperature of the outlet air.",
+								"data_type": "Decimal",
+								"unit": "°C"
+							}
+						]
+					}
+				}
+			},
+			"equipment.mixer": {
+				"base_attributes": [
+					{
+						"attribute_name": "mixer_type",
+						"description": "Type of mixer.",
+						"data_type": "Enumerated List",
+						"notes": "Options: Static Mixer, Dynamic Mixer"
+					},
+					{
+						"attribute_name": "mixing_volume",
+						"description": "Mixing volume of the mixer.",
+						"data_type": "Decimal",
+						"unit": "m³"
+					},
+					{
+						"attribute_name": "power_consumption",
+						"description": "Power consumption of the mixer.",
+						"data_type": "Decimal",
+						"unit": "kW"
+					}
+				],
+				"subtypes": {
+					"equipment.mixer.static_mixer": {
+						"base_attributes": [
+							{
+								"attribute_name": "number_of_elements",
+								"description": "Number of mixing elements.",
+								"data_type": "Integer"
+							},
+							{
+								"attribute_name": "element_type",
+								"description": "Type of mixing elements.",
+								"data_type": "Text"
+							}
+						]
+					},
+					"equipment.mixer.dynamic_mixer": {
+						"base_attributes": [
+							{
+								"attribute_name": "dynamic_mixer_type",
+								"description": "Type of dynamic mixer.",
+								"data_type": "Enumerated List",
+								"notes": "Options: Agitator"
+							},
+							{
+								"attribute_name": "agitator_speed",
+								"description": "Speed of the agitator.",
+								"data_type": "Decimal",
+								"unit": "rpm"
+							},
+							{
+								"attribute_name": "impeller_diameter",
+								"description": "Diameter of the impeller.",
+								"data_type": "Decimal",
+								"unit": "m"
+							}
+						],
+						"subtypes": {
+							"equipment.mixer.dynamic_mixer.agitator": {
+								"base_attributes": [],
+								"notes": "No specific attributes beyond its parent types."
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"piping": {
+		"subtypes": {
+			"piping.pipe": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the pipe segment. Following plant standard tagging convention.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "line_number",
+						"description": "Piping Line Number to which the pipe segment belongs. Following plant standard line numbering convention.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "nominal_diameter",
+						"description": "Nominal Pipe Size (NPS) or Diameter Nominal (DN) of the pipe. Specify unit clearly (e.g., \"NPS 6 inch\" or \"DN 150 mm\").",
+						"data_type": "Decimal",
+						"unit": "inch (in) / mm",
+						"example_value": "NPS 6 inch",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "schedule",
+						"description": "Pipe schedule indicating wall thickness (e.g., SCH 40, SCH 80, STD, XS, XXS). Based on ASME B36.10M or ASME B36.19M.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "SCH 40",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "material_specification",
+						"description": "Reference to the material specification document or material code. Specifies the material grade and standard (e.g., ASTM A106 Grade B).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ASTM A106 Grade B",
+						"notes": "Required: YES. Data type is a reference."
+					},
+					{
+						"attribute_name": "length",
+						"description": "Length of the pipe segment.",
+						"data_type": "Decimal",
+						"unit": "meter (m) / foot (ft)",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "wall_thickness",
+						"description": "Actual wall thickness of the pipe.",
+						"data_type": "Decimal",
+						"unit": "inch (in) / mm",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "design_pressure",
+						"description": "Maximum allowable pressure for which the pipe is designed.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_temperature",
+						"description": "Maximum and Minimum allowable temperature for which the pipe is designed. Specify both if applicable, or range.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "operating_pressure",
+						"description": "Normal operating pressure in the pipe segment.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Normal operating temperature in the pipe segment.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "fluid_service",
+						"description": "Description of the fluid service (e.g., \"Process Water,\" \"Crude Oil,\" \"Steam\").",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Process Water",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "insulation_type",
+						"description": "Type of insulation applied to the pipe, if any (e.g., \"Mineral Wool,\" \"Calcium Silicate,\" \"None\").",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Mineral Wool",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "insulation_thickness",
+						"description": "Thickness of the insulation layer, if applicable.",
+						"data_type": "Decimal",
+						"unit": "mm / inch",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "painting_specification",
+						"description": "Specification for painting or coating applied to the pipe for corrosion protection or identification.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "p_and_id_symbol",
+						"description": "P&ID symbol representation for the pipe segment (e.g., straight line, dashed line).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "drawing_number",
+						"description": "Drawing number where the pipe segment is detailed.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date of installation of the pipe segment.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "last_inspection_date",
+						"description": "Date of the last inspection performed on the pipe segment.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					}
+				],
+				"subtypes": {
+					"piping.pipe.straight_pipe": {
+						"base_attributes": []
+					},
+					"piping.pipe.spool": {
+						"base_attributes": [
+							{
+								"attribute_name": "spool_id",
+								"description": "Unique identifier for the pipe spool. Used for fabrication and installation tracking.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "fabrication_shop",
+								"description": "Name of the fabrication shop that manufactured the spool.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "fabrication_drawing_number",
+								"description": "Drawing number specifically for the spool fabrication.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "weight",
+								"description": "Weight of the pipe spool.",
+								"data_type": "Decimal",
+								"unit": "kilogram (kg) / pound (lb)",
+								"example_value": "",
+								"notes": "Required: NO"
+							}
+						]
+					}
+				}
+			},
+			"piping.fitting": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the fitting. Following plant standard tagging convention.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "line_number",
+						"description": "Piping Line Number to which the fitting belongs.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "fitting_type",
+						"description": "Type of fitting (e.g., Elbow, Tee, Reducer, Coupling, Cap, Plug, Union, Nipple). Derived from the taxonomy.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Elbow, Tee, Reducer",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "nominal_diameter",
+						"description": "Nominal Pipe Size (NPS) or Diameter Nominal (DN) of the fitting. Specify unit clearly (e.g., \"NPS 6 inch\" or \"DN 150 mm\").",
+						"data_type": "Decimal",
+						"unit": "inch (in) / mm",
+						"example_value": "NPS 6 inch",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "material_specification",
+						"description": "Reference to the material specification document or material code. Specifies the material grade and standard (e.g., ASTM A234 Grade WPB).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ASTM A234 Grade WPB",
+						"notes": "Required: YES. Data type is a reference."
+					},
+					{
+						"attribute_name": "schedule",
+						"description": "Fitting schedule or pressure rating (e.g., SCH 40, SCH 80, Class 150, Class 300). Based on applicable standards.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "SCH 40",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "connection_type",
+						"description": "Type of connection (e.g., \"Welded,\" \"Threaded,\" \"Flanged,\" \"Socket Weld\").",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Welded, Threaded, Flanged",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_pressure",
+						"description": "Maximum allowable pressure for which the fitting is designed.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_temperature",
+						"description": "Maximum and Minimum allowable temperature for which the fitting is designed. Specify both if applicable, or range.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "operating_pressure",
+						"description": "Normal operating pressure in the fitting location.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Normal operating temperature in the fitting location.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "fluid_service",
+						"description": "Description of the fluid service (inherited from the line).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "painting_specification",
+						"description": "Specification for painting or coating, if applicable.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "p_and_id_symbol",
+						"description": "P&ID symbol representation for the fitting.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "drawing_number",
+						"description": "Drawing number where the fitting is detailed.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date of installation of the fitting.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "last_inspection_date",
+						"description": "Date of the last inspection performed on the fitting.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					}
+				],
+				"subtypes": {
+					"piping.fitting.elbow": {
+						"base_attributes": [
+							{
+								"attribute_name": "elbow_type",
+								"description": "Specific type of elbow (e.g., 90_degree_elbow, 45_degree_elbow, long_radius_elbow, short_radius_elbow). Derived from taxonomy.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "90_degree_elbow",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "bend_angle",
+								"description": "Angle of the bend in degrees (e.g., 90, 45). Applicable to elbows with specific angles.",
+								"data_type": "Decimal",
+								"unit": "degree (°)",
+								"example_value": "90",
+								"notes": "Required: Conditional"
+							},
+							{
+								"attribute_name": "radius_type",
+								"description": "Radius type (e.g., \"Long Radius,\" \"Short Radius\"). Applicable to elbows with radius designations.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Long Radius",
+								"notes": "Required: Conditional"
+							},
+							{
+								"attribute_name": "radius_value",
+								"description": "Radius of the elbow bend. If radius_type is specified, provide the radius value.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: Conditional"
+							}
+						],
+						"subtypes": {
+							"piping.fitting.elbow.90_degree_elbow": {
+								"base_attributes": []
+							},
+							"piping.fitting.elbow.45_degree_elbow": {
+								"base_attributes": []
+							},
+							"piping.fitting.elbow.long_radius_elbow": {
+								"base_attributes": []
+							},
+							"piping.fitting.elbow.short_radius_elbow": {
+								"base_attributes": []
+							}
+						}
+					},
+					"piping.fitting.tee": {
+						"base_attributes": [
+							{
+								"attribute_name": "tee_type",
+								"description": "Specific type of tee (e.g., straight_tee, reducing_tee). Derived from taxonomy.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "straight_tee",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "branch_diameter",
+								"description": "Diameter of the branch connection of a reducing tee. Applicable only to reducing tees.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: Conditional"
+							}
+						],
+						"subtypes": {
+							"piping.fitting.tee.straight_tee": {
+								"base_attributes": []
+							},
+							"piping.fitting.tee.reducing_tee": {
+								"base_attributes": []
+							}
+						}
+					},
+					"piping.fitting.reducer": {
+						"base_attributes": [
+							{
+								"attribute_name": "reducer_type",
+								"description": "Specific type of reducer (e.g., concentric_reducer, eccentric_reducer). Derived from taxonomy.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "concentric_reducer",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "small_end_diameter",
+								"description": "Nominal diameter of the smaller end of the reducer.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "large_end_diameter",
+								"description": "Nominal diameter of the larger end of the reducer.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "eccentricity",
+								"description": "Offset between the centerlines of the two ends for eccentric reducers. Applicable only to eccentric reducers.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: Conditional"
+							}
+						],
+						"subtypes": {
+							"piping.fitting.reducer.concentric_reducer": {
+								"base_attributes": []
+							},
+							"piping.fitting.reducer.eccentric_reducer": {
+								"base_attributes": []
+							}
+						}
+					},
+					"piping.fitting.coupling": {
+						"base_attributes": [
+							{
+								"attribute_name": "coupling_type",
+								"description": "Specific type of coupling (e.g., full_coupling, half_coupling, reducing_coupling). Derived from taxonomy.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "full_coupling",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "small_end_diameter",
+								"description": "Nominal diameter of the smaller end for reducing couplings. Applicable only to reducing couplings.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: Conditional"
+							},
+							{
+								"attribute_name": "large_end_diameter",
+								"description": "Nominal diameter of the larger end for reducing couplings. Applicable only to reducing couplings.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: Conditional"
+							}
+						],
+						"subtypes": {
+							"piping.fitting.coupling.full_coupling": {
+								"base_attributes": []
+							},
+							"piping.fitting.coupling.half_coupling": {
+								"base_attributes": []
+							},
+							"piping.fitting.coupling.reducing_coupling": {
+								"base_attributes": []
+							}
+						}
+					},
+					"piping.fitting.cap": {
+						"base_attributes": []
+					},
+					"piping.fitting.plug": {
+						"base_attributes": []
+					},
+					"piping.fitting.union": {
+						"base_attributes": []
+					},
+					"piping.fitting.nipple": {
+						"base_attributes": [
+							{
+								"attribute_name": "nipple_length",
+								"description": "Length of the nipple.",
+								"data_type": "Decimal",
+								"unit": "inch (in) / mm",
+								"example_value": "",
+								"notes": "Required: YES"
+							}
+						]
+					}
+				}
+			},
+			"piping.flange": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the flange. Following plant standard tagging convention.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "line_number",
+						"description": "Piping Line Number to which the flange is associated (if applicable - flanges can be stand-alone components).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "flange_type",
+						"description": "Type of flange (e.g., welding_neck_flange, slip_on_flange, blind_flange, threaded_flange, socket_weld_flange, lap_joint_flange). Derived from taxonomy.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "welding_neck_flange",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "nominal_diameter",
+						"description": "Nominal Pipe Size (NPS) or Diameter Nominal (DN) of the flange. Specify unit clearly (e.g., \"NPS 6 inch\" or \"DN 150 mm\").",
+						"data_type": "Decimal",
+						"unit": "inch (in) / mm",
+						"example_value": "NPS 6 inch",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "material_specification",
+						"description": "Reference to the material specification document or material code. Specifies the material grade and standard (e.g., ASTM A105).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ASTM A105",
+						"notes": "Required: YES. Data type is a reference."
+					},
+					{
+						"attribute_name": "pressure_class",
+						"description": "Pressure class or rating of the flange (e.g., Class 150, Class 300, PN16, PN40). Based on ASME B16.5 or EN 1092-1.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Class 150",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "facing_type",
+						"description": "Type of flange facing (e.g., \"Raised Face,\" \"Flat Face,\" \"Ring Type Joint (RTJ)\").",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Raised Face",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "bolting_specification",
+						"description": "Reference to the bolting specification document or bolting code. Specifies bolt material, size, and grade.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO. Data type is a reference."
+					},
+					{
+						"attribute_name": "gasket_specification",
+						"description": "Reference to the gasket specification document or gasket code. Specifies gasket material and type.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO. Data type is a reference."
+					},
+					{
+						"attribute_name": "design_pressure",
+						"description": "Maximum allowable pressure for which the flange is designed.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_temperature",
+						"description": "Maximum and Minimum allowable temperature for which the flange is designed. Specify both if applicable, or range.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "operating_pressure",
+						"description": "Normal operating pressure at the flange location.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Normal operating temperature at the flange location.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "painting_specification",
+						"description": "Specification for painting or coating, if applicable.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "p_and_id_symbol",
+						"description": "P&ID symbol representation for the flange.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "drawing_number",
+						"description": "Drawing number where the flange is detailed.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date of installation of the flange.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "last_inspection_date",
+						"description": "Date of the last inspection performed on the flange.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					}
+				],
+				"subtypes": {
+					"piping.flange.welding_neck_flange": {
+						"base_attributes": []
+					},
+					"piping.flange.slip_on_flange": {
+						"base_attributes": []
+					},
+					"piping.flange.blind_flange": {
+						"base_attributes": []
+					},
+					"piping.flange.threaded_flange": {
+						"base_attributes": []
+					},
+					"piping.flange.socket_weld_flange": {
+						"base_attributes": []
+					},
+					"piping.flange.lap_joint_flange": {
+						"base_attributes": []
+					}
+				}
+			},
+			"piping.valve": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the valve. Following plant standard tagging convention.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "line_number",
+						"description": "Piping Line Number in which the valve is installed.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "valve_type",
+						"description": "Type of valve (e.g., gate_valve, globe_valve, ball_valve, butterfly_valve, check_valve, control_valve, safety_valve). Derived from taxonomy.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "gate_valve",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "nominal_diameter",
+						"description": "Nominal Pipe Size (NPS) or Diameter Nominal (DN) of the valve. Specify unit clearly (e.g., \"NPS 6 inch\" or \"DN 150 mm\").",
+						"data_type": "Decimal",
+						"unit": "inch (in) / mm",
+						"example_value": "NPS 6 inch",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "material_specification",
+						"description": "Reference to the material specification document or material code for valve body. Specifies the material grade and standard (e.g., ASTM A216 Grade WCB).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ASTM A216 Grade WCB",
+						"notes": "Required: YES. Data type is a reference."
+					},
+					{
+						"attribute_name": "pipe_specification",
+						"description": "Reference to the pipe specification class. Specifies the material grade of the piping to which the valve connects.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "CARBON STEEL",
+						"notes": "Required: YES. Data type is a reference."
+					},
+					{
+						"attribute_name": "pressure_class",
+						"description": "Pressure class or rating of the valve (e.g., Class 150, Class 300, PN16, PN40). Based on ASME B16.34 or EN 1349.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Class 150",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "connection_type",
+						"description": "Type of connection (e.g., \"Flanged,\" \"Welded,\" \"Threaded,\" \"Wafer,\" \"Lug\").",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Flanged",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "actuator_type",
+						"description": "Type of actuator, if any (e.g., \"Manual,\" \"Pneumatic,\" \"Electric,\" \"Hydraulic,\" \"None\").",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Manual",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "design_pressure",
+						"description": "Maximum allowable pressure for which the valve is designed.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_temperature",
+						"description": "Maximum and Minimum allowable temperature for which the valve is designed. Specify both if applicable, or range.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "operating_pressure",
+						"description": "Normal operating pressure at the valve location.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Normal operating temperature at the valve location.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "fluid_service",
+						"description": "Description of the fluid service (inherited from the line).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "painting_specification",
+						"description": "Specification for painting or coating, if applicable.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "p_and_id_symbol",
+						"description": "P&ID symbol representation for the valve.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "drawing_number",
+						"description": "Drawing number where the valve is detailed.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date of installation of the valve.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "last_inspection_date",
+						"description": "Date of the last inspection performed on the valve.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					}
+				],
+				"subtypes": {
+					"piping.valve.isolation_valve": {
+						"base_attributes": [],
+						"notes": "This type of valve has the function 'Isolation'."
+					},
+					"piping.valve.control_valve": {
+						"base_attributes": [
+							{
+								"attribute_name": "cv_value",
+								"description": "Valve flow coefficient (Cv) indicating valve capacity.",
+								"data_type": "Decimal",
+								"unit": "US Gallons/min at 1 psi pressure drop",
+								"example_value": "",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "fail_position",
+								"description": "Valve fail position upon loss of control signal or power (e.g., \"Fail Open,\" \"Fail Closed,\" \"Fail Last Position\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Fail Closed",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "control_signal_type",
+								"description": "Type of control signal (e.g., \"Pneumatic 3-15 psi,\" \"4-20 mA,\" \"Digital - Fieldbus\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "4-20 mA",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "positioner_type",
+								"description": "Type of valve positioner, if any (e.g., \"Electro-pneumatic,\" \"Smart Positioner\").",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Smart Positioner",
+								"notes": "Required: NO"
+							}
+						],
+						"notes": "This type of valve has the function 'Control'."
+					},
+					"piping.valve.check_valve": {
+						"base_attributes": [
+							{
+								"attribute_name": "check_valve_type",
+								"description": "Specific type of check valve (e.g., swing_check_valve, lift_check_valve, ball_check_valve, diaphragm_check_valve). Derived from taxonomy.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "swing_check_valve",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "cracking_pressure",
+								"description": "Pressure at which the check valve starts to open.",
+								"data_type": "Decimal",
+								"unit": "bar / psi",
+								"example_value": "",
+								"notes": "Required: NO"
+							}
+						],
+						"notes": "This type of valve has the function 'Check/Non-Return'."
+					},
+					"piping.valve.safety_valve": {
+						"base_attributes": [
+							{
+								"attribute_name": "set_pressure",
+								"description": "Pressure at which the safety valve is set to relieve pressure.",
+								"data_type": "Decimal",
+								"unit": "bar / psi",
+								"example_value": "",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "relieving_capacity",
+								"description": "Mass flow rate or volumetric flow rate (with units specified) that the safety valve can relieve.",
+								"data_type": "Decimal",
+								"unit": "kg/hr / lb/hr",
+								"example_value": "",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "valve_orifice",
+								"description": "Orifice size designation for the safety valve (e.g., D, E, F, G).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "F",
+								"notes": "Required: NO"
+							}
+						],
+						"notes": "This type of valve has the function 'Safety/Pressure Relief'."
+					}
+				}
+			},
+			"piping.specialty_component": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the specialty component. Following plant standard tagging convention.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "line_number",
+						"description": "Piping Line Number in which the component is installed (if applicable).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "component_type",
+						"description": "Type of specialty component (e.g., expansion_joint, steam_trap, sight_glass, hose). Derived from taxonomy.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "expansion_joint",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "nominal_diameter",
+						"description": "Nominal Pipe Size (NPS) or Diameter Nominal (DN) of the component. Specify unit clearly (e.g., \"NPS 6 inch\" or \"DN 150 mm\").",
+						"data_type": "Decimal",
+						"unit": "inch (in) / mm",
+						"example_value": "NPS 6 inch",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "material_specification",
+						"description": "Reference to the material specification document or material code.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: YES. Data type is a reference."
+					},
+					{
+						"attribute_name": "connection_type",
+						"description": "Type of connection (e.g., \"Flanged,\" \"Threaded,\" \"Welded,\" \"Hose Barb\").",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Flanged",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_pressure",
+						"description": "Maximum allowable pressure for which the component is designed.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "design_temperature",
+						"description": "Maximum and Minimum allowable temperature for which the component is designed. Specify both if applicable, or range.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: YES"
+					},
+					{
+						"attribute_name": "operating_pressure",
+						"description": "Normal operating pressure at the component location.",
+						"data_type": "Decimal",
+						"unit": "bar / psi",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "operating_temperature",
+						"description": "Normal operating temperature at the component location.",
+						"data_type": "Decimal",
+						"unit": "degree Celsius (°C) / degree Fahrenheit (°F)",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "fluid_service",
+						"description": "Description of the fluid service (inherited from the line).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "painting_specification",
+						"description": "Specification for painting or coating, if applicable.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "p_and_id_symbol",
+						"description": "P&ID symbol representation for the component.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "drawing_number",
+						"description": "Drawing number where the component is detailed.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date of installation of the component.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					},
+					{
+						"attribute_name": "last_inspection_date",
+						"description": "Date of the last inspection performed on the component.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "",
+						"notes": "Required: NO"
+					}
+				],
+				"subtypes": {
+					"piping.specialty_component.expansion_joint": {
+						"base_attributes": [
+							{
+								"attribute_name": "expansion_type",
+								"description": "Type of expansion joint (e.g., \"Bellows,\" \"Slip,\" \"Rubber\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Bellows",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "axial_movement",
+								"description": "Axial movement capability of the expansion joint.",
+								"data_type": "Decimal",
+								"unit": "mm / inch",
+								"example_value": "",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "lateral_movement",
+								"description": "Lateral movement capability of the expansion joint.",
+								"data_type": "Decimal",
+								"unit": "mm / inch",
+								"example_value": "",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "angular_movement",
+								"description": "Angular movement capability of the expansion joint.",
+								"data_type": "Decimal",
+								"unit": "degree (°)",
+								"example_value": "",
+								"notes": "Required: NO"
+							}
+						]
+					},
+					"piping.specialty_component.steam_trap": {
+						"base_attributes": [
+							{
+								"attribute_name": "steam_trap_type",
+								"description": "Type of steam trap (e.g., \"Float and Thermostatic,\" \"Thermodynamic,\" \"Inverted Bucket,\" \"Thermostatic\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Thermodynamic",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "condensate_capacity",
+								"description": "Condensate discharge capacity of the steam trap.",
+								"data_type": "Decimal",
+								"unit": "kg/hr / lb/hr",
+								"example_value": "",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "operating_differential_pressure",
+								"description": "Minimum operating differential pressure required for the steam trap to function properly.",
+								"data_type": "Decimal",
+								"unit": "bar / psi",
+								"example_value": "",
+								"notes": "Required: NO"
+							}
+						]
+					},
+					"piping.specialty_component.sight_glass": {
+						"base_attributes": [
+							{
+								"attribute_name": "glass_type",
+								"description": "Type of glass material used in the sight glass (e.g., \"Borosilicate,\" \"Soda-lime\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Borosilicate",
+								"notes": "Required: NO"
+							},
+							{
+								"attribute_name": "visibility_angle",
+								"description": "Angle of visibility provided by the sight glass.",
+								"data_type": "Decimal",
+								"unit": "degree (°)",
+								"example_value": "",
+								"notes": "Required: NO"
+							}
+						]
+					},
+					"piping.specialty_component.hose": {
+						"base_attributes": [
+							{
+								"attribute_name": "hose_type",
+								"description": "Type of hose (e.g., \"Rubber,\" \"PTFE,\" \"Metal Braided\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Rubber",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "hose_length",
+								"description": "Length of the hose.",
+								"data_type": "Decimal",
+								"unit": "meter (m) / foot (ft)",
+								"example_value": "",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "end_connection_type_1",
+								"description": "Type of connection at one end of the hose (e.g., \"Threaded,\" \"Flanged,\" \"Quick Disconnect\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Flanged",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "end_connection_type_2",
+								"description": "Type of connection at the other end of the hose (e.g., \"Threaded,\" \"Flanged,\" \"Quick Disconnect\").",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Flanged",
+								"notes": "Required: YES"
+							},
+							{
+								"attribute_name": "bend_radius",
+								"description": "Minimum bend radius for the hose.",
+								"data_type": "Decimal",
+								"unit": "mm / inch",
+								"example_value": "",
+								"notes": "Required: NO"
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"instrumentation": {
+		"subtypes": {
+			"instrumentation.sensor": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the sensor within the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "TI-101, PI-205A, LSL-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "description",
+						"description": "Detailed textual description of the sensor.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Temperature Sensor in Reactor Inlet, Pressure Transmitter for Column Bottom",
+						"notes": ""
+					},
+					{
+						"attribute_name": "manufacturer",
+						"description": "Name of the sensor manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Rosemount, Yokogawa, Endress+Hauser",
+						"notes": ""
+					},
+					{
+						"attribute_name": "model_number",
+						"description": "Manufacturer's model number for the sensor.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "3144P, EJX110A, PMC71",
+						"notes": ""
+					},
+					{
+						"attribute_name": "serial_number",
+						"description": "Unique serial number assigned to the sensor by the manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "1234567890, ABC-XYZ-2023-01",
+						"notes": ""
+					},
+					{
+						"attribute_name": "location",
+						"description": "Physical location of the sensor in the plant (e.g., Area, Unit, Process Line).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Unit 100, Reactor Section, Cooling Water Line",
+						"notes": ""
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date when the sensor was installed.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-08-15T08:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "calibration_date",
+						"description": "Date of the last calibration of the sensor.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-11-20T10:30:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "next_calibration_date",
+						"description": "Date for the next scheduled calibration of the sensor.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2024-05-20T10:30:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "operating_range_min",
+						"description": "Minimum value of the sensor's operating range. Unit depends on sensor type.",
+						"data_type": "Decimal",
+						"unit": "Varies",
+						"example_value": "-20",
+						"notes": ""
+					},
+					{
+						"attribute_name": "operating_range_max",
+						"description": "Maximum value of the sensor's operating range. Unit depends on sensor type.",
+						"data_type": "Decimal",
+						"unit": "Varies",
+						"example_value": "200",
+						"notes": ""
+					},
+					{
+						"attribute_name": "accuracy",
+						"description": "Accuracy of the sensor measurement. Unit depends on sensor type (e.g., %, ±Value).",
+						"data_type": "Decimal",
+						"unit": "Varies",
+						"example_value": "±0.5, ±0.1% of Span",
+						"notes": ""
+					},
+					{
+						"attribute_name": "output_signal_type",
+						"description": "Type of output signal from the sensor.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "4-20mA, HART, Fieldbus, Wireless, Voltage",
+						"notes": ""
+					},
+					{
+						"attribute_name": "power_supply",
+						"description": "Power supply requirements for the sensor.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "24V DC, 110V AC",
+						"notes": ""
+					},
+					{
+						"attribute_name": "hazardous_area_class",
+						"description": "Hazardous area classification for the sensor installation.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Class 1 Div 1, Zone 0, None, ATEX Zone 1",
+						"notes": ""
+					},
+					{
+						"attribute_name": "communication_protocol",
+						"description": "Communication protocol used by the sensor (if applicable).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "HART, Modbus, Profibus, Fieldbus Foundation",
+						"notes": ""
+					},
+					{
+						"attribute_name": "mounting_type",
+						"description": "Type of mounting for the sensor.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Flange, Threaded, Welded, Insertion, Surface",
+						"notes": ""
+					},
+					{
+						"attribute_name": "process_connection_type",
+						"description": "Type of connection to the process (e.g., Flange, Threaded, Sanitary).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Flange, Threaded, Clamp, Hygienic",
+						"notes": ""
+					},
+					{
+						"attribute_name": "wetted_material",
+						"description": "Material of the sensor components that are in contact with the process fluid.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "316L Stainless Steel, Hastelloy C-276, PTFE",
+						"notes": ""
+					},
+					{
+						"attribute_name": "instrument_type",
+						"description": "Specific type of instrument, derived from taxonomy path.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Thermocouple, Pressure Transmitter, Level Switch",
+						"notes": "Mandatory attribute."
+					}
+				],
+				"subtypes": {
+					"instrumentation.sensor.temperature_sensor": {
+						"base_attributes": [
+							{
+								"attribute_name": "sensor_type",
+								"description": "Type of temperature sensor.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Thermocouple, RTD, Thermistor",
+								"notes": ""
+							},
+							{
+								"attribute_name": "temperature_unit",
+								"description": "Unit of temperature measurement.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "°C, °F, K",
+								"notes": ""
+							},
+							{
+								"attribute_name": "response_time",
+								"description": "Time taken for the sensor to reach 63.2% of a step change in temperature.",
+								"data_type": "Decimal",
+								"unit": "seconds",
+								"example_value": "2.5, 5.0, 10.0",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.sensor.pressure_sensor": {
+						"base_attributes": [
+							{
+								"attribute_name": "pressure_unit",
+								"description": "Unit of pressure measurement.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "kPa, bar, psi, mmHg, inH2O",
+								"notes": ""
+							},
+							{
+								"attribute_name": "pressure_type",
+								"description": "Type of pressure measurement.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Gauge, Absolute, Differential",
+								"notes": ""
+							},
+							{
+								"attribute_name": "overpressure_limit",
+								"description": "Maximum pressure the sensor can withstand without damage. Unit same as pressure_unit.",
+								"data_type": "Decimal",
+								"unit": "Varies",
+								"example_value": "1500 (kPa), 200 (psi)",
+								"notes": ""
+							},
+							{
+								"attribute_name": "proof_pressure",
+								"description": "Maximum pressure the sensor can withstand without permanent performance shift. Unit same as pressure_unit.",
+								"data_type": "Decimal",
+								"unit": "Varies",
+								"example_value": "1200 (kPa), 150 (psi)",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.sensor.level_sensor": {
+						"base_attributes": [
+							{
+								"attribute_name": "level_unit",
+								"description": "Unit of level measurement.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "m, mm, inches, %, feet",
+								"notes": ""
+							},
+							{
+								"attribute_name": "level_type",
+								"description": "Type of level measurement (e.g., Point level, Continuous level).",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Continuous, Point",
+								"notes": ""
+							},
+							{
+								"attribute_name": "specific_gravity_range_min",
+								"description": "Minimum specific gravity of the fluid for which the sensor is designed.",
+								"data_type": "Decimal",
+								"unit": "N/A",
+								"example_value": "0.7, 0.8",
+								"notes": ""
+							},
+							{
+								"attribute_name": "specific_gravity_range_max",
+								"description": "Maximum specific gravity of the fluid for which the sensor is designed.",
+								"data_type": "Decimal",
+								"unit": "N/A",
+								"example_value": "1.2, 1.5",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.sensor.flow_sensor": {
+						"base_attributes": [
+							{
+								"attribute_name": "flow_unit",
+								"description": "Unit of flow measurement.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "m3/hr, L/min, gpm, kg/hr, lb/hr",
+								"notes": ""
+							},
+							{
+								"attribute_name": "fluid_type",
+								"description": "Type of fluid being measured.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Water, Air, Natural Gas, Oil",
+								"notes": ""
+							},
+							{
+								"attribute_name": "viscosity_range_min",
+								"description": "Minimum viscosity of the fluid for which the sensor is designed.",
+								"data_type": "Decimal",
+								"unit": "cP",
+								"example_value": "0.5, 1",
+								"notes": ""
+							},
+							{
+								"attribute_name": "viscosity_range_max",
+								"description": "Maximum viscosity of the fluid for which the sensor is designed.",
+								"data_type": "Decimal",
+								"unit": "cP",
+								"example_value": "100, 500",
+								"notes": ""
+							},
+							{
+								"attribute_name": "density_range_min",
+								"description": "Minimum density of the fluid for which the sensor is designed.",
+								"data_type": "Decimal",
+								"unit": "kg/m3",
+								"example_value": "800, 900",
+								"notes": ""
+							},
+							{
+								"attribute_name": "density_range_max",
+								"description": "Maximum density of the fluid for which the sensor is designed.",
+								"data_type": "Decimal",
+								"unit": "kg/m3",
+								"example_value": "1200, 1500",
+								"notes": ""
+							},
+							{
+								"attribute_name": "capillary_fill_fluid",
+								"description": "Type of fill fluid used in capillary systems (if applicable).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Silicone Oil, Glycerin",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.sensor.analytical_sensor": {
+						"base_attributes": [
+							{
+								"attribute_name": "analyzed_component",
+								"description": "Component being analyzed by the sensor.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "pH, Conductivity, Oxygen, CO2",
+								"notes": ""
+							},
+							{
+								"attribute_name": "measurement_range_min",
+								"description": "Minimum value of the sensor's measurement range. Unit depends on sensor type.",
+								"data_type": "Decimal",
+								"unit": "Varies",
+								"example_value": "0",
+								"notes": ""
+							},
+							{
+								"attribute_name": "measurement_range_max",
+								"description": "Maximum value of the sensor's measurement range. Unit depends on sensor type.",
+								"data_type": "Decimal",
+								"unit": "Varies",
+								"example_value": "14 (for pH), 100 (for Oxygen %)",
+								"notes": ""
+							},
+							{
+								"attribute_name": "response_time_analytical",
+								"description": "Time taken for the sensor to respond to a change in the analyzed component.",
+								"data_type": "Decimal",
+								"unit": "seconds",
+								"example_value": "30, 60",
+								"notes": ""
+							}
+						]
+					}
+				}
+			},
+			"instrumentation.transmitter": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the transmitter within the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "TT-101, PT-205A, LT-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "description",
+						"description": "Detailed textual description of the transmitter.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Temperature Transmitter for Reactor Outlet, Pressure Transmitter for Column Top",
+						"notes": ""
+					},
+					{
+						"attribute_name": "manufacturer",
+						"description": "Name of the transmitter manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Rosemount, Yokogawa, Siemens",
+						"notes": ""
+					},
+					{
+						"attribute_name": "model_number",
+						"description": "Manufacturer's model number for the transmitter.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "644, STT3000, SITRANS P",
+						"notes": ""
+					},
+					{
+						"attribute_name": "serial_number",
+						"description": "Unique serial number assigned to the transmitter by the manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "9876543210, XYZ-ABC-2023-02",
+						"notes": ""
+					},
+					{
+						"attribute_name": "location",
+						"description": "Physical location of the transmitter in the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Unit 100, Reactor Area, Distillation Column Section",
+						"notes": ""
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date when the transmitter was installed.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-09-22T14:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "calibration_date",
+						"description": "Date of the last calibration of the transmitter.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-12-01T09:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "next_calibration_date",
+						"description": "Date for the next scheduled calibration of the transmitter.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2024-06-01T09:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "input_type",
+						"description": "Type of input signal the transmitter receives (e.g., RTD, Thermocouple, Pressure).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "RTD, Thermocouple, 4-20mA, Pressure Sensor",
+						"notes": ""
+					},
+					{
+						"attribute_name": "output_signal_type",
+						"description": "Type of output signal from the transmitter.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "4-20mA, HART, Fieldbus, Wireless",
+						"notes": ""
+					},
+					{
+						"attribute_name": "power_supply",
+						"description": "Power supply requirements for the transmitter.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "24V DC, 110V AC",
+						"notes": ""
+					},
+					{
+						"attribute_name": "hazardous_area_class",
+						"description": "Hazardous area classification for the transmitter installation.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Class 1 Div 2, Zone 1, None, ATEX Zone 2",
+						"notes": ""
+					},
+					{
+						"attribute_name": "communication_protocol",
+						"description": "Communication protocol used by the transmitter.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "HART, Modbus, Profibus, Fieldbus Foundation",
+						"notes": ""
+					},
+					{
+						"attribute_name": "mounting_type",
+						"description": "Type of mounting for the transmitter (if applicable, sometimes remote).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Field Mounted, Panel Mounted, DIN Rail",
+						"notes": ""
+					},
+					{
+						"attribute_name": "instrument_type",
+						"description": "Specific type of instrument, derived from taxonomy path.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Temperature Transmitter, Pressure Transmitter, Level Transmitter",
+						"notes": ""
+					}
+				],
+				"subtypes": {
+					"instrumentation.transmitter.temperature_transmitter": {
+						"base_attributes": []
+					},
+					"instrumentation.transmitter.pressure_transmitter": {
+						"base_attributes": []
+					},
+					"instrumentation.transmitter.level_transmitter": {
+						"base_attributes": []
+					},
+					"instrumentation.transmitter.flow_transmitter": {
+						"base_attributes": []
+					},
+					"instrumentation.transmitter.analytical_transmitter": {
+						"base_attributes": []
+					}
+				}
+			},
+			"instrumentation.controller": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the controller within the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "TIC-101, PIC-205, LIC-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "description",
+						"description": "Detailed textual description of the controller.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Temperature Controller for Reactor Jacket, Pressure Controller for Column Reflux",
+						"notes": ""
+					},
+					{
+						"attribute_name": "manufacturer",
+						"description": "Name of the controller manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Emerson, ABB, Honeywell",
+						"notes": ""
+					},
+					{
+						"attribute_name": "model_number",
+						"description": "Manufacturer's model number for the controller.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "DeltaV, System 800xA, Experion PKS",
+						"notes": ""
+					},
+					{
+						"attribute_name": "serial_number",
+						"description": "Unique serial number assigned to the controller by the manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "CONT-12345, CTRL-XYZ-2023-03",
+						"notes": ""
+					},
+					{
+						"attribute_name": "location",
+						"description": "Physical location of the controller (typically in control room or cabinet).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Control Room Panel 1, Local Control Cabinet",
+						"notes": ""
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date when the controller was installed.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-10-10T11:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "control_algorithm_type",
+						"description": "Type of control algorithm implemented (e.g., PID, On-Off, Cascade).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "PID, On-Off, Cascade, Ratio",
+						"notes": ""
+					},
+					{
+						"attribute_name": "input_signal_type",
+						"description": "Type of input signal to the controller (e.g., 4-20mA, Fieldbus).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "4-20mA, HART, Fieldbus",
+						"notes": ""
+					},
+					{
+						"attribute_name": "output_signal_type",
+						"description": "Type of output signal from the controller (e.g., 4-20mA, Fieldbus, Discrete).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "4-20mA, HART, Fieldbus, Discrete, Relay",
+						"notes": ""
+					},
+					{
+						"attribute_name": "power_supply",
+						"description": "Power supply requirements for the controller.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "24V DC, 110V AC, 220V AC",
+						"notes": ""
+					},
+					{
+						"attribute_name": "communication_protocol",
+						"description": "Communication protocol used by the controller for DCS/PLC integration.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Modbus, Profibus, OPC UA, Ethernet/IP",
+						"notes": ""
+					},
+					{
+						"attribute_name": "control_loop_name",
+						"description": "Name of the control loop associated with this controller.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Reactor Temperature Control, Column Pressure Control",
+						"notes": ""
+					},
+					{
+						"attribute_name": "setpoint_value",
+						"description": "Current setpoint value for the controlled variable. Unit depends on controlled variable.",
+						"data_type": "Decimal",
+						"unit": "Varies",
+						"example_value": "150 (°C), 200 (kPa)",
+						"notes": ""
+					},
+					{
+						"attribute_name": "process_variable_value",
+						"description": "Current process variable value being controlled. Unit depends on controlled variable.",
+						"data_type": "Decimal",
+						"unit": "Varies",
+						"example_value": "148 (°C), 195 (kPa)",
+						"notes": ""
+					},
+					{
+						"attribute_name": "output_value",
+						"description": "Current controller output value (typically in percentage).",
+						"data_type": "Decimal",
+						"unit": "%",
+						"example_value": "50, 75, 25",
+						"notes": ""
+					},
+					{
+						"attribute_name": "controller_mode",
+						"description": "Current operating mode of the controller.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Auto, Manual, Cascade, Remote Setpoint",
+						"notes": ""
+					},
+					{
+						"attribute_name": "instrument_type",
+						"description": "Specific type of instrument, derived from taxonomy path.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "PID Controller, PLC, DCS Controller",
+						"notes": ""
+					}
+				],
+				"subtypes": {
+					"instrumentation.controller.pid_controller": {
+						"base_attributes": [
+							{
+								"attribute_name": "proportional_gain",
+								"description": "Proportional gain (Kc) of the PID controller.",
+								"data_type": "Decimal",
+								"unit": "N/A",
+								"example_value": "0.5, 1.0",
+								"notes": ""
+							},
+							{
+								"attribute_name": "integral_time",
+								"description": "Integral time (Ti) of the PID controller.",
+								"data_type": "Decimal",
+								"unit": "seconds",
+								"example_value": "60, 120",
+								"notes": ""
+							},
+							{
+								"attribute_name": "derivative_time",
+								"description": "Derivative time (Td) of the PID controller.",
+								"data_type": "Decimal",
+								"unit": "seconds",
+								"example_value": "10, 20",
+								"notes": ""
+							},
+							{
+								"attribute_name": "bias_or_manual_reset",
+								"description": "Bias or manual reset value for the PID controller output.",
+								"data_type": "Decimal",
+								"unit": "%",
+								"example_value": "0, 10",
+								"notes": ""
+							},
+							{
+								"attribute_name": "output_limits_min",
+								"description": "Minimum output limit for the PID controller.",
+								"data_type": "Decimal",
+								"unit": "%",
+								"example_value": "0, -10",
+								"notes": ""
+							},
+							{
+								"attribute_name": "output_limits_max",
+								"description": "Maximum output limit for the PID controller.",
+								"data_type": "Decimal",
+								"unit": "%",
+								"example_value": "100, 110",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.controller.programmable_logic_controller": {
+						"base_attributes": [
+							{
+								"attribute_name": "cpu_model",
+								"description": "Model of the PLC CPU.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "S7-1500, ControlLogix 5000, Modicon M580",
+								"notes": ""
+							},
+							{
+								"attribute_name": "memory_capacity",
+								"description": "Memory capacity of the PLC.",
+								"data_type": "Integer",
+								"unit": "MB",
+								"example_value": "8, 16, 32",
+								"notes": ""
+							},
+							{
+								"attribute_name": "number_of_i_o_modules",
+								"description": "Number of input/output modules installed in the PLC rack.",
+								"data_type": "Integer",
+								"unit": "N/A",
+								"example_value": "10, 20, 30",
+								"notes": ""
+							},
+							{
+								"attribute_name": "scan_cycle_time",
+								"description": "Typical scan cycle time of the PLC program.",
+								"data_type": "Decimal",
+								"unit": "ms",
+								"example_value": "50, 100, 200",
+								"notes": ""
+							},
+							{
+								"attribute_name": "programming_language",
+								"description": "Programming language used for PLC programming.",
+								"data_type": "Enumerated List",
+								"unit": "N/A",
+								"example_value": "Ladder Diagram, Structured Text, Function Block Diagram",
+								"notes": ""
+							},
+							{
+								"attribute_name": "network_interfaces",
+								"description": "Types of network interfaces available on the PLC (e.g., Ethernet, Profibus).",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Ethernet/IP, Profinet, Modbus TCP",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.controller.distributed_control_system": {
+						"base_attributes": [
+							{
+								"attribute_name": "dcs_vendor",
+								"description": "Vendor of the Distributed Control System.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "Emerson, ABB, Honeywell, Yokogawa",
+								"notes": ""
+							},
+							{
+								"attribute_name": "dcs_version",
+								"description": "Version of the DCS software.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "DeltaV v14, System 800xA 6.1, Experion PKS R520",
+								"notes": ""
+							},
+							{
+								"attribute_name": "number_of_i_o_points",
+								"description": "Total number of Input/Output points managed by the DCS.",
+								"data_type": "Integer",
+								"unit": "N/A",
+								"example_value": "1000, 5000, 10000",
+								"notes": ""
+							},
+							{
+								"attribute_name": "number_of_controllers_dcs",
+								"description": "Number of controllers in the DCS system.",
+								"data_type": "Integer",
+								"unit": "N/A",
+								"example_value": "5, 10, 20",
+								"notes": ""
+							},
+							{
+								"attribute_name": "communication_bus_dcs",
+								"description": "Communication bus used within the DCS system.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "ControlNet, Profibus DP, Ethernet",
+								"notes": ""
+							},
+							{
+								"attribute_name": "hmi_software",
+								"description": "Human-Machine Interface (HMI) software used with the DCS.",
+								"data_type": "Text",
+								"unit": "N/A",
+								"example_value": "DeltaV Operate, System 800xA Operations, Experion HMIWeb",
+								"notes": ""
+							}
+						]
+					},
+					"instrumentation.controller.temperature_controller": {
+						"base_attributes": []
+					},
+					"instrumentation.controller.pressure_controller": {
+						"base_attributes": []
+					},
+					"instrumentation.controller.level_controller": {
+						"base_attributes": []
+					},
+					"instrumentation.controller.flow_controller": {
+						"base_attributes": []
+					}
+				}
+			},
+			"instrumentation.actuator": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the actuator within the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "XV-101, YV-205, ZV-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "description",
+						"description": "Detailed textual description of the actuator.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Actuator for Control Valve CV-101, Actuator for Isolation Valve XV-205",
+						"notes": ""
+					},
+					{
+						"attribute_name": "manufacturer",
+						"description": "Name of the actuator manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Emerson, Rotork, Flowserve, SAMSON",
+						"notes": ""
+					},
+					{
+						"attribute_name": "model_number",
+						"description": "Manufacturer's model number for the actuator.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Fisher FIELDVUE, IQ Series, Valtek StarPac",
+						"notes": ""
+					},
+					{
+						"attribute_name": "serial_number",
+						"description": "Unique serial number assigned to the actuator by the manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ACT-12345, ACUT-XYZ-2023-04",
+						"notes": ""
+					},
+					{
+						"attribute_name": "location",
+						"description": "Physical location of the actuator (associated with valve location).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Unit 100, Valve Rack, Piping Manifold",
+						"notes": ""
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date when the actuator was installed.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-11-05T15:30:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "actuator_type",
+						"description": "Type of actuator (e.g., Pneumatic, Electric, Hydraulic).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Pneumatic, Electric, Hydraulic",
+						"notes": ""
+					},
+					{
+						"attribute_name": "power_supply",
+						"description": "Power supply requirements for the actuator.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Air (6 bar), 24V DC, 480V AC, Hydraulic Oil",
+						"notes": ""
+					},
+					{
+						"attribute_name": "control_signal_type",
+						"description": "Type of control signal to the actuator (e.g., 4-20mA, Discrete, Fieldbus).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "4-20mA, HART, Fieldbus, Discrete, On/Off",
+						"notes": ""
+					},
+					{
+						"attribute_name": "communication_protocol",
+						"description": "Communication protocol used by the actuator (e.g., HART, Fieldbus).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "HART, Fieldbus, Profibus",
+						"notes": ""
+					},
+					{
+						"attribute_name": "valve_tag_number",
+						"description": "Tag number of the valve that the actuator is controlling.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "CV-101, XV-205, GV-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "fail_position",
+						"description": "Fail-safe position of the actuator/valve upon loss of power/signal.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Fail Open, Fail Closed, Fail Last",
+						"notes": ""
+					},
+					{
+						"attribute_name": "instrument_type",
+						"description": "Specific type of instrument, derived from taxonomy path.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Valve Actuator, Pneumatic Actuator, Electric Actuator",
+						"notes": ""
+					}
+				]
+			},
+			"instrumentation.indicator": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the indicator within the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "PI-101, TI-205, LI-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "description",
+						"description": "Detailed textual description of the indicator.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Pressure Indicator for Reactor, Temperature Indicator for Column Top",
+						"notes": ""
+					},
+					{
+						"attribute_name": "manufacturer",
+						"description": "Name of the indicator manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "WIKA, Ashcroft, Winters",
+						"notes": ""
+					},
+					{
+						"attribute_name": "model_number",
+						"description": "Manufacturer's model number for the indicator.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "213.53, 1279 Duragauge, PFQ Series",
+						"notes": ""
+					},
+					{
+						"attribute_name": "serial_number",
+						"description": "Unique serial number assigned to the indicator by the manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "IND-12345, INDIC-XYZ-2023-05",
+						"notes": ""
+					},
+					{
+						"attribute_name": "location",
+						"description": "Physical location of the indicator in the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Unit 100, Reactor Area, Control Panel",
+						"notes": ""
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date when the indicator was installed.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-12-01T10:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "indicator_type",
+						"description": "Type of indicator (e.g., Pressure Gauge, Temperature Indicator, Alarm Horn).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Pressure Gauge, Temperature Indicator, Alarm Horn",
+						"notes": ""
+					},
+					{
+						"attribute_name": "display_type",
+						"description": "Type of display (e.g., Analog Dial, Digital Display, LED).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Analog Dial, Digital LCD, LED, Segment Display",
+						"notes": ""
+					},
+					{
+						"attribute_name": "power_supply",
+						"description": "Power supply requirements for the indicator (if applicable, for digital displays).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "24V DC, Battery Powered, None (Passive)",
+						"notes": ""
+					},
+					{
+						"attribute_name": "instrument_type",
+						"description": "Specific type of instrument, derived from taxonomy path.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Pressure Indicator, Temperature Indicator, Alarm Indicator",
+						"notes": ""
+					}
+				]
+			},
+			"instrumentation.analyzer": {
+				"base_attributes": [
+					{
+						"attribute_name": "tag_number",
+						"description": "Unique identifier for the analyzer within the plant.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "AI-101, GA-205, LA-300",
+						"notes": ""
+					},
+					{
+						"attribute_name": "description",
+						"description": "Detailed textual description of the analyzer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Gas Analyzer for Stack Gas, Liquid Analyzer for Wastewater",
+						"notes": ""
+					},
+					{
+						"attribute_name": "manufacturer",
+						"description": "Name of the analyzer manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ABB, Thermo Fisher, Siemens, Rosemount Analytical",
+						"notes": ""
+					},
+					{
+						"attribute_name": "model_number",
+						"description": "Manufacturer's model number for the analyzer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Advance Optima, iS50 FTIR, ULTRAMAT 23",
+						"notes": ""
+					},
+					{
+						"attribute_name": "serial_number",
+						"description": "Unique serial number assigned to the analyzer by the manufacturer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "ANAL-12345, ANLZ-XYZ-2023-06",
+						"notes": ""
+					},
+					{
+						"attribute_name": "location",
+						"description": "Physical location of the analyzer in the plant (analyzer shelter, process line).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Analyzer Shelter Area 1, Process Line 100",
+						"notes": ""
+					},
+					{
+						"attribute_name": "installation_date",
+						"description": "Date when the analyzer was installed.",
+						"data_type": "Date",
+						"unit": "N/A",
+						"example_value": "2023-12-05T09:00:00Z",
+						"notes": ""
+					},
+					{
+						"attribute_name": "analysis_principle",
+						"description": "Analytical principle used by the analyzer (e.g., Gas Chromatography, IR, UV).",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Gas Chromatography, Infrared (IR), Ultraviolet (UV)",
+						"notes": ""
+					},
+					{
+						"attribute_name": "sample_type",
+						"description": "Type of sample analyzed (e.g., Gas, Liquid).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "Gas, Liquid",
+						"notes": ""
+					},
+					{
+						"attribute_name": "measured_components",
+						"description": "Array of components measured by the analyzer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "O2, CO2, NOx, pH, Conductivity, Turbidity",
+						"notes": ""
+					},
+					{
+						"attribute_name": "measurement_unit",
+						"description": "Unit of measurement for the analyzed components.",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "ppm, %, Vol%, pH, µS/cm, NTU",
+						"notes": ""
+					},
+					{
+						"attribute_name": "measurement_range_min",
+						"description": "Array of minimum values for the measurement ranges of each component. Units depend on component.",
+						"data_type": "Text",
+						"unit": "Varies",
+						"example_value": "[0, 0, 0]",
+						"notes": ""
+					},
+					{
+						"attribute_name": "measurement_range_max",
+						"description": "Array of maximum values for the measurement ranges of each component. Units depend on component.",
+						"data_type": "Text",
+						"unit": "Varies",
+						"example_value": "[1000, 100, 200] (ppm)",
+						"notes": ""
+					},
+					{
+						"attribute_name": "output_signal_type",
+						"description": "Type of output signal from the analyzer (e.g., 4-20mA, Fieldbus, Ethernet).",
+						"data_type": "Enumerated List",
+						"unit": "N/A",
+						"example_value": "4-20mA, HART, Fieldbus, Ethernet, Modbus TCP",
+						"notes": ""
+					},
+					{
+						"attribute_name": "power_supply",
+						"description": "Power supply requirements for the analyzer.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "110V AC, 220V AC, 24V DC",
+						"notes": ""
+					},
+					{
+						"attribute_name": "communication_protocol",
+						"description": "Communication protocol used by the analyzer for data transmission.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Modbus TCP, OPC UA, Ethernet/IP, Profibus PA",
+						"notes": ""
+					},
+					{
+						"attribute_name": "instrument_type",
+						"description": "Specific type of instrument, derived from taxonomy path.",
+						"data_type": "Text",
+						"unit": "N/A",
+						"example_value": "Gas Analyzer, Liquid Analyzer, Chromatograph",
+						"notes": ""
+					}
+				]
+			}
+		}
+	}
+}

@@ -33,6 +33,20 @@ def resolve_job_from_boundary(config, boundary_data, cache_path=DEFAULT_JOB_CACH
             fatal=False,
         )
 
+    direct_job = _resolve_direct_job_reference(config, pnid_names)
+    if direct_job:
+        job_name, job_id = direct_job
+        return (
+            replace(config, job_name=job_name, job_id=job_id),
+            {
+                **_resolution_context(config, pnid_names),
+                "job_resolution": "boundary_job_reference",
+                "job_name": job_name,
+                "job_id": job_id,
+                "fatal": False,
+            },
+        )
+
     for pnid_name in pnid_names:
         mapped_job_id = (config.job_ids_by_name or {}).get(pnid_name)
         if mapped_job_id:
@@ -262,6 +276,31 @@ def _resolution_context(config, pnid_names):
         "collection_id": str(config.collection_id or ""),
         "api_base_url": str(config.api.base_url or "").rstrip("/"),
     }
+
+
+def _resolve_direct_job_reference(config, pnid_names):
+    reverse_map = {str(job_id): str(name) for name, job_id in (config.job_ids_by_name or {}).items()}
+    for pnid_name in pnid_names:
+        job_id = _direct_job_id(pnid_name)
+        if not job_id:
+            continue
+        if reverse_map:
+            job_name = reverse_map.get(job_id)
+            if not job_name:
+                continue
+            return job_name, job_id
+        if not _has_configured_collection(config):
+            return str(pnid_name), job_id
+    return None
+
+
+def _direct_job_id(value):
+    value = str(value or "").strip()
+    if value.startswith("pnid:job:"):
+        return value.rsplit(":", 1)[-1].strip()
+    if value.isdigit():
+        return value
+    return ""
 
 
 def _resolution_failure(config, pnid_names, error, message, fatal=False):

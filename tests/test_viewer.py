@@ -41,6 +41,28 @@ class ViewerTests(unittest.TestCase):
         self.assertIn('data-scroll-y="720"', html)
         self.assertNotIn('data-scroll-y="850"', html)
 
+    def test_plain_english_status_callout_renders(self):
+        html = render_viewer_html(
+            payload(
+                assurance_status="not_isolated",
+                isolation_obligations={
+                    "status": "completed",
+                    "summary": {
+                        "process_obligation_count": 2,
+                        "isolated_count": 1,
+                        "unresolved_count": 1,
+                        "manual_candidate_count": 0,
+                    },
+                    "items": [],
+                },
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("Not isolated with current evidence", html)
+        self.assertIn("1 process path still needs a selected isolation point", html)
+        self.assertIn("status-not-isolated", html)
+
     def test_possible_endpoint_with_valid_bbox_renders_impact_overlay(self):
         html = render_viewer_html(
             payload(
@@ -114,6 +136,64 @@ class ViewerTests(unittest.TestCase):
         )
 
         self.assertIn("Boxes: 3.", html)
+
+    def test_instrument_context_renders_panel_and_overlay(self):
+        html = render_viewer_html(
+            payload(
+                loto_procedure={
+                    "ordered_steps": [
+                        {
+                            "phase": 1,
+                            "ref": "1910.147(d)(1)",
+                            "title": "Preparation for shutdown",
+                            "action": "Record baseline pressure reading at PI-100 before shutdown/isolation.",
+                            "purpose": "Establish initial pressure condition before isolation.",
+                            "interpretation": "Baseline pressure helps compare depressurization trend after shutdown and relief.",
+                            "acceptance_criteria": "Record value before changing isolation state.",
+                            "limitation": "Baseline reading is context, not proof of isolation.",
+                        }
+                    ]
+                },
+                instrument_context={
+                    "status": "completed",
+                    "policy": "advisory_only",
+                    "instruments": [
+                        {
+                            "id": "pi-1",
+                            "tag": "PI-100",
+                            "name": "pressure indicator",
+                            "measured_variable": "pressure",
+                            "instrument_type": "local_indicator",
+                            "bbox": [120, 130, 20, 20],
+                            "verification_note": "supporting only",
+                        }
+                    ],
+                    "checks": {
+                        "before_isolation": [
+                            {
+                                "tag": "PI-100",
+                                "action": "Record baseline pressure reading at PI-100 before shutdown/isolation.",
+                                "purpose": "Establish initial pressure condition before isolation.",
+                                "interpretation": "Baseline pressure helps compare depressurization trend after shutdown and relief.",
+                                "acceptance_criteria": "Record value before changing isolation state.",
+                                "limitation": "Baseline reading is context, not proof of isolation.",
+                            }
+                        ],
+                        "restoration_reenergization": [
+                            {"tag": "PI-100", "action": "Before and after controlled re-energization, confirm PI-100 is within expected safe operating range."}
+                        ],
+                    },
+                }
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertNotIn("Instrument Checks", html)
+        self.assertIn("PI-100", html)
+        self.assertIn("Meaning", html)
+        self.assertIn("Baseline pressure helps compare", html)
+        self.assertIn("step-detail", html)
+        self.assertIn("instrument-box", html)
 
     def test_obligation_manual_candidate_renders_orange_overlay_and_coverage(self):
         html = render_viewer_html(

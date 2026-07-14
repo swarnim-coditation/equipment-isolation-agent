@@ -1,3 +1,6 @@
+from domain.enums import AssuranceStatus
+
+
 MISSING_BY_CHECK = {
     "find_bypass_paths": "Bypass or alternate-route evidence check is required but has not been completed by this local deterministic runner.",
     "find_blinds_spades_flanges": "Positive isolation evidence check is required but has not been completed by this local deterministic runner.",
@@ -22,34 +25,43 @@ def validate(planner_data):
     barrier_ids = evidence.get("barrier_candidate_ids") or []
     positive_ids = evidence.get("positive_candidate_ids") or []
     verification_ids = evidence.get("verification_candidate_ids") or []
+    manual_review_ids = evidence.get("manual_review_candidate_ids") or []
 
     if not candidates:
-        status = "not_isolated"
+        status = AssuranceStatus.NOT_ISOLATED
         rationale = "No isolation candidates were found."
     elif not barrier_ids:
-        status = "not_isolated"
+        status = AssuranceStatus.NOT_ISOLATED
         rationale = "No selected candidate has deterministic isolation barrier evidence."
     elif missing_boundary_count and missing_boundary_count > 0:
-        status = "not_isolated"
+        status = AssuranceStatus.NOT_ISOLATED
         rationale = "At least one equipment boundary path has no selected isolation barrier."
+    elif manual_review_ids:
+        status = AssuranceStatus.PROVISIONAL_UNPROVEN_ISOLATION
+        rationale = "Selected barriers include conditional isolation devices that require manual review before acceptance."
     elif unresolved:
-        status = "provisional_unproven_isolation"
+        status = AssuranceStatus.PROVISIONAL_UNPROVEN_ISOLATION
         rationale = "Selected barriers exist, but safety-critical evidence checks remain unresolved."
     elif positive_ids and verification_ids:
-        status = "complete_positive_isolation"
+        status = AssuranceStatus.COMPLETE_POSITIVE_ISOLATION
         rationale = "Every known boundary path has a selected barrier, positive isolation evidence exists, and verification evidence exists."
     elif verification_ids:
-        status = "complete_proven_isolation"
+        status = AssuranceStatus.COMPLETE_PROVEN_ISOLATION
         rationale = "Every known boundary path has a selected barrier and verification evidence exists, but positive isolation evidence was not found."
     else:
-        status = "provisional_unproven_isolation"
+        status = AssuranceStatus.PROVISIONAL_UNPROVEN_ISOLATION
         rationale = "Selected barriers exist for known boundary paths, but proof of zero or safe energy was not found."
 
     validation = {
         "code_version": "local_validator_2026-06-29_v1",
-        "assurance_status": status,
+        "assurance_status": status.value,
         "rationale": rationale,
-        "terminal": status in {"complete_positive_isolation", "complete_proven_isolation", "not_isolated", "insufficient_data"},
+        "terminal": status in {
+            AssuranceStatus.COMPLETE_POSITIVE_ISOLATION,
+            AssuranceStatus.COMPLETE_PROVEN_ISOLATION,
+            AssuranceStatus.NOT_ISOLATED,
+            AssuranceStatus.INSUFFICIENT_DATA,
+        },
         "candidate_count": len(candidates),
         "expected_boundary_count": evidence.get("expected_boundary_count"),
         "covered_boundary_source_count": evidence.get("covered_boundary_source_count"),
@@ -62,6 +74,7 @@ def validate(planner_data):
         "barrier_candidate_ids": barrier_ids,
         "positive_candidate_ids": positive_ids,
         "verification_candidate_ids": verification_ids,
+        "manual_review_candidate_ids": manual_review_ids,
         "bypass_candidate_ids": evidence.get("bypass_candidate_ids") or [],
         "unresolved_bbox_candidate_ids": evidence.get("unresolved_bbox_candidate_ids") or [],
         "unresolved_evidence_checks": unresolved,
@@ -73,7 +86,9 @@ def validate(planner_data):
             "assurance_status": status,
             "validator_terminal": validation["terminal"],
             "validator_unresolved_evidence_check_count": len(unresolved),
+            "validator_manual_review_candidate_count": len(manual_review_ids),
             "validator_missing_evidence_count": len(missing),
         }
     )
-    return {**planner_data, "debug": debug, "missing_evidence": missing, "isolation_validation": validation, "assurance_status": status}
+    debug["assurance_status"] = status.value
+    return {**planner_data, "debug": debug, "missing_evidence": missing, "isolation_validation": validation, "assurance_status": status.value}
