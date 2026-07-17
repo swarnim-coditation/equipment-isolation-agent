@@ -11,16 +11,16 @@ This is decision support for a POC, not a certified LOTO procedure.
 """
 from __future__ import annotations
 
+from domain.display import device_display_label, device_display_name
 from domain.enums import FlowRole
+from domain.keywords import RELIEF_KEYWORDS, VERIFY_KEYWORDS, VERIFY_TAG_PREFIXES
+from domain.topology import tag_prefix as _tag_prefix
 from evidence import candidate_flags
 
 STANDARD = "29 CFR 1910.147"
 
-# OSHA verification keywords split into the two LOTO purposes they serve:
-# stored-energy RELIEF (d)(5) vs zero-energy VERIFICATION (d)(6).
-RELIEF_KEYWORDS = {"bleed", "vent", "drain"}
-VERIFY_KEYWORDS = {"gauge", "indicator", "test point"}
-VERIFY_TAG_PREFIXES = {"pi", "pg"}
+# OSHA verification keywords (shared with evidence.py) split into the two LOTO
+# purposes they serve: stored-energy RELIEF (d)(5) vs zero-energy VERIFICATION (d)(6).
 
 
 def build_loto_procedure(validation_data: dict, config, isolation_order: list | None = None) -> dict:
@@ -29,11 +29,14 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     validation = validation_data.get("isolation_validation") or {}
     instrument_context = validation_data.get("instrument_context") or {}
     instrument_checks = instrument_context.get("checks") or {}
+    detected_schemes = validation_data.get("detected_isolation_schemes") or {}
+    relief_candidates = validation_data.get("relief_candidates") or {}
     work_scope = (config.work_scope.__dict__ if hasattr(config.work_scope, "__dict__") else {})
     energy_types = sorted({(c.get("energy_type") or ["process"])[0] for c in candidates} or ["process"])
 
     isolation_devices, positive_devices = _devices(candidates, config.policy if hasattr(config, "policy") else None)
-    relief_devices, verify_devices = _relief_and_verify(candidates)
+    relief_devices, verify_devices = _relief_and_verify(candidates, relief_candidates)
+    supplementary_scheme_devices = _supplementary_scheme_devices(detected_schemes, isolation_devices)
     # NOTE: OSHA 1910.147 prescribes only the PHASE order, NOT the within-phase
     # device order. Resolution order:
     #   1. agent-committed order (engineering judgment) -- authoritative if present
@@ -59,8 +62,8 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     phases = [
         _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks),
         _phase_2_shutdown(instrument_checks),
-        _phase_3_isolation(isolation_devices, positive_devices, order_source),
-        _phase_4_lockout(isolation_devices, positive_devices),
+        _phase_3_isolation(isolation_devices, positive_devices, order_source, detected_schemes, supplementary_scheme_devices),
+        _phase_4_lockout(isolation_devices, positive_devices, supplementary_scheme_devices),
         _phase_5_stored_energy(relief_devices, evidence, instrument_checks),
         _phase_6_verification(verify_devices, evidence, instrument_checks),
     ]
@@ -81,6 +84,8 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
         "release_note": _release_note(instrument_checks),
         "restoration_checks": instrument_checks.get("restoration_reenergization") or [],
         "instrument_context": instrument_context,
+        "detected_isolation_schemes": detected_schemes,
+        "relief_candidates": relief_candidates,
         "open_gaps": _open_gaps(missing_evidence, relief_devices, verify_devices),
     }
     return procedure
@@ -115,7 +120,7 @@ def _ordered_steps(phases: list) -> list:
         ref = phase.get("ref")
         title = phase.get("title")
         if phase_num in (3, 4):
-            devices = phase.get("devices") or []
+            devices = (phase.get("devices") or []) + (phase.get("supplementary_scheme_devices") or [])
             if not devices:
                 n += 1
                 steps.append(_step(n, phase_num, ref, title, f"{title}: no isolation devices identified."))
@@ -193,7 +198,11 @@ def _device_action(phase_num, device):
     role = device.get("source_flow_role")
     role_str = f" [{role.upper()}]" if role and role != "unknown" else ""
     verb = "Close & lock" if phase_num == 3 else "Affix lock/tag to"
-    return f"{verb} {device.get('entity_class') or 'valve'} {tag} (source {source}{role_str})"
+    label = device.get("display_label") or device_display_label(device, fallback="isolation device")
+    if device.get("supplementary_scheme_device"):
+        scheme = device.get("scheme_type") or "detected scheme"
+        return f"{verb} detected {scheme} device {label} (source {source}{role_str})"
+    return f"{verb} {label} (source {source}{role_str})"
 
 
 def _devices(candidates, policy):
@@ -214,25 +223,53 @@ def _devices(candidates, policy):
     return isolation, positive
 
 
-def _relief_and_verify(candidates):
+def _relief_and_verify(candidates, relief_candidates=None):
     relief = []
     verify = []
     for candidate in candidates:
-        entity_text = _entity_text(candidate)
+        # Normalize spaces to underscores so the canonical 'test_point' keyword
+        # matches both 'test_point' and 'test point' source classes.
+        entity_text = _entity_text(candidate).replace(" ", "_")
         tag_prefix = _tag_prefix((candidate.get("properties") or {}).get("tag") or candidate.get("tag_number"))
         if any(kw in entity_text for kw in RELIEF_KEYWORDS):
             relief.append(_device_summary(candidate))
         if any(kw in entity_text for kw in VERIFY_KEYWORDS) or tag_prefix in VERIFY_TAG_PREFIXES:
             verify.append(_device_summary(candidate))
+    seen = {str(item.get("uuid")) for item in relief}
+    for candidate in ((relief_candidates or {}).get("items") or []):
+        if candidate.get("relief_type") not in {"vent", "drain", "bleed"}:
+            continue
+        candidate_id = str(candidate.get("id") or "")
+        if not candidate_id or candidate_id in seen:
+            continue
+        seen.add(candidate_id)
+        relief.append(
+            {
+                "uuid": candidate_id,
+                "tag": candidate.get("tag"),
+                "entity_class": candidate.get("relief_type"),
+                "method": f"open {candidate.get('relief_type')}",
+                "source_component": candidate.get("source_branch_id"),
+                "traversal_depth": None,
+                "energy_type": "process",
+                "bbox_present": bool(candidate.get("bbox")),
+                "source_flow_role": "unknown",
+                "classification_basis": candidate.get("basis"),
+                "classified_by": candidate.get("classified_by"),
+            }
+        )
     return relief, verify
 
 
 def _device_summary(candidate):
     props = candidate.get("properties") or {}
+    entity_class = props.get("entity_class") or candidate.get("candidate_label")
+    tag = candidate.get("tag_number") or _first(props, ("tag", "name"))
     return {
         "uuid": str(candidate.get("candidate_id")),
-        "tag": candidate.get("tag_number") or _first(props, ("tag", "name")),
-        "entity_class": props.get("entity_class") or candidate.get("candidate_label"),
+        "tag": tag,
+        "entity_class": entity_class,
+        "display_label": tag or device_display_name(entity_class),
         "method": candidate.get("isolation_method"),
         "source_component": candidate.get("source_component_tag"),
         "traversal_depth": candidate.get("traversal_depth"),
@@ -291,14 +328,17 @@ def _phase_2_shutdown(instrument_checks):
     }
 
 
-def _phase_3_isolation(isolation_devices, positive_devices, order_source):
+def _phase_3_isolation(isolation_devices, positive_devices, order_source, detected_schemes, supplementary_scheme_devices):
     return {
         "phase": 3,
         "ref": "1910.147(d)(3)",
         "title": "Equipment isolation",
         "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
         "devices": isolation_devices,
+        "supplementary_scheme_devices": supplementary_scheme_devices,
         "positive_isolation_devices": positive_devices,
+        "detected_schemes": (detected_schemes or {}).get("items") or [],
+        "detected_scheme_summary": (detected_schemes or {}).get("summary") or {},
         "within_phase_order_is_regulatory": False,
         "within_phase_order_source": order_source,
         "within_phase_ordering_note": (
@@ -312,14 +352,18 @@ def _phase_3_isolation(isolation_devices, positive_devices, order_source):
     }
 
 
-def _phase_4_lockout(isolation_devices, positive_devices):
-    all_devices = isolation_devices + [d for d in positive_devices if d not in isolation_devices]
+def _phase_4_lockout(isolation_devices, positive_devices, supplementary_scheme_devices=None):
+    supplementary_scheme_devices = supplementary_scheme_devices or []
+    all_devices = isolation_devices + [d for d in positive_devices if d not in isolation_devices] + [
+        d for d in supplementary_scheme_devices if d not in isolation_devices
+    ]
     return {
         "phase": 4,
         "ref": "1910.147(d)(4)",
         "title": "Lockout/tagout device application",
         "objective": "Affix an individual lock (and tag) to EACH energy-isolating device, holding it in safe/off.",
         "devices": all_devices,
+        "supplementary_scheme_devices": [],
         "field_action_required": [
             "Each authorized employee applies their assigned individual lock to every isolating device.",
         ],
@@ -393,6 +437,34 @@ def _group_by_source(devices):
     return groups
 
 
+def _supplementary_scheme_devices(detected_schemes, isolation_devices):
+    known = {str(device.get("uuid")) for device in isolation_devices}
+    result = []
+    for scheme in (detected_schemes or {}).get("items") or []:
+        for device in scheme.get("devices") or []:
+            device_id = str(device.get("id") or "")
+            if not device_id or device_id in known:
+                continue
+            known.add(device_id)
+            result.append(
+                {
+                    "uuid": device_id,
+                    "tag": device.get("tag"),
+                    "entity_class": device.get("entity_class"),
+                    "display_label": device.get("tag") or device_display_name(device.get("entity_class")),
+                    "method": "close and lock valve" if "valve" in str(device.get("entity_class") or "").lower() else "isolate and lock/tag",
+                    "source_component": scheme.get("source_component_tag") or scheme.get("source_component"),
+                    "traversal_depth": None,
+                    "energy_type": "process",
+                    "bbox_present": bool(device.get("bbox")),
+                    "source_flow_role": "unknown",
+                    "scheme_type": scheme.get("scheme_type"),
+                    "supplementary_scheme_device": True,
+                }
+            )
+    return result
+
+
 def _entity_text(candidate):
     props = candidate.get("properties") or {}
     return " ".join(
@@ -409,11 +481,3 @@ def _first(props, keys):
     return None
 
 
-def _tag_prefix(value):
-    result = []
-    for char in str(value or "").strip().lower():
-        if char.isalpha():
-            result.append(char)
-            continue
-        break
-    return "".join(result)

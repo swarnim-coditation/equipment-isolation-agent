@@ -1,8 +1,16 @@
 from api_client import Plant360Client
+from bbox_util import _dedupe_candidates, _distance_sort_value, _visual_sort_key
+from hilt_merge import _hilt_source_entries, _merge_hilt_source_branches, _merge_hilt_topology
 from domain.classification import classify_candidate
 from domain.enums import FlowRole, IsolationDecision
 from flow import classify_nozzle_flow, role_for_source
 from hilt_topology import resolve_nozzle_isolation, resolve_source_branch_isolation
+from domain.hilt_geometry import calibrate_yflip as _calibrate_hilt_yflip
+from domain.hilt_geometry import extract_symbols as _extract_symbols
+from domain.hilt_geometry import symbol_attr as _symbol_attr
+from domain.hilt_geometry import symbol_bbox as _symbol_bbox
+from domain.topology import CONTEXT_LINE_CLASSES, PROCESS_LINE_CLASSES, SIGNAL_LINE_CLASSES, normalize_tag
+from domain.topology import tag_prefix as _tag_prefix
 
 
 MAX_PARALLEL_COMPANIONS_PER_SOURCE = 2
@@ -39,9 +47,9 @@ INSTRUMENT_TAG_PREFIXES = {
     "tc",
     "tt",
 }
-HILT_SIGNAL_LINE_CLASSES = {"instrument_signal_line", "signal_line", "electrical_signal_line"}
-HILT_CONTEXT_LINE_CLASSES = {"piping_to_instrument_line", "companion_line"} | HILT_SIGNAL_LINE_CLASSES
-HILT_PROCESS_LINE_CLASSES = {"primary_process_line", "secondary_process_line", "main_process_line", "process_line"}
+HILT_SIGNAL_LINE_CLASSES = SIGNAL_LINE_CLASSES
+HILT_CONTEXT_LINE_CLASSES = CONTEXT_LINE_CLASSES
+HILT_PROCESS_LINE_CLASSES = PROCESS_LINE_CLASSES
 
 
 def resolve_bboxes(candidate_data, config):
@@ -107,7 +115,28 @@ def resolve_bboxes(candidate_data, config):
     hilt_context_sources, hilt_context_items = _hilt_context_sources(candidate_pool, symbols)
     visual_context_sources, visual_context_items = _instrument_context_sources(candidate_pool, symbols, hilt_context_sources)
     context_sources = hilt_context_sources | visual_context_sources
-    context_instruments = hilt_context_items + visual_context_items
+    # A process isolation valve physically cannot sit inline on a signal line
+    # (electrical/instrument "signal" lines carry signals, not process fluid). So a
+    # source excused as instrument context *because of a signal line* that also owns a
+    # policy-selectable isolation valve is a definitive line-class mislabel (e.g. a
+    # process bridle mis-converted to electrical_signal_line) — override it so the real
+    # valve is kept. Companion-line / piping-to-instrument context is intentionally
+    # left untouched: a small valve there can legitimately be instrument context rather
+    # than a process boundary, which is exactly what this classification is for.
+    isolation_valve_sources = _sources_owning_isolation_valve(candidate_pool, config.policy)
+    signal_line_context_sources = {
+        (str(item.get("equipment_tag") or ""), str(item.get("source_component") or ""))
+        for item in hilt_context_items
+        if _context_item_has_signal_line(item)
+    }
+    mislabeled_sources = isolation_valve_sources & signal_line_context_sources
+    context_overridden = sorted(str(source) for source in context_sources & mislabeled_sources)
+    context_sources = context_sources - mislabeled_sources
+    context_instruments = [
+        item
+        for item in (hilt_context_items + visual_context_items)
+        if (str(item.get("equipment_tag") or ""), str(item.get("source_component") or "")) not in mislabeled_sources
+    ]
     candidate_pool = _mark_source_context(candidate_pool, context_sources)
     selectable_candidate_pool = _selectable_candidate_pool(candidate_pool, config.policy)
     visual_candidates, visual_debug = _select_visually_nearest_per_source(selectable_candidate_pool, candidate_pool)
@@ -160,6 +189,7 @@ def resolve_bboxes(candidate_data, config):
             "manual_visual_isolation_checks": manual_visual_checks,
             "context_instrument_source_component_count": len(context_sources),
             "context_instruments": context_instruments,
+            "context_overridden_by_isolation_valve": context_overridden,
             "flow_nozzle_classified_count": len(flow_roles),
             "flow_candidate_role_counts": {
                 role: sum(1 for c in candidates if (c.get("source_flow_role") or FlowRole.UNKNOWN.value) == role)
@@ -255,6 +285,25 @@ def _resolve_candidate_bboxes(candidates, symbol_by_id, nozzle_symbol_by_parent_
                 candidate["source_visual_distance"] = _bbox_distance(candidate.get("source_bbox"), candidate.get("bbox"))
         result.append(candidate)
     return result, resolved
+
+
+def _sources_owning_isolation_valve(candidate_pool, policy):
+    """Source keys that own at least one policy-selectable isolation valve.
+
+    "Selectable" means exactly what selection means elsewhere, so this reuses
+    `_selectable_candidate_pool`."""
+    return {_source_key(candidate) for candidate in _selectable_candidate_pool(candidate_pool, policy)}
+
+
+def _context_item_has_signal_line(item):
+    """True if a context item was excused (partly) because of a signal line. A signal
+    line cannot physically carry a process isolation valve, so a selectable valve on
+    such a source indicates a mislabel rather than genuine instrument context."""
+    for line in item.get("source_hilt_lines") or []:
+        values = {_norm(line.get("entity_class")), _norm(line.get("entity_type"))}
+        if values & HILT_SIGNAL_LINE_CLASSES:
+            return True
+    return False
 
 
 def _selectable_candidate_pool(candidate_pool, policy):
@@ -695,185 +744,6 @@ def _attach_flow_roles(candidates, flow_roles):
     return result
 
 
-def _merge_hilt_topology(candidates, hilt_isolation_map, flow_roles, equipment_tag, policy):
-    """Override nozzle->valve assignments with HILT piping-topology results.
-    For each nozzle HILT resolves, replace any JanusGraph-derived candidate for
-    that nozzle with the topologically-connected HILT valve. Nozzles HILT did not
-    resolve keep their existing candidate (if any). If one physical valve covers
-    multiple nozzles, keep one candidate and accumulate all source paths."""
-    if not hilt_isolation_map:
-        return candidates
-    covered_nozzles = {tag for tag, valves in hilt_isolation_map.items() if valves}
-    merged = []
-    for candidate in candidates:
-        src = candidate.get("source_component_tag")
-        if src and src in covered_nozzles:
-            continue  # replaced by the HILT-authoritative valve for this nozzle
-        merged.append(candidate)
-    hilt_by_valve_id = {}
-    for nozzle_tag, valves in hilt_isolation_map.items():
-        if not valves:
-            continue
-        seen_valve_ids: set[str] = set()
-        for valve in valves:
-            vid = str(valve.get("valve_id") or "")
-            if not vid:
-                continue
-            if vid in seen_valve_ids:
-                continue
-            seen_valve_ids.add(vid)
-            if vid not in hilt_by_valve_id:
-                hilt_by_valve_id[vid] = _hilt_valve_candidate(valve, nozzle_tag, equipment_tag, flow_roles, policy)
-                continue
-            _append_hilt_source_path(hilt_by_valve_id[vid], valve, nozzle_tag, flow_roles)
-    merged.extend(hilt_by_valve_id.values())
-    return merged
-
-
-def _merge_hilt_source_branches(candidates, hilt_branch_obligations, flow_roles, equipment_tag, policy):
-    covered_sources = {
-        (str(source.get("equipment_tag") or equipment_tag), str(source.get("source_component") or source.get("source_component_tag") or ""))
-        for source in hilt_branch_obligations or []
-        if source.get("branches")
-    }
-    merged = [
-        candidate
-        for candidate in candidates
-        if (str(candidate.get("equipment_tag") or ""), str(candidate.get("source_component_id") or candidate.get("source_component_tag") or ""))
-        not in covered_sources
-    ]
-    for source in hilt_branch_obligations or []:
-        source_component = str(source.get("source_component") or source.get("source_component_tag") or "")
-        for branch in source.get("branches") or []:
-            if branch.get("status") != "isolated" or not branch.get("valve"):
-                continue
-            merged.append(
-                _hilt_valve_candidate(
-                    branch["valve"],
-                    source.get("source_component_tag") or source_component,
-                    source.get("equipment_tag") or equipment_tag,
-                    flow_roles,
-                    policy,
-                    source_component_id=source_component,
-                    source_visual_id=source.get("source_visual_id"),
-                    source_bbox=source.get("source_bbox") or [],
-                    branch=branch,
-                )
-            )
-    return _dedupe_candidates(merged)
-
-
-def _hilt_source_entries(candidate_pool):
-    entries = {}
-    for candidate in candidate_pool or []:
-        if candidate.get("source_context_type"):
-            continue
-        source_visual_id = str(candidate.get("source_visual_node_id") or candidate.get("source_visual_id") or "").strip()
-        if not source_visual_id:
-            continue
-        source_component = str(candidate.get("source_component_id") or candidate.get("source_component_tag") or "").strip()
-        equipment_tag = str(candidate.get("equipment_tag") or "").strip()
-        key = (equipment_tag, source_component, source_visual_id)
-        if key in entries:
-            continue
-        entries[key] = {
-            "equipment_tag": equipment_tag,
-            "source_component_id": source_component,
-            "source_component_tag": candidate.get("source_display_label") or candidate.get("source_component_tag") or source_component,
-            "source_visual_id": source_visual_id,
-            "source_visual_node_id": candidate.get("source_visual_node_id"),
-            "source_bbox": candidate.get("source_bbox") or [],
-            "source_type": "process",
-        }
-    return list(entries.values())
-
-
-def _hilt_valve_candidate(
-    valve,
-    nozzle_tag,
-    equipment_tag,
-    flow_roles,
-    policy,
-    source_component_id=None,
-    source_visual_id=None,
-    source_bbox=None,
-    branch=None,
-):
-    entity_class = valve.get("entity_class") or "valve"
-    hops = int(valve.get("hop_distance") or 0)
-    method = "close and lock valve" if "valve" in entity_class.lower() else "isolate and lock/tag"
-    properties = {"entity_class": entity_class, "entity_type": valve.get("entity_type")}
-    classification = classify_candidate(properties, entity_class, policy, method_text=method)
-    return {
-        "equipment_tag": equipment_tag,
-        "source_component_tag": nozzle_tag,
-        "source_component_id": source_component_id or nozzle_tag,
-        "source_visual_id": source_visual_id,
-        "source_bbox": source_bbox or [],
-        "candidate_id": valve.get("valve_id"),
-        "visual_id": valve.get("valve_id"),
-        "tag_number": valve.get("tag") or None,
-        "candidate_label": entity_class,
-        "tag_type": "line",
-        "energy_type": ["process"],
-        "isolation_method": method,
-        "matched_keywords": list(classification.matched_policy_classes or (entity_class,)),
-        "policy_decision": classification.decision.value,
-        "requires_manual_review": classification.requires_manual_review,
-        "classification": classification.to_dict(),
-        "traversal_depth": hops,
-        "source_distance": None,
-        "confidence": max(130 - hops * 10, 60),
-        "reason": f"Connected to {nozzle_tag} via HILT piping topology ({hops} hops). Topology-authoritative.",
-        "properties": properties,
-        "property_preview": {},
-        "bbox": valve.get("bbox") or [],
-        "connectivity_source": "hilt_topology",
-        "required_branch_isolation": bool(branch),
-        "branch_id": (branch or {}).get("branch_id"),
-        "branch_status": (branch or {}).get("status"),
-        "branch_basis": (branch or {}).get("basis"),
-        "branch_path_node_ids": (branch or {}).get("path_node_ids") or valve.get("path_node_ids") or [],
-        "branch_path_node_classes": (branch or {}).get("path_node_classes") or [],
-        "branch_context_devices": (branch or {}).get("context_devices") or [],
-        "source_flow_role": role_for_source(flow_roles, nozzle_tag),
-        "source_paths": [_hilt_source_path(nozzle_tag, hops, flow_roles, source_component_id=source_component_id, source_visual_id=source_visual_id, branch=branch)],
-        "source_path_count": 1,
-    }
-
-
-def _append_hilt_source_path(candidate, valve, nozzle_tag, flow_roles):
-    hops = int(valve.get("hop_distance") or 0)
-    candidate.setdefault("source_paths", []).append(_hilt_source_path(nozzle_tag, hops, flow_roles))
-    candidate["source_path_count"] = len(candidate["source_paths"])
-    roles = {
-        path.get("source_flow_role")
-        for path in candidate["source_paths"]
-        if path.get("source_flow_role") and path.get("source_flow_role") != FlowRole.UNKNOWN.value
-    }
-    if len(roles) == 1:
-        candidate["source_flow_role"] = next(iter(roles))
-    elif len(roles) > 1:
-        candidate["source_flow_role"] = FlowRole.BIDIRECTIONAL.value
-    candidate["reason"] = (
-        f"Connected to {candidate['source_path_count']} nozzle(s) via HILT piping topology. "
-        "Topology-authoritative."
-    )
-
-
-def _hilt_source_path(nozzle_tag, hops, flow_roles, source_component_id=None, source_visual_id=None, branch=None):
-    return {
-        "source_component_tag": nozzle_tag,
-        "source_component_id": source_component_id or nozzle_tag,
-        "source_visual_id": source_visual_id,
-        "branch_id": (branch or {}).get("branch_id"),
-        "branch_status": (branch or {}).get("status"),
-        "source_flow_role": role_for_source(flow_roles, nozzle_tag),
-        "reason": "hilt_topology",
-        "traversal_depth": hops,
-    }
-
-
 def _hilt_context_sources(candidate_pool, symbols=None):
     by_source = {}
     for candidate in candidate_pool:
@@ -924,10 +794,35 @@ def _classify_hilt_source_context(sample, lines, instrument_symbols):
             return "instrument_signal_context"
         return "instrument_only_context" if "piping_to_instrument_line" in line_values else "companion_line_context"
 
-    if graph_only_unlabeled and _has_instrument_context_evidence(sample, lines, instrument_symbols):
+    # An unlabeled graph-only source near an instrument is only excused as
+    # instrument context when its process line does NOT lead onward to an equipment
+    # nozzle. That distinguishes a genuine instrument tie-in stub (excuse it) from a
+    # real, merely-unlabeled process connection that a transmitter happens to tap
+    # (keep it a process path so its isolation obligation is not silently dropped).
+    if (
+        graph_only_unlabeled
+        and not _process_line_reaches_equipment(lines)
+        and _has_instrument_context_evidence(sample, lines, instrument_symbols)
+    ):
         return "instrument_signal_context" if has_signal_line else "instrument_adjacent_context"
 
     return ""
+
+
+def _process_line_reaches_equipment(lines):
+    """True if any process line among `lines` connects onward to an equipment
+    nozzle (or equipment). Such a source is a real process path, not an instrument
+    tie-in artifact, so it must not be excused as instrument context."""
+    onward = {"equipment_nozzle", "equipment"}
+    for line in lines or []:
+        class_values = {_norm(line.get("entity_class")), _norm(line.get("entity_type"))}
+        if not (class_values & HILT_PROCESS_LINE_CLASSES or "process_line" in class_values):
+            continue
+        for node in line.get("connected_nodes") or []:
+            node_values = {_norm((node or {}).get("entity_class")), _norm((node or {}).get("entity_type"))}
+            if node_values & onward:
+                return True
+    return False
 
 
 def _has_instrument_context_evidence(sample, lines, instrument_symbols):
@@ -1119,47 +1014,6 @@ def _dedupe_source_candidates(items):
     return list(merged.values())
 
 
-def _dedupe_candidates(candidates):
-    merged = {}
-    for candidate in candidates:
-        key = (candidate.get("equipment_tag"), _norm(candidate.get("visual_id") or candidate.get("candidate_id")))
-        path = {
-            "source_component_tag": candidate.get("source_component_tag"),
-            "source_component_id": candidate.get("source_component_id"),
-            "source_visual_id": candidate.get("source_visual_id"),
-            "branch_id": candidate.get("branch_id"),
-            "branch_status": candidate.get("branch_status"),
-            "source_name": candidate.get("source_name"),
-            "traversal_depth": candidate.get("traversal_depth"),
-            "source_visual_distance": candidate.get("source_visual_distance"),
-            "reason": candidate.get("reason"),
-        }
-        if key not in merged:
-            copied = dict(candidate)
-            copied["source_paths"] = [path]
-            copied["source_path_count"] = 1
-            merged[key] = copied
-            continue
-        existing = merged[key]
-        existing["source_paths"].append(path)
-        existing["source_path_count"] = len(existing["source_paths"])
-        if _visual_sort_key(candidate) < _visual_sort_key(existing):
-            for field in ("source_component_tag", "source_component_id", "source_visual_id", "source_bbox", "source_visual_node_id", "source_visual_distance", "traversal_depth", "source_name", "confidence", "reason"):
-                existing[field] = candidate.get(field)
-    return list(merged.values())
-
-
-def _visual_sort_key(candidate):
-    return (
-        0 if candidate.get("bbox") and candidate.get("source_bbox") else 1,
-        _distance_sort_value(candidate.get("source_visual_distance")),
-        int(candidate.get("traversal_depth") or 99),
-        -int(candidate.get("confidence") or 0),
-        str(candidate.get("tag_number") or ""),
-        str(candidate.get("candidate_id") or ""),
-    )
-
-
 def _source_key(candidate):
     return (str(candidate.get("equipment_tag") or ""), str(candidate.get("source_component_id") or candidate.get("source_component_tag") or ""))
 
@@ -1328,48 +1182,6 @@ def _hilt_bbox(payload, y_flip=None):
     return [int(round(x)), int(round(y)), int(round(w)), int(round(h))]
 
 
-def _distance_sort_value(value):
-    return float(value) if value is not None else 999999.0
-
-
-def _symbol_attr(symbol, name):
-    target = str(name or "").strip().lower().replace("_", " ")
-    for attr in symbol.get("attributes") or []:
-        if not isinstance(attr, dict):
-            continue
-        attr_name = str(attr.get("name") or "").strip().lower().replace("_", " ")
-        if attr_name == target:
-            return attr.get("value")
-    return None
-
-
-def _extract_symbols(payload):
-    if isinstance(payload, list):
-        return payload
-    if not isinstance(payload, dict):
-        return []
-    for key in ("data", "symbols", "items", "results"):
-        value = payload.get(key)
-        if isinstance(value, list):
-            return value
-        if isinstance(value, dict):
-            nested = _extract_symbols(value)
-            if nested:
-                return nested
-    symbol_json = payload.get("symbol_json")
-    if isinstance(symbol_json, list):
-        return symbol_json
-    if isinstance(symbol_json, dict):
-        symbols = []
-        for key, value in symbol_json.items():
-            if isinstance(value, dict):
-                symbol = dict(value)
-                symbol.setdefault("uuid", key)
-                symbols.append(symbol)
-        return symbols
-    return []
-
-
 def _extract_text_items(payload):
     if not isinstance(payload, dict):
         return []
@@ -1391,18 +1203,6 @@ def _extract_text_items(payload):
             }
         )
     return items
-
-
-def _symbol_bbox(symbol):
-    if isinstance(symbol.get("bbox"), list) and len(symbol["bbox"]) == 4:
-        return [int(round(float(value))) for value in symbol["bbox"]]
-    keys = ("orig_x", "orig_y", "orig_bbox_width", "orig_bbox_height")
-    if all(symbol.get(key) is not None for key in keys):
-        return [int(round(float(symbol[key]))) for key in keys]
-    keys = ("x", "y", "width", "height")
-    if all(symbol.get(key) is not None for key in keys):
-        return [int(round(float(symbol[key]))) for key in keys]
-    return []
 
 
 def _fallback_hilt_yflip(config, client, hilt_payload, debug):
@@ -1509,55 +1309,7 @@ def _positive_number(value):
     return number if number > 0 else None
 
 
-def _calibrate_hilt_yflip(hilt_nodes, symbols):
-    """Derive the image height H such that image_y = H - hilt_y. Pairs HILT nodes
-    with STLM symbols (STLM coords are image-space) by node id first, then by tag.
-    Returns None if no pairs (calibration failed -> HILT merge is skipped)."""
-    if not symbols:
-        return None
-    stlm_by_id = {}
-    for sym in symbols:
-        for key in ("source_id", "uuid", "id"):
-            value = sym.get(key)
-            if value:
-                stlm_by_id[str(value).lower()] = sym
-    stlm_by_tag = {}
-    for sym in symbols:
-        tag = sym.get("tag") or _symbol_attr(sym, "tag")
-        if tag:
-            stlm_by_tag[_norm(tag)] = sym
-
-    heights = []
-    for node in hilt_nodes:
-        payload = node.get("payload") or {}
-        loc = payload.get("bounding_box_location") or {}
-        if loc.get("y") is None:
-            continue
-        sym = stlm_by_id.get(str(node.get("id") or "").lower())
-        if sym is None:
-            tag = _symbol_attr(payload, "tag")
-            sym = stlm_by_tag.get(_norm(tag)) if tag else None
-        if sym is None:
-            continue
-        sb = _symbol_bbox(sym)
-        if not sb:
-            continue
-        stlm_center_y = sb[1] + sb[3] / 2.0
-        heights.append(stlm_center_y + float(loc.get("y")))
-    if not heights:
-        return None
-    return sum(heights) / len(heights)
-
-
 def _norm(value):
-    return str(value or "").strip().lower()
+    return normalize_tag(value)
 
 
-def _tag_prefix(value):
-    result = []
-    for char in str(value or "").strip().lower():
-        if char.isalpha():
-            result.append(char)
-            continue
-        break
-    return "".join(result)

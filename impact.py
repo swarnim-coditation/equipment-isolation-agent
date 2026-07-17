@@ -13,15 +13,12 @@ from typing import Any
 
 from api_client import Plant360Client
 from domain.enums import FlowRole, ImpactSeverity
+from domain.hilt_geometry import calibrate_yflip as _calibrate_hilt_yflip
+from domain.hilt_geometry import extract_symbols as _extract_symbols
+from domain.hilt_geometry import symbol_attr as _symbol_attr
+from domain.hilt_geometry import symbol_bbox as _symbol_bbox
 from domain.models import BBox, DownstreamImpactWarning
-
-
-PROCESS_LINE_CLASSES = {
-    "primary_process_line",
-    "secondary_process_line",
-    "main_process_line",
-    "process_line",
-}
+from domain.topology import PROCESS_LINE_CLASSES, normalize_tag
 
 MAX_IMPACT_HOPS = 24
 
@@ -271,7 +268,7 @@ def _downstream_starts(candidate: dict, candidate_node: str, graph: ProcessGraph
     source_neighbors = _source_side_neighbors(candidate, candidate_node, graph)
     role = str(candidate.get("source_flow_role") or "").lower()
     starts = []
-    for neighbor in graph.undirected.get(candidate_node, set()):
+    for neighbor in sorted(graph.undirected.get(candidate_node, set())):
         if neighbor in graph.likely.get(candidate_node, set()):
             starts.append((neighbor, LIKELY))
         elif role == FlowRole.INLET.value and neighbor in source_neighbors:
@@ -280,10 +277,10 @@ def _downstream_starts(candidate: dict, candidate_node: str, graph: ProcessGraph
             starts.append((neighbor, POSSIBLE))
     if not starts:
         if role == FlowRole.INLET.value and source_neighbors:
-            starts.extend((neighbor, POSSIBLE) for neighbor in source_neighbors)
+            starts.extend((neighbor, POSSIBLE) for neighbor in sorted(source_neighbors))
         else:
-            external = [neighbor for neighbor in graph.undirected.get(candidate_node, set()) if neighbor not in source_neighbors]
-            starts.extend((neighbor, POSSIBLE) for neighbor in (external or list(graph.undirected.get(candidate_node, set()))))
+            external = [neighbor for neighbor in sorted(graph.undirected.get(candidate_node, set())) if neighbor not in source_neighbors]
+            starts.extend((neighbor, POSSIBLE) for neighbor in (external or sorted(graph.undirected.get(candidate_node, set()))))
 
     return _dedupe_starts(starts)
 
@@ -306,7 +303,7 @@ def _shortest_path(start: str, target: str, adj: dict[str, set[str]], max_hops: 
         node, path = queue.popleft()
         if len(path) > max_hops + 1:
             continue
-        for neighbor in adj.get(node, set()):
+        for neighbor in sorted(adj.get(node, set())):
             if neighbor in seen:
                 continue
             new_path = path + [neighbor]
@@ -349,7 +346,7 @@ def _traverse_from_start(
                 continue
         if hops >= max_hops:
             continue
-        for neighbor in graph.undirected.get(node_id, set()):
+        for neighbor in sorted(graph.undirected.get(node_id, set())):
             if neighbor in closed_barriers:
                 continue
             next_severity = severity if neighbor in graph.likely.get(node_id, set()) else POSSIBLE
@@ -534,91 +531,6 @@ def _hilt_text_value(items) -> str | None:
     return ", ".join(values) if values else None
 
 
-def _extract_symbols(payload):
-    if isinstance(payload, list):
-        return payload
-    if not isinstance(payload, dict):
-        return []
-    for key in ("data", "symbols", "items", "results"):
-        value = payload.get(key)
-        if isinstance(value, list):
-            return value
-        if isinstance(value, dict):
-            nested = _extract_symbols(value)
-            if nested:
-                return nested
-    symbol_json = payload.get("symbol_json")
-    if isinstance(symbol_json, list):
-        return symbol_json
-    if isinstance(symbol_json, dict):
-        symbols = []
-        for key, value in symbol_json.items():
-            if isinstance(value, dict):
-                symbol = dict(value)
-                symbol.setdefault("uuid", key)
-                symbols.append(symbol)
-        return symbols
-    return []
-
-
-def _symbol_attr(symbol, name):
-    target = str(name or "").strip().lower().replace("_", " ")
-    for attr in symbol.get("attributes") or []:
-        if not isinstance(attr, dict):
-            continue
-        attr_name = str(attr.get("name") or "").strip().lower().replace("_", " ")
-        if attr_name == target:
-            return attr.get("value")
-    return None
-
-
-def _symbol_bbox(symbol):
-    if isinstance(symbol.get("bbox"), list) and len(symbol["bbox"]) == 4:
-        return [int(round(float(value))) for value in symbol["bbox"]]
-    keys = ("orig_x", "orig_y", "orig_bbox_width", "orig_bbox_height")
-    if all(symbol.get(key) is not None for key in keys):
-        return [int(round(float(symbol[key]))) for key in keys]
-    keys = ("x", "y", "width", "height")
-    if all(symbol.get(key) is not None for key in keys):
-        return [int(round(float(symbol[key]))) for key in keys]
-    return []
-
-
-def _calibrate_hilt_yflip(hilt_nodes, symbols):
-    if not symbols:
-        return None
-    stlm_by_id = {}
-    for sym in symbols:
-        for key in ("source_id", "uuid", "id"):
-            value = sym.get(key)
-            if value:
-                stlm_by_id[str(value).lower()] = sym
-    stlm_by_tag = {}
-    for sym in symbols:
-        tag = sym.get("tag") or _symbol_attr(sym, "tag")
-        if tag:
-            stlm_by_tag[_norm(tag)] = sym
-
-    heights = []
-    for node in hilt_nodes:
-        payload = node.get("payload") or {}
-        loc = payload.get("bounding_box_location") or {}
-        if loc.get("y") is None:
-            continue
-        sym = stlm_by_id.get(str(node.get("id") or "").lower())
-        if sym is None:
-            tag = _symbol_attr(payload, "tag")
-            sym = stlm_by_tag.get(_norm(tag)) if tag else None
-        if sym is None:
-            continue
-        sb = _symbol_bbox(sym)
-        if not sb:
-            continue
-        stlm_center_y = sb[1] + sb[3] / 2.0
-        heights.append(stlm_center_y + float(loc.get("y")))
-    if not heights:
-        return None
-    return sum(heights) / len(heights)
 
 
 def _tag_prefix(value: str) -> str:
@@ -632,4 +544,4 @@ def _tag_prefix(value: str) -> str:
 
 
 def _norm(value: Any) -> str:
-    return str(value or "").strip().lower().replace("-", "_")
+    return normalize_tag(value)

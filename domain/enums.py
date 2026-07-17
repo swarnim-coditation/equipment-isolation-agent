@@ -50,15 +50,16 @@ class ImpactSeverity(StringEnum):
 class OverlayKind(StringEnum):
     TARGET = "target"
     ISOLATION = "isolation"
+    SCHEME = "scheme"
     IMPACT = "impact"
     MANUAL = "manual"
     OBLIGATION_MANUAL = "obligation_manual"
     CONTEXT = "context"
     INSTRUMENT = "instrument"
+    RELIEF = "relief"
 
 
 class EvidenceKind(StringEnum):
     BARRIER = "barrier"
     POSITIVE_ISOLATION = "positive_isolation"
     VERIFICATION = "verification"
-

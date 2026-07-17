@@ -12,6 +12,8 @@ be grounded (isolate inlets/upstream first) instead of guessed by the LLM.
 """
 from __future__ import annotations
 
+from domain.topology import normalize_tag
+
 
 def classify_nozzle_flow(hilt_payload: dict) -> dict:
     """Return {nozzle_tag_normalized: {"role", "inlet_score", "outlet_score", "node_id"}}
@@ -108,4 +110,4 @@ def _attr(attributes, name):
 
 
 def _norm(value):
-    return str(value or "").strip().upper().replace("-", "_")
+    return normalize_tag(value)

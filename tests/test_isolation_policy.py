@@ -8,8 +8,11 @@ from bbox import (
     _hilt_nodes_by_id,
     _image_dimensions,
     _resolve_candidate_bboxes,
+    _context_item_has_signal_line,
     _selectable_candidate_pool,
     _select_visually_nearest_per_source,
+    _source_key,
+    _sources_owning_isolation_valve,
 )
 from candidates import find_candidates
 from config import IsolationPolicy, RunConfig, apply_project_profile, load_project_profile
@@ -231,6 +234,74 @@ class IsolationPolicyTests(unittest.TestCase):
 
         self.assertEqual(sources, set())
         self.assertEqual(items, [])
+
+    def test_signal_line_source_with_isolation_valve_is_a_mislabel_override(self):
+        # P3 shape: the source's HILT connecting lines are all electrical_signal_line
+        # (so _hilt_context_sources excuses it as instrument_signal_context), but the
+        # graph classified a real isolation valve on it (policy_decision=automatic).
+        # A process valve cannot sit on a signal line -> definitive mislabel -> the
+        # source is removed from context and the valve is kept.
+        candidate_pool = [
+            {
+                "equipment_tag": "P3",
+                "source_component_id": "L3",
+                "source_component_tag": "L3",
+                "source_hilt_lines": [{"entity_class": "electrical_signal_line"}],
+                "candidate_id": "valve3",
+                "policy_decision": "automatic",
+            }
+        ]
+        context_sources, context_items = _hilt_context_sources(candidate_pool, [])
+        self.assertIn(("P3", "L3"), context_sources)  # HILT alone would excuse it
+
+        isolation_valve_sources = _sources_owning_isolation_valve(candidate_pool, IsolationPolicy())
+        signal_sources = {
+            (i["equipment_tag"], i["source_component"]) for i in context_items if _context_item_has_signal_line(i)
+        }
+        mislabeled = isolation_valve_sources & signal_sources
+        self.assertEqual(mislabeled, {("P3", "L3")})
+        self.assertEqual(context_sources - mislabeled, set())  # rescued
+
+    def test_companion_line_source_with_isolation_valve_stays_context(self):
+        # A valve on a companion line is physically plausible instrument context, so
+        # it is NOT overridden even though the graph classified an isolation valve on
+        # it. This guards against the fix nullifying legitimate companion-line context.
+        candidate_pool = [
+            {
+                "equipment_tag": "N7",
+                "source_component_id": "N3",
+                "source_component_tag": "N3_N7",
+                "source_hilt_lines": [{"entity_class": "companion_line"}],
+                "candidate_id": "valveC",
+                "policy_decision": "automatic",
+            }
+        ]
+        context_sources, context_items = _hilt_context_sources(candidate_pool, [])
+        self.assertIn(("N7", "N3"), context_sources)
+
+        isolation_valve_sources = _sources_owning_isolation_valve(candidate_pool, IsolationPolicy())
+        signal_sources = {
+            (i["equipment_tag"], i["source_component"]) for i in context_items if _context_item_has_signal_line(i)
+        }
+        mislabeled = isolation_valve_sources & signal_sources
+        self.assertEqual(mislabeled, set())  # companion line is not a mislabel
+        self.assertEqual(context_sources - mislabeled, context_sources)  # stays context
+
+    def test_signal_line_tap_without_isolation_valve_stays_context(self):
+        # Signal-line source but no selectable candidate (a genuine instrument tap):
+        # nothing to rescue, so the source stays instrument context.
+        candidate_pool = [
+            {
+                "equipment_tag": "P3",
+                "source_component_id": "SRC1",
+                "source_component_tag": "SRC1",
+                "source_hilt_lines": [{"entity_class": "electrical_signal_line"}],
+                "candidate_id": "gauge",
+            }
+        ]
+        context_sources, _items = _hilt_context_sources(candidate_pool, [])
+        self.assertIn(("P3", "SRC1"), context_sources)
+        self.assertEqual(_sources_owning_isolation_valve(candidate_pool, IsolationPolicy()), set())
 
     def test_bbox_visual_selection_pool_includes_conditional_candidates_for_manual_review(self):
         pool = [

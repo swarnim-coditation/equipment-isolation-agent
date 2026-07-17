@@ -31,6 +31,7 @@ from obligations import analyze_isolation_obligations
 from output import build_final_payload, write_json, write_viewer
 from planner import plan_requests
 from api_client import Plant360Client
+from relief import analyze_isolation_schemes_and_relief
 from unigraph_metadata import enrich_config_from_unigraph
 from validator import validate
 
@@ -75,7 +76,7 @@ def parse_args():
     parser.add_argument("--auth-token", default=os.environ.get("PLANT360_AUTH_TOKEN", ""))
     parser.add_argument("--no-verify-ssl", action="store_true")
     parser.add_argument("--max-depth", type=int, default=None)
-    parser.add_argument("--output-dir", default="/tmp/eia")
+    parser.add_argument("--output-dir", default="output")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")
     parser.add_argument("--non-intrusive", action="store_true")
     parser.add_argument("--not-high-risk", action="store_true")
@@ -281,7 +282,7 @@ def resolve_project_metadata(config):
 def run(config, image_url=""):
     config.output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info("[1/14] Resolving Unigraph project metadata")
+    logger.info("[1/15] Resolving Unigraph project metadata")
     config, metadata_debug = resolve_project_metadata(config)
     logger.info(
         "      metadata_status=%s jobs=%s project=%s collection=%s",
@@ -291,7 +292,7 @@ def run(config, image_url=""):
         config.collection_id or "-",
     )
 
-    logger.info("[2/14] Fetching equipment boundary from JanusGraph")
+    logger.info("[2/15] Fetching equipment boundary from JanusGraph")
     boundary_data = fetch_boundaries(config)
     config, job_debug = resolve_job_from_boundary(config, boundary_data)
     boundary_data["context"] = config.context
@@ -308,7 +309,7 @@ def run(config, image_url=""):
 
     boundary_data.setdefault("debug", {})["unigraph_metadata"] = metadata_debug
 
-    logger.info("[3/14] Selecting deterministic isolation candidates")
+    logger.info("[3/15] Selecting deterministic isolation candidates")
     candidate_data = find_candidates(boundary_data, config.policy)
     logger.info(
         "      candidates=%s raw_candidates=%s",
@@ -326,7 +327,7 @@ def run(config, image_url=""):
             config.resolved_job_id,
         )
 
-    logger.info("[4/14] Resolving candidate bboxes from STLM/HILT")
+    logger.info("[4/15] Resolving candidate bboxes from STLM/HILT")
     bbox_data = resolve_bboxes(candidate_data, config)
     logger.info(
         "      bbox_resolved=%s stlm_symbols=%s",
@@ -334,7 +335,7 @@ def run(config, image_url=""):
         (bbox_data.get("debug") or {}).get("bbox_stlm_symbol_count"),
     )
 
-    logger.info("[5/14] Analyzing isolation obligations")
+    logger.info("[5/15] Analyzing isolation obligations")
     bbox_data = analyze_isolation_obligations(bbox_data, config)
     obligation_summary = ((bbox_data.get("isolation_obligations") or {}).get("summary") or {})
     logger.info(
@@ -344,7 +345,17 @@ def run(config, image_url=""):
         obligation_summary.get("manual_candidate_count"),
     )
 
-    logger.info("[6/14] Analyzing instrument context")
+    logger.info("[6/15] Detecting isolation schemes and relief points")
+    bbox_data = analyze_isolation_schemes_and_relief(bbox_data, config)
+    scheme_summary = ((bbox_data.get("detected_isolation_schemes") or {}).get("summary") or {})
+    relief_summary = ((bbox_data.get("relief_candidates") or {}).get("summary") or {})
+    logger.info(
+        "      schemes=%s relief_candidates=%s",
+        scheme_summary.get("scheme_count"),
+        relief_summary.get("candidate_count"),
+    )
+
+    logger.info("[7/15] Analyzing instrument context")
     instrument_context = analyze_instrument_context(bbox_data, config)
     bbox_data["instrument_context"] = instrument_context
     bbox_data.setdefault("debug", {})["instrument_context_status"] = instrument_context.get("status")
@@ -355,7 +366,7 @@ def run(config, image_url=""):
         len(instrument_context.get("instruments") or []),
     )
 
-    logger.info("[7/14] Classifying deterministic evidence")
+    logger.info("[8/15] Classifying deterministic evidence")
     evidence_data = build_evidence(bbox_data, config)
     evidence_debug = evidence_data.get("debug") or {}
     logger.info(
@@ -365,14 +376,14 @@ def run(config, image_url=""):
         evidence_debug.get("evidence_verification_candidate_count"),
     )
 
-    logger.info("[8/14] Planning required evidence checks")
+    logger.info("[9/15] Planning required evidence checks")
     planner_data = plan_requests(evidence_data, config)
     logger.info(
         "      required_checks=%s",
         (planner_data.get("debug") or {}).get("planner_required_evidence_check_count"),
     )
 
-    logger.info("[9/14] Validating isolation assurance")
+    logger.info("[10/15] Validating isolation assurance")
     validation_data = validate(planner_data)
     logger.info(
         "      assurance_status=%s terminal=%s",
@@ -380,7 +391,7 @@ def run(config, image_url=""):
         (validation_data.get("isolation_validation") or {}).get("terminal"),
     )
 
-    logger.info("[10/14] Analyzing downstream impact from selected barriers")
+    logger.info("[11/15] Analyzing downstream impact from selected barriers")
     downstream_impact = analyze_downstream_impact(validation_data, config)
     impact_debug = downstream_impact.get("debug") or {}
     logger.info(
@@ -391,7 +402,7 @@ def run(config, image_url=""):
 
     validation_data["instrument_context"] = instrument_context
 
-    logger.info("[11/14] Building deterministic LOTO procedure")
+    logger.info("[12/15] Building deterministic LOTO procedure")
     loto_procedure = build_loto_procedure(validation_data, config)
     logger.info(
         "      loto_steps=%s order_source=%s",
@@ -399,7 +410,7 @@ def run(config, image_url=""):
         loto_procedure.get("within_phase_order_source"),
     )
 
-    logger.info("[12/14] Building final UI JSON payload")
+    logger.info("[13/15] Building final UI JSON payload")
     final_payload = build_final_payload(validation_data, config, downstream_impact=downstream_impact)
     final_payload.setdefault("debug", {})["unigraph_metadata"] = metadata_debug
     final_payload.setdefault("data", [{}])[0]["loto_procedure"] = loto_procedure
@@ -408,7 +419,7 @@ def run(config, image_url=""):
     output_json = config.output_dir / f"{stem}.json"
     viewer_html = config.output_dir / f"{stem}.html"
     if not image_url:
-        logger.info("[13/14] Downloading P&ID image from Plant360 API")
+        logger.info("[14/15] Downloading P&ID image from Plant360 API")
         image_url, image_debug = resolve_pid_image(config, config.output_dir, stem)
         final_payload.setdefault("debug", {}).update(image_debug)
         logger.info(
@@ -417,9 +428,9 @@ def run(config, image_url=""):
             image_debug.get("pid_image_bytes"),
         )
     else:
-        logger.info("[13/14] Using provided P&ID image URL")
+        logger.info("[14/15] Using provided P&ID image URL")
 
-    logger.info("[14/14] Writing JSON output and HTML viewer")
+    logger.info("[15/15] Writing JSON output and HTML viewer")
     write_json(output_json, final_payload)
     write_viewer(viewer_html, final_payload, image_url=image_url)
     return output_json, viewer_html, final_payload

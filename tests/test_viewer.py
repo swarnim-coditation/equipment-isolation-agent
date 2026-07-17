@@ -195,6 +195,44 @@ class ViewerTests(unittest.TestCase):
         self.assertIn("step-detail", html)
         self.assertIn("instrument-box", html)
 
+    def test_ordered_steps_are_grouped_by_phase_heading(self):
+        html = render_viewer_html(
+            payload(
+                loto_procedure={
+                    "ordered_steps": [
+                        {
+                            "step": 1,
+                            "phase": 1,
+                            "ref": "1910.147(d)(1)",
+                            "title": "Preparation for shutdown",
+                            "action": "Prepare equipment.",
+                        },
+                        {
+                            "step": 2,
+                            "phase": 1,
+                            "ref": "1910.147(d)(1)",
+                            "title": "Preparation for shutdown",
+                            "action": "Record baseline level.",
+                        },
+                        {
+                            "step": 3,
+                            "phase": 3,
+                            "ref": "1910.147(d)(3)",
+                            "title": "Equipment isolation",
+                            "action": "Close manual valve.",
+                        },
+                    ]
+                },
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("phase-group", html)
+        self.assertIn("Phase 1: Preparation for shutdown", html)
+        self.assertIn("Phase 3: Equipment isolation", html)
+        self.assertEqual(html.count("Phase 1: Preparation for shutdown"), 1)
+        self.assertNotIn('[Phase 1 | 1910.147(d)(1)]', html)
+
     def test_obligation_manual_candidate_renders_orange_overlay_and_coverage(self):
         html = render_viewer_html(
             payload(
@@ -230,8 +268,78 @@ class ViewerTests(unittest.TestCase):
 
         self.assertIn("manual-box", html)
         self.assertIn("manual isolation check", html)
-        self.assertIn("Isolation Coverage", html)
-        self.assertIn("Manual bypass/parallel-route check required", html)
+
+    def test_detected_scheme_device_renders_as_blue_overlay(self):
+        html = render_viewer_html(
+            payload(
+                isolation_points=[{"uuid": "v1", "tag_number": "XV-1", "bbox": [10, 10, 20, 20]}],
+                detected_isolation_schemes={
+                    "status": "completed",
+                    "items": [
+                        {
+                            "source_component_tag": "N1",
+                            "scheme_type": "double block",
+                            "barrier_ids": ["v1", "v2"],
+                            "relief_candidate_ids": [],
+                            "devices": [
+                                {"id": "v1", "entity_class": "gate_valve", "bbox": [10, 10, 20, 20]},
+                                {"id": "v2", "entity_class": "gate_valve", "bbox": [40, 40, 20, 20]},
+                            ],
+                        }
+                    ],
+                },
+                loto_procedure={
+                    "ordered_steps": [
+                        {"phase": 3, "device_uuid": "v1"},
+                        {"phase": 3, "device_uuid": "v2"},
+                    ]
+                },
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("Detected Isolation Scheme", html)
+        self.assertIn("scheme-box", html)
+        self.assertIn("Detected scheme device", html)
+
+    def test_undefined_valve_uses_operator_facing_label(self):
+        html = render_viewer_html(
+            payload(
+                isolation_points=[{"uuid": "v1", "entity_class": "undefined_valve", "bbox": [10, 10, 20, 20]}],
+                detected_isolation_schemes={
+                    "status": "completed",
+                    "items": [
+                        {
+                            "source_component_tag": "N1",
+                            "scheme_type": "double block",
+                            "barrier_ids": ["v1", "v2"],
+                            "relief_candidate_ids": [],
+                            "devices": [
+                                {"id": "v1", "entity_class": "undefined_valve", "bbox": [10, 10, 20, 20]},
+                                {"id": "v2", "entity_class": "undefined_valve", "bbox": [40, 40, 20, 20]},
+                            ],
+                        }
+                    ],
+                },
+                loto_procedure={
+                    "ordered_steps": [
+                        {
+                            "phase": 3,
+                            "ref": "1910.147(d)(3)",
+                            "title": "Equipment isolation",
+                            "action": "Close & lock manual valve (source N1)",
+                            "device_uuid": "v1",
+                        }
+                    ]
+                },
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("#1  manual valve", html)
+        self.assertIn("second block: manual valve", html)
+        self.assertNotIn("undefined_valve", html)
+        self.assertNotIn("Close &amp; lock undefined_valve", html)
 
     def test_output_write_viewer_writes_html(self):
         with tempfile.TemporaryDirectory() as tmp:

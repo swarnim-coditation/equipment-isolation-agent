@@ -13,6 +13,9 @@ def build_final_payload(validation_data, config, downstream_impact=None):
     selected_equipment_overlays = validation_data.get("selected_equipment_overlays") or []
     isolation_obligations = validation_data.get("isolation_obligations") or (validation_data.get("isolation_validation") or {}).get("isolation_obligations") or {}
     instrument_context = validation_data.get("instrument_context") or {}
+    isolated_envelope = validation_data.get("isolated_envelope") or {}
+    detected_isolation_schemes = validation_data.get("detected_isolation_schemes") or {}
+    relief_candidates = validation_data.get("relief_candidates") or {}
     isolation_points = []
     for candidate in candidates:
         properties = candidate.get("properties", {}) or {}
@@ -65,6 +68,9 @@ def build_final_payload(validation_data, config, downstream_impact=None):
                 "isolation_obligations": isolation_obligations,
                 "downstream_impact": downstream_impact or validation_data.get("downstream_impact"),
                 "instrument_context": instrument_context,
+                "isolated_envelope": isolated_envelope,
+                "detected_isolation_schemes": detected_isolation_schemes,
+                "relief_candidates": relief_candidates,
             }
         ],
     }

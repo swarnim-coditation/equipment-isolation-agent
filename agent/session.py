@@ -22,6 +22,7 @@ class AgentSession:
         self.candidate_data: dict | None = None
         self.bbox_data: dict | None = None
         self.isolation_obligations: dict | None = None
+        self.relief_analysis: dict | None = None
         self.evidence_data: dict | None = None
         self.planner_data: dict | None = None
         self.validation_data: dict | None = None

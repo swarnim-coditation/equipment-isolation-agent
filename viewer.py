@@ -1,12 +1,27 @@
 import html
+from collections import Counter
 from dataclasses import dataclass
 
+from domain.display import device_display_label, device_display_name
 from domain.enums import ImpactSeverity, ObligationStatus, OverlayKind, SourceType
 from domain.models import BBox, Overlay
 
 CANVAS_WIDTH = 5458
 CANVAS_HEIGHT = 3109
 VIEW_PADDING = 180
+
+# (kinds, human label, swatch color, dashed?) — drives both the map legend and
+# the color chips in the summary table so they always agree with the drawn boxes.
+_LEGEND_ENTRIES = [
+    ((OverlayKind.TARGET,), "Target equipment", "#eab308", False),
+    ((OverlayKind.ISOLATION,), "Isolation point / barrier", "#2563eb", False),
+    ((OverlayKind.SCHEME,), "Detected scheme device (unselected 2nd block)", "#1d4ed8", False),
+    ((OverlayKind.RELIEF,), "Relief point (vent / drain / bleed)", "#0284c7", False),
+    ((OverlayKind.MANUAL, OverlayKind.OBLIGATION_MANUAL), "Manual field check", "#f59e0b", True),
+    ((OverlayKind.CONTEXT,), "Boundary context (non-process)", "#1d4ed8", False),
+    ((OverlayKind.INSTRUMENT,), "Instrument (advisory)", "#0891b2", False),
+    ((OverlayKind.IMPACT,), "Downstream impact", "#dc2626", False),
+]
 
 
 @dataclass(frozen=True)
@@ -21,6 +36,7 @@ class Viewport:
 
 def render_viewer_html(payload, image_url=""):
     data = payload.get("data", [{}])[0]
+    debug = payload.get("debug") or data.get("debug") or {}
     overlays = _collect_overlays(data)
     viewport = _compute_viewport(overlays, image_url)
     procedure_html = _render_isolation_procedure_panel(
@@ -39,6 +55,33 @@ def render_viewer_html(payload, image_url=""):
         viewport=viewport,
         procedure_html=procedure_html,
         summary_html=_render_summary_table(overlays),
+        degraded_html=_render_degraded_banner(debug, data),
+    )
+
+
+def _render_degraded_banner(debug, data):
+    """Prominent callout when the run fell back to partial/graph-only data, so a
+    degraded result is never presented as if it were authoritative."""
+    errors = []
+    if debug.get("hilt_graph_error"):
+        errors.append(f"P&ID topology (HILT) failed to load: {debug.get('hilt_graph_error')}")
+    if debug.get("bbox_stlm_error"):
+        errors.append(f"Symbols/labels (STLM) failed to load: {debug.get('bbox_stlm_error')}")
+    zero_topology = not (debug.get("hilt_graph_node_count") or 0)
+    if not errors and not zero_topology:
+        return ""
+    if zero_topology and not any("HILT" in e for e in errors):
+        errors.append("No P&ID topology nodes were available; topology-based checks were skipped.")
+    if not (data.get("selected_equipment_overlays") or []):
+        errors.append("Target equipment could not be located on the drawing.")
+    items = "".join(f"<li>{html.escape(str(reason))}</li>" for reason in errors)
+    return (
+        '<div class="degraded">'
+        '<div class="degraded-title">⚠ Degraded / incomplete data — do not rely on this result as-is</div>'
+        f"<ul>{items}</ul>"
+        "<div>This run fell back to partial or graph-only data; drawing overlays, second-block detection, and "
+        "relief analysis may be missing or incorrect. Re-run once the drawing/topology services are available.</div>"
+        "</div>"
     )
 
 
@@ -47,11 +90,13 @@ def _collect_overlays(data):
     overlays = []
     overlays.extend(_collect_target_overlays(data))
     overlays.extend(_collect_isolation_overlays(data, seq_by_uuid))
+    overlays.extend(_collect_scheme_device_overlays(data, seq_by_uuid))
     overlays.extend(_collect_impact_overlays(data))
     overlays.extend(_collect_obligation_manual_overlays(data))
     overlays.extend(_collect_manual_check_overlays(data))
     overlays.extend(_collect_context_overlays(data))
     overlays.extend(_collect_instrument_overlays(data))
+    overlays.extend(_collect_relief_overlays(data))
     return overlays
 
 
@@ -86,7 +131,7 @@ def _collect_isolation_overlays(data, seq_by_uuid):
         if not bbox:
             continue
         seq = seq_by_uuid.get(str(point.get("uuid")))
-        label = str(point.get("tag_number") or point.get("entity_class") or point.get("uuid") or "")
+        label = device_display_label(point, fallback=str(point.get("uuid") or "isolation device"))
         if seq:
             label = f"#{seq}  {label}"
         title = f"{label} | uuid={point.get('uuid')} | bbox={bbox}"
@@ -104,6 +149,41 @@ def _collect_isolation_overlays(data, seq_by_uuid):
                 badge=str(seq or ""),
             )
         )
+    return overlays
+
+
+def _collect_scheme_device_overlays(data, seq_by_uuid):
+    overlays = []
+    selected_ids = {str(point.get("uuid")) for point in data.get("isolation_points", []) or []}
+    seen = set()
+    for scheme in ((data.get("detected_isolation_schemes") or {}).get("items") or []):
+        for device in scheme.get("devices") or []:
+            device_id = str(device.get("id") or "")
+            if not device_id or device_id in selected_ids or device_id in seen:
+                continue
+            bbox = _valid_bbox(device.get("bbox"))
+            if not bbox:
+                continue
+            seen.add(device_id)
+            label = _scheme_device_label(device, scheme)
+            title = (
+                f"Detected scheme device | scheme={scheme.get('scheme_type')} | "
+                f"label={label} | uuid={device_id} | bbox={bbox}"
+            )
+            overlays.append(
+                Overlay(
+                    kind=OverlayKind.SCHEME,
+                    bbox=BBox.from_any(bbox),
+                    label=label,
+                    title=title,
+                    css_class="box scheme-box",
+                    label_class="scheme-label",
+                    summary_seq="scheme",
+                    summary_uuid=device_id,
+                    summary_reason=title,
+                    badge="",
+                )
+            )
     return overlays
 
 
@@ -174,7 +254,7 @@ def _collect_obligation_manual_overlays(data):
             if key in seen:
                 continue
             seen.add(key)
-            tag = str(candidate.get("tag_number") or candidate.get("entity_class") or "candidate")
+            tag = device_display_label(candidate, fallback="candidate")
             title = (
                 f"Manual isolation candidate | source={source} | candidate={tag} | "
                 f"uuid={candidate.get('uuid')} | bbox={bbox}"
@@ -247,6 +327,35 @@ def _collect_instrument_overlays(data):
     return overlays
 
 
+def _collect_relief_overlays(data):
+    overlays = []
+    for item in ((data.get("relief_candidates") or {}).get("items") or []):
+        if item.get("relief_type") not in {"vent", "drain", "bleed"}:
+            continue
+        bbox = _valid_bbox(item.get("bbox"))
+        if not bbox:
+            continue
+        label = str(item.get("relief_type") or "relief").title()
+        title = (
+            f"relief candidate | {label} | tag={item.get('tag')} | "
+            f"class={item.get('entity_class')} | classified_by={item.get('classified_by')} | bbox={bbox}"
+        )
+        overlays.append(
+            Overlay(
+                kind=OverlayKind.RELIEF,
+                bbox=BBox.from_any(bbox),
+                label=label,
+                title=title,
+                css_class="relief-box",
+                label_class="relief-label",
+                summary_seq="relief",
+                summary_uuid=str(item.get("id") or ""),
+                summary_reason=str(item.get("basis") or title),
+            )
+        )
+    return overlays
+
+
 def _compute_viewport(overlays, image_url):
     if overlays:
         min_x = min(item.bbox[0] for item in overlays)
@@ -301,13 +410,115 @@ def _render_overlay_divs(overlays, viewport):
     return "\n".join(parts)
 
 
+def _kind_style(kind):
+    for kinds, label, color, _dashed in _LEGEND_ENTRIES:
+        if kind in kinds:
+            return label, color
+    return str(kind), "#6b7280"
+
+
+def _render_hero(data, overlays):
+    equipment = ", ".join(html.escape(str(item)) for item in data.get("selected_equipment") or [])
+    pill_text, pill_css = _status_pill(data)
+    title = f"Equipment {equipment}" if equipment else "Equipment isolation"
+    return (
+        '<div class="hero">'
+        '<div class="hero-top">'
+        f'<div class="hero-title">{title}</div>'
+        f'<span class="pill {pill_css}">{html.escape(pill_text)}</span>'
+        "</div>"
+        f"{_render_stat_tiles(data, overlays)}"
+        "</div>"
+    )
+
+
+# Single source of truth for how an assurance_status is displayed. Keyed on the
+# exact strings validator.validate() emits (see domain.enums.AssuranceStatus).
+# tone -> pill color + callout CSS; both the pill and the callout read this table
+# so they can never disagree for the same status.
+_STATUS_DISPLAY = {
+    "not_isolated": ("bad", "Not isolated", "Not isolated with current evidence"),
+    "provisional_unproven_isolation": ("warn", "Needs field confirmation", "Field confirmation required before work"),
+    "complete_positive_isolation": ("good", "Isolated", "Isolation boundary complete in available data"),
+    "complete_proven_isolation": ("good", "Isolated", "Isolation boundary complete in available data"),
+    "insufficient_data": ("unknown", "Insufficient data", "Isolation status unknown"),
+}
+_STATUS_CALLOUT_CSS = {
+    "bad": "status-not-isolated",
+    "warn": "status-needs-confirmation",
+    "good": "status-complete",
+    "unknown": "status-unknown",
+}
+
+
+def _status_entry(data):
+    status = str(data.get("assurance_status") or "").strip().lower()
+    tone, pill_text, title = _STATUS_DISPLAY.get(status, ("unknown", status or "Unknown", "Isolation status unknown"))
+    return status, tone, pill_text, title
+
+
+def _status_pill(data):
+    _status, tone, pill_text, _title = _status_entry(data)
+    return pill_text, f"pill-{tone}"
+
+
+def _render_stat_tiles(data, overlays):
+    counts = Counter(item.kind for item in overlays)
+    summary = (data.get("isolation_obligations") or {}).get("summary") or {}
+    manual = counts[OverlayKind.MANUAL] + counts[OverlayKind.OBLIGATION_MANUAL]
+    unresolved = int(summary.get("unresolved_count") or 0)
+    impacts = counts[OverlayKind.IMPACT]
+    tiles = [
+        ("Isolation points", counts[OverlayKind.ISOLATION], ""),
+        ("2nd-block (detected)", counts[OverlayKind.SCHEME], ""),
+        ("Relief points", counts[OverlayKind.RELIEF], ""),
+        ("Manual checks", manual, "warn" if manual else ""),
+        ("Unresolved paths", unresolved, "warn" if unresolved else ""),
+        ("Downstream impacts", impacts, "bad" if impacts else ""),
+    ]
+    cells = []
+    for label, value, tone in tiles:
+        tone_cls = f" {tone}" if tone else ""
+        cells.append(
+            f'<div class="stat{tone_cls}"><div class="num">{value}</div>'
+            f'<div class="lbl">{html.escape(label)}</div></div>'
+        )
+    return f'<div class="stat-row">{"".join(cells)}</div>'
+
+
+def _render_legend(overlays):
+    if not overlays:
+        return ""
+    counts = Counter(item.kind for item in overlays)
+    chips = []
+    for kinds, label, color, dashed in _LEGEND_ENTRIES:
+        total = sum(counts.get(kind, 0) for kind in kinds)
+        if not total:
+            continue
+        border = f"2px {'dashed' if dashed else 'solid'} {color}"
+        chips.append(
+            f'<span class="legend-item">'
+            f'<span class="swatch" style="border:{border};background:{color}22;"></span>'
+            f"{html.escape(label)} <b>{total}</b></span>"
+        )
+    if not chips:
+        return ""
+    return '<div class="legend">' + "".join(chips) + "</div>"
+
+
 def _render_summary_table(overlays):
     if not overlays:
         return ""
     rows = []
     for item in overlays:
+        label, color = _kind_style(item.kind)
+        chip = (
+            f'<span class="type-chip"><span class="dot" style="background:{color};"></span>'
+            f"{html.escape(label)}</span>"
+        )
         rows.append(
             "<tr>"
+            f"<td>{chip}</td>"
             f"<td>{html.escape(item.summary_seq)}</td>"
             f"<td>{html.escape(item.summary_uuid)}</td>"
             f"<td>{html.escape(item.label)}</td>"
@@ -316,7 +527,8 @@ def _render_summary_table(overlays):
             "</tr>"
         )
     return (
-        '<table><thead><tr><th>Seq</th><th>UUID</th><th>Label</th><th>BBox</th><th>Reason</th></tr></thead><tbody>'
+        '<h2 class="map-heading">All Overlays</h2>'
+        '<table><thead><tr><th>Type</th><th>Seq</th><th>UUID</th><th>Label</th><th>BBox</th><th>Reason</th></tr></thead><tbody>'
         + "\n".join(rows)
         + "</tbody></table>"
     )
@@ -332,7 +544,7 @@ def _render_image(image_url, viewport):
     )
 
 
-def _render_document(data, image, overlays, viewport, procedure_html, summary_html):
+def _render_document(data, image, overlays, viewport, procedure_html, summary_html, degraded_html=""):
     return (
         """<!doctype html>
 <html>
@@ -343,6 +555,32 @@ body { font-family: Arial, sans-serif; margin: 20px; color: #111827; }
 h1 { margin: 0 0 8px; font-size: 20px; }
 .meta { margin: 0 0 16px; color: #4b5563; }
 .warning { margin: 0 0 16px; padding: 10px 12px; border: 1px solid #f59e0b; background: #fffbeb; color: #92400e; font-weight: 600; }
+.degraded { margin: 0 0 18px; padding: 12px 14px; border: 2px solid #dc2626; background: #fef2f2; color: #7f1d1d; border-radius: 6px; }
+.degraded-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.degraded ul { margin: 6px 0; padding-left: 20px; }
+.hero { margin: 0 0 18px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+.hero-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.hero-title { font-size: 18px; font-weight: 700; }
+.hero-title span { color: #6b7280; font-weight: 500; font-size: 14px; }
+.pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.pill-bad { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+.pill-warn { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; }
+.pill-good { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+.pill-unknown { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; }
+.stat-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat { min-width: 96px; padding: 8px 12px; border-radius: 6px; background: #f9fafb; border: 1px solid #e5e7eb; }
+.stat .num { font-size: 20px; font-weight: 700; line-height: 1; }
+.stat .lbl { font-size: 11px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+.stat.warn { border-color: #fcd34d; background: #fffbeb; }
+.stat.warn .num { color: #b45309; }
+.stat.bad { border-color: #fca5a5; background: #fef2f2; }
+.stat.bad .num { color: #b91c1c; }
+.map-heading { font-size: 16px; margin: 4px 0 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 8px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fbfbfb; font-size: 12px; align-items: center; }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; color: #374151; }
+.legend .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; box-sizing: border-box; }
+.type-chip { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.type-chip .dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
 .canvas-wrap { width: 100%; max-height: 78vh; overflow: auto; border: 1px solid #d1d5db; background: #f9fafb; }
 .canvas { position: relative; display: inline-block; }
 .canvas img { display: block; width: auto; height: auto; max-width: none; }
@@ -352,6 +590,8 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .box { position: absolute; border: 3px solid #2563eb; box-sizing: border-box; background: rgba(37,99,235,0.12); }
 .seq-badge { position: absolute; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 50%; background: #2563eb; color: #fff; font-weight: 700; font-size: 14px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 5; }
 .label { position: absolute; background: #111827; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
+.scheme-box { border-color: #1d4ed8; border-style: dashed; background: rgba(37,99,235,0.08); }
+.scheme-label { position: absolute; background: #1e40af; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
 .impact-box { position: absolute; border: 4px solid #dc2626; box-sizing: border-box; background: rgba(220,38,38,0.16); z-index: 4; }
 .impact-possible { border-style: dashed; background: rgba(220,38,38,0.10); }
 .impact-label { position: absolute; background: #991b1b; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; z-index: 6; }
@@ -361,6 +601,8 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .context-label { position: absolute; background: #1d4ed8; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; }
 .instrument-box { position: absolute; border: 3px solid #0891b2; box-sizing: border-box; background: rgba(8,145,178,0.12); z-index: 2; }
 .instrument-label { position: absolute; background: #0e7490; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; z-index: 6; }
+.relief-box { position: absolute; border: 4px solid #0284c7; box-sizing: border-box; background: rgba(2,132,199,0.18); z-index: 4; }
+.relief-label { position: absolute; background: #0369a1; color: white; font-size: 12px; padding: 3px 6px; white-space: nowrap; border-radius: 3px; z-index: 6; }
 .procedure { margin: 0 0 18px; max-width: 1200px; border: 1px solid #d1d5db; border-radius: 6px; padding: 14px 18px; background: #fff; }
 .procedure h2 { margin: 0 0 4px; font-size: 17px; }
 .procedure h3 { margin: 14px 0 6px; font-size: 13px; color: #111827; }
@@ -368,6 +610,12 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .procedure ol, .procedure ul { margin: 6px 0 6px 18px; padding: 0; }
 .procedure li { margin: 4px 0; font-size: 13px; line-height: 1.4; }
 .procedure .phase { display:inline-block; min-width: 230px; color: #1d4ed8; font-weight: 600; font-size: 12px; }
+.procedure .phase-group { margin: 10px 0 14px; padding: 0 0 0 10px; border-left: 3px solid #dbeafe; }
+.procedure .phase-group h4 { margin: 0 0 6px; font-size: 13px; color: #1e3a8a; }
+.procedure .phase-group h4 span { color: #64748b; font-weight: 500; }
+.procedure .phase-steps { margin-left: 0; list-style: none; counter-reset: none; }
+.procedure .phase-steps li { margin: 5px 0; }
+.procedure .step-number { display: inline-block; min-width: 24px; color: #64748b; font-weight: 600; }
 .procedure .field-gap { color: #b45309; font-weight: 600; }
 .procedure .release { margin-top: 10px; font-size: 12px; color: #4b5563; border-top: 1px dashed #d1d5db; padding-top: 8px; }
 .procedure .status-callout { margin-top: 12px; padding: 12px 14px; border-radius: 6px; border: 1px solid #d1d5db; background: #f9fafb; }
@@ -381,7 +629,7 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .procedure .alerts h3 { margin-top: 0; color: #7c2d12; }
 .procedure .coverage { margin-top: 12px; padding: 10px 12px; border: 1px solid #d1d5db; background: #f9fafb; color: #111827; }
 .procedure .coverage h3 { margin-top: 0; }
-.procedure .step-detail { margin: 4px 0 8px 248px; color: #334155; }
+.procedure .step-detail { margin: 4px 0 8px 28px; color: #334155; }
 .procedure .step-detail li { font-size: 12px; margin: 2px 0; }
 .procedure .possible { color: #854d0e; }
 .procedure .likely { color: #991b1b; font-weight: 600; }
@@ -393,9 +641,13 @@ th { background: #f3f4f6; }
 <body>
 <h1>Equipment Isolation Overlay</h1>
 """
+        + degraded_html
+        + _render_hero(data, overlays)
+        + procedure_html
+        + '<h2 class="map-heading">P&amp;ID Overlay Map</h2>'
         + f'<p class="meta">Boxes: {len(overlays)}. Assurance: {html.escape(str(data.get("assurance_status")))}. '
         + "Scroll the image pane horizontally or vertically to inspect the full P&amp;ID.</p>\n"
-        + procedure_html
+        + _render_legend(overlays)
         + f'\n<div id="imagePane" class="canvas-wrap" data-scroll-x="{viewport.scroll_x}" data-scroll-y="{viewport.scroll_y}">\n'
         + '<div class="canvas">\n'
         + image
@@ -469,6 +721,16 @@ def _impact_overlay_label(warning_item, index):
     return f"Impact {index} {label_type}"
 
 
+def _scheme_device_label(device, scheme):
+    label = device_display_label(device, fallback="device")
+    scheme_type = str(scheme.get("scheme_type") or "").lower()
+    if "double block" in scheme_type:
+        return f"second block: {label}"
+    if "positive" in scheme_type:
+        return f"positive isolation: {label}"
+    return f"scheme device: {label}"
+
+
 def _isolation_sequence(procedure):
     if not procedure:
         return {}
@@ -497,18 +759,11 @@ def _render_isolation_procedure_panel(
         data.get("isolation_obligations") or {},
     )
     coverage_html = _render_isolation_coverage(data.get("isolation_obligations") or {})
+    scheme_html = _render_detected_schemes(data.get("detected_isolation_schemes") or {})
+    relief_html = _render_relief_candidates(data.get("relief_candidates") or {})
     steps = (procedure or {}).get("ordered_steps") or []
     if not steps and not warning_html and not data.get("assurance_status"):
         return ""
-
-    items = []
-    for step in steps:
-        cls = ' class="field-gap"' if step.get("field_gap") else ""
-        phase = (
-            f'<span class="phase">[Phase {step.get("phase")} | '
-            f'{html.escape(str(step.get("ref") or ""))}] {html.escape(str(step.get("title") or ""))}</span>'
-        )
-        items.append(f'<li{cls}>{phase} {html.escape(str(step.get("action") or ""))}{_render_step_details(step)}</li>')
 
     standard = html.escape(str((procedure or {}).get("standard") or "29 CFR 1910.147"))
     release_ref = html.escape(str((procedure or {}).get("release_from_loto_ref") or "1910.147(e)"))
@@ -530,11 +785,7 @@ def _render_isolation_procedure_panel(
             "Within-phase device order NOT yet proposed by the agent (shown in engine candidate order). "
             "OSHA prescribes only the phase order, not the within-phase device order."
         )
-    steps_html = ""
-    if items:
-        steps_html = "<h3>Ordered Isolation Steps</h3><ol>" + "\n".join(items) + "</ol>"
-    else:
-        steps_html = '<h3>Ordered Isolation Steps</h3><p class="meta">No ordered procedure steps are present in this payload.</p>'
+    steps_html = _render_grouped_ordered_steps(steps)
 
     assurance = html.escape(str(data.get("assurance_status") or "unknown"))
     selected = ", ".join(html.escape(str(item)) for item in data.get("selected_equipment") or [])
@@ -546,6 +797,8 @@ def _render_isolation_procedure_panel(
         f'{status_callout}'
         f'{warning_html}'
         f'{coverage_html}'
+        f'{scheme_html}'
+        f'{relief_html}'
         f'<h3>Sequencing Basis</h3><p class="meta">{html.escape(order_note)}</p>'
         f'{steps_html}'
         f'{_render_release_from_isolation(release_ref, release, (procedure or {}).get("restoration_checks") or [])}'
@@ -553,35 +806,119 @@ def _render_isolation_procedure_panel(
     )
 
 
+def _render_grouped_ordered_steps(steps):
+    if not steps:
+        return '<h3>Ordered Isolation Steps</h3><p class="meta">No ordered procedure steps are present in this payload.</p>'
+
+    groups = []
+    current_key = None
+    current = None
+    for step in steps:
+        key = (step.get("phase"), step.get("ref"), step.get("title"))
+        if key != current_key:
+            current = {"phase": step.get("phase"), "ref": step.get("ref"), "title": step.get("title"), "steps": []}
+            groups.append(current)
+            current_key = key
+        current["steps"].append(step)
+
+    sections = []
+    for group in groups:
+        heading = (
+            f'Phase {html.escape(str(group.get("phase") or ""))}: '
+            f'{html.escape(str(group.get("title") or ""))}'
+        )
+        ref = html.escape(str(group.get("ref") or ""))
+        items = []
+        for step in group["steps"]:
+            cls = ' class="field-gap"' if step.get("field_gap") else ""
+            items.append(
+                f'<li{cls}><span class="step-number">{html.escape(str(step.get("step") or ""))}.</span> '
+                f'{html.escape(str(step.get("action") or ""))}{_render_step_details(step)}</li>'
+            )
+        sections.append(
+            '<section class="phase-group">'
+            f'<h4>{heading} <span>{ref}</span></h4>'
+            f'<ol class="phase-steps">{"".join(items)}</ol>'
+            '</section>'
+        )
+    return '<h3>Ordered Isolation Steps</h3>' + "".join(sections)
+
+
+def _render_detected_schemes(detected_schemes):
+    if (detected_schemes or {}).get("status") != "completed":
+        return ""
+    items = detected_schemes.get("items") or []
+    if not items:
+        return ""
+    rows = []
+    for item in items:
+        source = html.escape(str(item.get("source_component_tag") or item.get("source_component") or "source"))
+        scheme = html.escape(str(item.get("scheme_type") or "unknown"))
+        barriers = _scheme_device_list(item)
+        relief = ", ".join(html.escape(str(value)) for value in item.get("relief_candidate_ids") or []) or "-"
+        rows.append(f"<li><b>{source}</b>: {scheme}; barriers: {barriers}; relief: {relief}.</li>")
+    return (
+        '<div class="coverage"><h3>Detected Isolation Scheme</h3>'
+        '<p class="meta">Detected from existing HILT topology only; no hazard-based scheme recommendation is made.</p>'
+        f'<ul>{"".join(rows)}</ul></div>'
+    )
+
+
+def _scheme_device_list(scheme):
+    devices = scheme.get("devices") or []
+    if not devices:
+        return ", ".join(html.escape(str(value)) for value in scheme.get("barrier_ids") or []) or "-"
+    labels = []
+    for device in devices:
+        label = device_display_label(device, fallback=str(device.get("id") or "device"))
+        device_id = str(device.get("id") or "")
+        if device_id and device_id != label:
+            labels.append(f"{html.escape(label)} <span class=\"meta\">({html.escape(device_id)})</span>")
+        else:
+            labels.append(html.escape(label))
+    return ", ".join(labels) or "-"
+
+
+def _render_relief_candidates(relief_candidates):
+    if (relief_candidates or {}).get("status") != "completed":
+        return ""
+    items = relief_candidates.get("items") or []
+    rows = []
+    for item in items:
+        relief_type = str(item.get("relief_type") or "")
+        if relief_type not in {"vent", "drain", "bleed", "uncertain"}:
+            continue
+        label = html.escape(str(item.get("tag") or item.get("id") or "candidate"))
+        classification = html.escape(str(item.get("classified_by") or "deterministic"))
+        confidence = html.escape(str(item.get("classification_confidence") or ""))
+        basis = html.escape(str(item.get("basis") or ""))
+        rows.append(
+            f"<li><b>{html.escape(relief_type)}</b>: {label}; classified by {classification}; confidence {confidence}. {basis}</li>"
+        )
+    if not rows:
+        return ""
+    return '<div class="coverage"><h3>Stored-Energy Relief Candidates</h3><ul>' + "".join(rows) + "</ul></div>"
+
+
 def _render_status_callout(data):
-    status = str(data.get("assurance_status") or "").strip().lower()
-    obligations = data.get("isolation_obligations") or {}
-    summary = obligations.get("summary") or {}
+    status, tone, _pill, title = _status_entry(data)
+    css = _STATUS_CALLOUT_CSS[tone]
+    summary = (data.get("isolation_obligations") or {}).get("summary") or {}
     unresolved = int(summary.get("unresolved_count") or 0)
     manual = int(summary.get("manual_candidate_count") or 0)
 
-    if status == "not_isolated":
-        title = "Not isolated with current evidence"
-        if unresolved:
-            detail = f"{unresolved} process path still needs a selected isolation point before this can be treated as isolated."
-        else:
-            detail = "The available evidence does not show a complete isolation boundary for the selected equipment."
-        css = "status-not-isolated"
+    if status == "not_isolated" and unresolved:
+        detail = f"{unresolved} process path still needs a selected isolation point before this can be treated as isolated."
+    elif status == "not_isolated":
+        detail = "The available evidence does not show a complete isolation boundary for the selected equipment."
+    elif status == "provisional_unproven_isolation" and manual:
+        detail = f"The graph found an isolation boundary, but {manual} additional field/manual check must be resolved before work proceeds."
     elif status == "provisional_unproven_isolation":
-        title = "Field confirmation required before work"
-        if manual:
-            detail = f"The graph found an isolation boundary, but {manual} additional field/manual check must be resolved before work proceeds."
-        else:
-            detail = "The graph found an isolation boundary, but required field verification or proof of zero energy is still missing."
-        css = "status-needs-confirmation"
-    elif status in {"isolated", "isolated_verified"}:
-        title = "Isolation boundary complete in available data"
+        detail = "The graph found an isolation boundary, but required field verification or proof of zero energy is still missing."
+    elif tone == "good":
         detail = "All detected process paths have selected isolation points in the available graph and drawing data."
-        css = "status-complete"
     else:
-        title = "Isolation status unknown"
         detail = "The payload did not include enough validation information to state the isolation status."
-        css = "status-unknown"
 
     return (
         f'<div class="status-callout {css}">'

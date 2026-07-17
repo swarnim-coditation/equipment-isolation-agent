@@ -1,11 +1,12 @@
 from domain.classification import classify_candidate
 from domain.enums import IsolationDecision, ObligationStatus, SourceType
+from domain.keywords import VERIFICATION_ENTITY_KEYWORDS, VERIFY_TAG_PREFIXES
+from domain.topology import tag_prefix as _tag_prefix
 
 
 BARRIER_KEYWORDS = {"valve", "generic_inline_valve", "gate_valve", "ball_valve", "globe_valve", "blind", "spade", "flange", "blank_flange", "line_break_point", "disconnect", "breaker"}
 POSITIVE_ENTITY_KEYWORDS = {"blind", "spade", "spectacle", "flange", "blank_flange", "line_break_point", "disconnect", "breaker", "spool"}
-VERIFICATION_ENTITY_KEYWORDS = {"bleed", "vent", "drain", "gauge", "indicator", "test_point"}
-VERIFICATION_TAG_PREFIXES = {"pi", "pg"}
+VERIFICATION_TAG_PREFIXES = VERIFY_TAG_PREFIXES
 
 
 def build_evidence(candidate_data, config):
@@ -242,13 +243,3 @@ class _FallbackPolicy:
     positive_isolation_classes = tuple(POSITIVE_ENTITY_KEYWORDS)
     verification_classes = tuple(VERIFICATION_ENTITY_KEYWORDS)
     verification_tag_prefixes = tuple(VERIFICATION_TAG_PREFIXES)
-
-
-def _tag_prefix(value):
-    result = []
-    for char in str(value or "").strip().lower():
-        if char.isalpha():
-            result.append(char)
-            continue
-        break
-    return "".join(result)

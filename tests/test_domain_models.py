@@ -5,6 +5,25 @@ from domain.classification import class_matches, classify_candidate
 from domain.enums import ImpactSeverity, IsolationDecision
 from domain.models import BBox, DownstreamImpactWarning, IsolationCandidate
 from domain.serialization import to_jsonable
+from domain.topology import nozzle_belongs_to_equipment
+
+
+class NozzleEquipmentMatchTests(unittest.TestCase):
+    def test_separator_stripped_nozzle_still_matches(self):
+        # 'FT-18' nozzle tags that drop the internal dash ('N2_FT18') must still match.
+        self.assertTrue(nozzle_belongs_to_equipment("N2_FT18", "FT-18"))
+        self.assertTrue(nozzle_belongs_to_equipment("N2_FT-18", "FT-18"))
+        self.assertTrue(nozzle_belongs_to_equipment("N2_FT_18", "FT-18"))
+
+    def test_existing_tags_still_match(self):
+        self.assertTrue(nozzle_belongs_to_equipment("N1_CT05", "CT05"))
+        self.assertTrue(nozzle_belongs_to_equipment("N3_OGHC20-BB001", "OGHC20-BB001"))
+
+    def test_boundary_is_required_no_false_positive(self):
+        # equipment '18' must not match a nozzle whose suffix merely ends in '18'.
+        self.assertFalse(nozzle_belongs_to_equipment("N218", "18"))
+        self.assertFalse(nozzle_belongs_to_equipment("N2_FT19", "FT-18"))
+        self.assertFalse(nozzle_belongs_to_equipment("", "FT-18"))
 
 
 class DomainModelTests(unittest.TestCase):

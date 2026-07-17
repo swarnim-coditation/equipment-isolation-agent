@@ -12,17 +12,14 @@ from collections import deque
 from pathlib import Path
 
 from api_client import Plant360Client
-from bbox import _extract_symbols, _symbol_attr, _symbol_bbox
+from domain.hilt_geometry import extract_symbols as _extract_symbols
+from domain.hilt_geometry import symbol_attr as _symbol_attr
+from domain.hilt_geometry import symbol_bbox as _symbol_bbox
+from domain.topology import PROCESS_LINE_CLASSES, normalize_tag
 
 
 CATALOG_PATH = Path(__file__).with_name("instrument_catalog.json")
 MAX_RELEVANCE_HOPS = 10
-PROCESS_LINE_CLASSES = {
-    "secondary_process_line",
-    "main_process_line",
-    "primary_process_line",
-    "process_line",
-}
 INSTRUMENT_LINE_CLASSES = {
     "piping_to_instrument_line",
     "instrument_signal_line",
@@ -585,7 +582,7 @@ def _attr(attributes, name):
 
 
 def _norm(value):
-    return str(value or "").strip().lower()
+    return normalize_tag(value)
 
 
 def _tag_norm(value):

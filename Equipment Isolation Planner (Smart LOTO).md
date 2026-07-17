@@ -91,15 +91,21 @@ To build a comprehensive isolation plan when data is available, the UniGraph sch
 
 ### **FR-2: Isolation Scheme Selection**
 
-* **Description:** The system must evaluate the required safety standard based on fluid properties, pressure, and temperature pulled from the Piping Class Specs:  
-  * **Single Block Valve:** Assigned automatically for low-risk utility lines like cooling water.  
-  * **Double Block and Bleed (DBB):** Mandated for hazardous, high-pressure, or toxic chemicals. The algorithm must search for two block valves in series with a bleed/drain valve vertex located between them.  
-  * **Spectacle Blinds / Line Breaking:** Identification of the closest flange pairs where physical blinds must be inserted for positive isolation.  
+* **Description:** The system must detect the isolation scheme that is already present in the available P\&ID/HILT/JanusGraph data. It must not recommend, invent, or mandate a stronger scheme from fluid, pressure, temperature, or hazard assumptions unless approved site policy data is later supplied.  
+  * **Single block:** Detected when one block valve isolates the branch.  
+  * **Double block:** Detected when two block valves are present in series on the branch.  
+  * **Double block with bleed:** Detected when two block valves are present in series and a bleed/drain/vent candidate exists between them.  
+  * **Positive isolation:** Detected when an existing blind, spade, blank flange, disconnect, line break point, or equivalent positive-isolation component is present in the data.  
+* **Output:** The generated procedure must use detected scheme devices when they are present, but must clearly label the result as an existing topology-detected scheme, not a hazard-based recommendation.
     
 
 ### **FR-3: Vent & Drain Localisation (Depressurisation)**
 
-* **Description:** To address trapped pressure inside the isolated equipment envelope, the system must automatically identify all Drain\_Valve and Vent\_Valve vertices located inside the isolated boundary. This allows the engineer to safely depressurize and drain the system before line breaking.
+* **Description:** To support stored-energy relief, the system must discover candidate vent, drain, and bleed points using the strongest available evidence.  
+  * Deterministic discovery must use HILT topology, STLM/CNVRT classes, tags, text, configured aliases, flow direction, and whether the candidate is inside the isolated envelope.  
+  * If deterministic evidence is ambiguous, the agent may run an LLM-assisted classification pass using structured graph/P\&ID evidence and available visual context.  
+  * LLM-classified candidates must be stored in the JSON with classification basis and `classified_by = "llm"`. They may support the procedure wording but must not change the deterministic assurance status by themselves.  
+  * If no usable vent/drain/bleed candidate is found, the procedure must retain a field hold requiring an approved field-located relief method.
 
 
 ### **FR-4: Downstream Impact Analysis**
@@ -193,4 +199,3 @@ Because automated algorithms cannot replace final accountability in safety-criti
 
 1. **Error Resolution Workflow:** If the algorithm hits a dead end due to an un-digitized P\&ID boundary or a pipe edge at a sub-graph limit, it must not crash or output an incomplete boundary. It must flag an *"Incomplete Graph Boundary Warning,"* highlight the exact open-ended pipe segment on the digital UI, and force the Process Engineer to manually select an isolation boundary point on the screen.  
 2. **Review & Approval Gate:** No generated isolation checklist can be dispatched to the field or synced to an external CMMS/EAM (like SAP or Maximo) without an explicit digital sign-off from the Chief Process Engineer, who reviews the plan using the interactive visual interface.
-

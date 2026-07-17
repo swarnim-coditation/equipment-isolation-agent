@@ -132,7 +132,7 @@ class RunConfig:
     api: ApiConfig = field(default_factory=ApiConfig)
     policy: IsolationPolicy = field(default_factory=IsolationPolicy)
     work_scope: WorkScope = field(default_factory=WorkScope)
-    output_dir: Path = Path("/tmp/eia")
+    output_dir: Path = Path("output")
 
     @property
     def resolved_job_id(self) -> str:

@@ -158,6 +158,7 @@ def _ensure_pipeline(session: AgentSession, validate_terminal: bool, on_event) -
         and session.loto_procedure is not None
         and session.downstream_impact is not None
         and session.isolation_obligations is not None
+        and session.relief_analysis is not None
     ):
         return forced
     if session.boundary_data is None:
@@ -168,6 +169,8 @@ def _ensure_pipeline(session: AgentSession, validate_terminal: bool, on_event) -
         _run("resolve_bboxes")
     if session.isolation_obligations is None and session.bbox_data is not None:
         _run("analyze_isolation_obligations")
+    if session.relief_analysis is None and session.bbox_data is not None:
+        _run("analyze_isolation_schemes_and_relief")
     if session.evidence_data is None:
         _run("build_evidence")
     if session.validation_data is None:

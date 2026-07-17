@@ -1,0 +1,5433 @@
+{
+ "data": [
+  {
+   "assurance_status": "provisional_unproven_isolation",
+   "boundary_context_sources": [
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      278736,
+      180368,
+      204920,
+      344272,
+      114808
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1613,
+      692,
+      10,
+      10
+     ],
+     "source_component": "131192",
+     "source_component_tag": "N3_N7",
+     "source_component_tag_raw": "N3",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1613,
+          3167,
+          6,
+          27
+         ],
+         "center": [
+          1616,
+          3181.061565399225
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom"
+        },
+        {
+         "bbox": [
+          1611,
+          3156,
+          10,
+          10
+         ],
+         "center": [
+          1616,
+          3161
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N3",
+         "uuid": "24097b03-0637-4867-b25d-bb74a3afaff4"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1616.0,
+          3177.8759
+         ],
+         "point2": [
+          1616.0,
+          3161.0
+         ]
+        }
+       ],
+       "line_id": "bb4cf97b-89b5-4089-ab8b-308bea3b01e4",
+       "segment_id": null,
+       "source": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom",
+       "system_id": null,
+       "tag_number": null,
+       "target": "24097b03-0637-4867-b25d-bb74a3afaff4",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      204920,
+      557160,
+      278736,
+      344272,
+      114808
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1939,
+      915,
+      10,
+      10
+     ],
+     "source_component": "147600",
+     "source_component_tag": "N2_N7",
+     "source_component_tag_raw": "N2",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1940,
+          2933,
+          10,
+          10
+         ],
+         "center": [
+          1945,
+          2938
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N2",
+         "uuid": "cb72ee7d-768d-483e-811d-335a04fa8754"
+        },
+        {
+         "bbox": [
+          1942,
+          2905,
+          7,
+          27
+         ],
+         "center": [
+          1945,
+          2918.9750595093
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "44b132e3-a849-454f-851c-4af1191e108b-split-top"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1945.0,
+          2938.0
+         ],
+         "point2": [
+          1945.0,
+          2922.0
+         ]
+        }
+       ],
+       "line_id": "3ce821ab-af40-41a1-810b-7291c74ab1bb",
+       "segment_id": null,
+       "source": "cb72ee7d-768d-483e-811d-335a04fa8754",
+       "system_id": null,
+       "tag_number": null,
+       "target": "44b132e3-a849-454f-851c-4af1191e108b-split-top",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      344272,
+      282832,
+      278736,
+      204920,
+      114808
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1611,
+      915,
+      10,
+      10
+     ],
+     "source_component": "159952",
+     "source_component_tag": "N4_N7",
+     "source_component_tag_raw": "N4",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1611,
+          2933,
+          10,
+          10
+         ],
+         "center": [
+          1616,
+          2938
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N4",
+         "uuid": "64c19827-852b-4098-826e-cde7b43c8554"
+        },
+        {
+         "bbox": [
+          1613,
+          2893,
+          6,
+          26
+         ],
+         "center": [
+          1616,
+          2905.9755783081
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1616.0,
+          2938.0
+         ],
+         "point2": [
+          1616.0,
+          2914.0
+         ]
+        }
+       ],
+       "line_id": "c72759d3-72aa-44d7-8948-e34e3d3ecb44",
+       "segment_id": null,
+       "source": "64c19827-852b-4098-826e-cde7b43c8554",
+       "system_id": null,
+       "tag_number": null,
+       "target": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      114808,
+      217328,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1903,
+      693,
+      10,
+      10
+     ],
+     "source_component": "192752",
+     "source_component_tag": "N5_N7",
+     "source_component_tag_raw": "N5",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1904,
+          3155,
+          10,
+          10
+         ],
+         "center": [
+          1909.1690063477001,
+          3160
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N5",
+         "uuid": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74"
+        },
+        {
+         "bbox": [
+          1903,
+          3171,
+          12,
+          27
+         ],
+         "center": [
+          1909.1690063477004,
+          3183.8758850097997
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": "PP AA569",
+         "uuid": "bae0a077-b51d-427c-a3bd-963269be988c"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1909.169,
+          3160.0
+         ],
+         "point2": [
+          1909.169,
+          3181.5994
+         ]
+        }
+       ],
+       "line_id": "04bf38bb-fc1c-4d56-bad7-e66ea7738f91",
+       "segment_id": null,
+       "source": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74",
+       "system_id": null,
+       "tag_number": null,
+       "target": "bae0a077-b51d-427c-a3bd-963269be988c",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      512104,
+      299160,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1672,
+      686,
+      10,
+      10
+     ],
+     "source_component": "450664",
+     "source_component_tag": "N1_N7",
+     "source_component_tag_raw": "N1",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1671,
+          3168,
+          6,
+          28
+         ],
+         "center": [
+          1674,
+          3181.6397094727
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom"
+        },
+        {
+         "bbox": [
+          1669,
+          3162,
+          10,
+          10
+         ],
+         "center": [
+          1674,
+          3167
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N1",
+         "uuid": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1674.0,
+          3180.7334
+         ],
+         "point2": [
+          1674.0,
+          3167.0
+         ]
+        }
+       ],
+       "line_id": "4052fdd8-7624-4919-baa6-ce06c497ee96",
+       "segment_id": null,
+       "source": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom",
+       "system_id": null,
+       "tag_number": null,
+       "target": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      573544,
+      290976,
+      311400,
+      278736,
+      204920
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1997,
+      691,
+      10,
+      10
+     ],
+     "source_component": "487584",
+     "source_component_tag": "unlabeled graph-only source",
+     "source_component_tag_raw": "487584",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1999,
+          3168,
+          6,
+          26
+         ],
+         "center": [
+          2001.9683227539003,
+          3181.27593231205
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom"
+        },
+        {
+         "bbox": [
+          1997,
+          3157,
+          10,
+          10
+         ],
+         "center": [
+          2001.9683227539,
+          3162
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": null,
+         "uuid": "e648a6af-9e80-4b86-b9b1-4d77e5a24806"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          2001.9683,
+          3182.5178
+         ],
+         "point2": [
+          2001.9683,
+          3162.0
+         ]
+        }
+       ],
+       "line_id": "c550016d-bb9f-4806-b02e-aef6950d3180",
+       "segment_id": null,
+       "source": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom",
+       "system_id": null,
+       "tag_number": null,
+       "target": "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      376936,
+      204944,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1672,
+      914,
+      10,
+      10
+     ],
+     "source_component": "512160",
+     "source_component_tag": "N6_N7",
+     "source_component_tag_raw": "N6",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1670,
+          2902,
+          14,
+          29
+         ],
+         "center": [
+          1677,
+          2916.13926696775
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": "50",
+         "uuid": "0bb80d75-f320-41cb-9ef4-af34ff59dfda"
+        },
+        {
+         "bbox": [
+          1672,
+          2934,
+          10,
+          10
+         ],
+         "center": [
+          1677,
+          2939
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N6",
+         "uuid": "563ec31d-38a5-4dc7-ade4-139b5c0e923c"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1677.0,
+          2923.0728
+         ],
+         "point2": [
+          1677.0,
+          2939.0
+         ]
+        }
+       ],
+       "line_id": "09c52afc-899a-46b8-9744-2f2b2d63a209",
+       "segment_id": null,
+       "source": "0bb80d75-f320-41cb-9ef4-af34ff59dfda",
+       "system_id": null,
+       "tag_number": null,
+       "target": "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      389280,
+      155856,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1997,
+      915,
+      10,
+      10
+     ],
+     "source_component": "565352",
+     "source_component_tag": "N8_N7",
+     "source_component_tag_raw": "N8",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1999,
+          2933,
+          10,
+          10
+         ],
+         "center": [
+          2004.4337706892,
+          2938
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N8",
+         "uuid": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342"
+        },
+        {
+         "bbox": [
+          1998,
+          2903,
+          13,
+          29
+         ],
+         "center": [
+          2004.4337706891997,
+          2917.25812392885
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": "50",
+         "uuid": "42d8c939-9d56-4c8b-8d12-2fd383fc843b"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          2004.4338,
+          2938.0
+         ],
+         "point2": [
+          2004.4338,
+          2922.0
+         ]
+        }
+       ],
+       "line_id": "3323ae8c-31e1-4ddd-a436-188e5e0a8b88",
+       "segment_id": null,
+       "source": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+       "system_id": null,
+       "tag_number": null,
+       "target": "42d8c939-9d56-4c8b-8d12-2fd383fc843b",
+       "text": null
+      }
+     ]
+    }
+   ],
+   "collection_id": 206,
+   "collection_name": "Test",
+   "context_instruments": [
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      278736,
+      180368,
+      204920,
+      344272,
+      114808
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1613,
+      692,
+      10,
+      10
+     ],
+     "source_component": "131192",
+     "source_component_tag": "N3_N7",
+     "source_component_tag_raw": "N3",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1613,
+          3167,
+          6,
+          27
+         ],
+         "center": [
+          1616,
+          3181.061565399225
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom"
+        },
+        {
+         "bbox": [
+          1611,
+          3156,
+          10,
+          10
+         ],
+         "center": [
+          1616,
+          3161
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N3",
+         "uuid": "24097b03-0637-4867-b25d-bb74a3afaff4"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1616.0,
+          3177.8759
+         ],
+         "point2": [
+          1616.0,
+          3161.0
+         ]
+        }
+       ],
+       "line_id": "bb4cf97b-89b5-4089-ab8b-308bea3b01e4",
+       "segment_id": null,
+       "source": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom",
+       "system_id": null,
+       "tag_number": null,
+       "target": "24097b03-0637-4867-b25d-bb74a3afaff4",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      204920,
+      557160,
+      278736,
+      344272,
+      114808
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1939,
+      915,
+      10,
+      10
+     ],
+     "source_component": "147600",
+     "source_component_tag": "N2_N7",
+     "source_component_tag_raw": "N2",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1940,
+          2933,
+          10,
+          10
+         ],
+         "center": [
+          1945,
+          2938
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N2",
+         "uuid": "cb72ee7d-768d-483e-811d-335a04fa8754"
+        },
+        {
+         "bbox": [
+          1942,
+          2905,
+          7,
+          27
+         ],
+         "center": [
+          1945,
+          2918.9750595093
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "44b132e3-a849-454f-851c-4af1191e108b-split-top"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1945.0,
+          2938.0
+         ],
+         "point2": [
+          1945.0,
+          2922.0
+         ]
+        }
+       ],
+       "line_id": "3ce821ab-af40-41a1-810b-7291c74ab1bb",
+       "segment_id": null,
+       "source": "cb72ee7d-768d-483e-811d-335a04fa8754",
+       "system_id": null,
+       "tag_number": null,
+       "target": "44b132e3-a849-454f-851c-4af1191e108b-split-top",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      344272,
+      282832,
+      278736,
+      204920,
+      114808
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1611,
+      915,
+      10,
+      10
+     ],
+     "source_component": "159952",
+     "source_component_tag": "N4_N7",
+     "source_component_tag_raw": "N4",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1611,
+          2933,
+          10,
+          10
+         ],
+         "center": [
+          1616,
+          2938
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N4",
+         "uuid": "64c19827-852b-4098-826e-cde7b43c8554"
+        },
+        {
+         "bbox": [
+          1613,
+          2893,
+          6,
+          26
+         ],
+         "center": [
+          1616,
+          2905.9755783081
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1616.0,
+          2938.0
+         ],
+         "point2": [
+          1616.0,
+          2914.0
+         ]
+        }
+       ],
+       "line_id": "c72759d3-72aa-44d7-8948-e34e3d3ecb44",
+       "segment_id": null,
+       "source": "64c19827-852b-4098-826e-cde7b43c8554",
+       "system_id": null,
+       "tag_number": null,
+       "target": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      114808,
+      217328,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1903,
+      693,
+      10,
+      10
+     ],
+     "source_component": "192752",
+     "source_component_tag": "N5_N7",
+     "source_component_tag_raw": "N5",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1904,
+          3155,
+          10,
+          10
+         ],
+         "center": [
+          1909.1690063477001,
+          3160
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N5",
+         "uuid": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74"
+        },
+        {
+         "bbox": [
+          1903,
+          3171,
+          12,
+          27
+         ],
+         "center": [
+          1909.1690063477004,
+          3183.8758850097997
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": "PP AA569",
+         "uuid": "bae0a077-b51d-427c-a3bd-963269be988c"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1909.169,
+          3160.0
+         ],
+         "point2": [
+          1909.169,
+          3181.5994
+         ]
+        }
+       ],
+       "line_id": "04bf38bb-fc1c-4d56-bad7-e66ea7738f91",
+       "segment_id": null,
+       "source": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74",
+       "system_id": null,
+       "tag_number": null,
+       "target": "bae0a077-b51d-427c-a3bd-963269be988c",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      512104,
+      299160,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1672,
+      686,
+      10,
+      10
+     ],
+     "source_component": "450664",
+     "source_component_tag": "N1_N7",
+     "source_component_tag_raw": "N1",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1671,
+          3168,
+          6,
+          28
+         ],
+         "center": [
+          1674,
+          3181.6397094727
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom"
+        },
+        {
+         "bbox": [
+          1669,
+          3162,
+          10,
+          10
+         ],
+         "center": [
+          1674,
+          3167
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N1",
+         "uuid": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1674.0,
+          3180.7334
+         ],
+         "point2": [
+          1674.0,
+          3167.0
+         ]
+        }
+       ],
+       "line_id": "4052fdd8-7624-4919-baa6-ce06c497ee96",
+       "segment_id": null,
+       "source": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom",
+       "system_id": null,
+       "tag_number": null,
+       "target": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      573544,
+      290976,
+      311400,
+      278736,
+      204920
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1997,
+      691,
+      10,
+      10
+     ],
+     "source_component": "487584",
+     "source_component_tag": "unlabeled graph-only source",
+     "source_component_tag_raw": "487584",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1999,
+          3168,
+          6,
+          26
+         ],
+         "center": [
+          2001.9683227539003,
+          3181.27593231205
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": null,
+         "uuid": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom"
+        },
+        {
+         "bbox": [
+          1997,
+          3157,
+          10,
+          10
+         ],
+         "center": [
+          2001.9683227539,
+          3162
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": null,
+         "uuid": "e648a6af-9e80-4b86-b9b1-4d77e5a24806"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          2001.9683,
+          3182.5178
+         ],
+         "point2": [
+          2001.9683,
+          3162.0
+         ]
+        }
+       ],
+       "line_id": "c550016d-bb9f-4806-b02e-aef6950d3180",
+       "segment_id": null,
+       "source": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom",
+       "system_id": null,
+       "tag_number": null,
+       "target": "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      376936,
+      204944,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1672,
+      914,
+      10,
+      10
+     ],
+     "source_component": "512160",
+     "source_component_tag": "N6_N7",
+     "source_component_tag_raw": "N6",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1670,
+          2902,
+          14,
+          29
+         ],
+         "center": [
+          1677,
+          2916.13926696775
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": "50",
+         "uuid": "0bb80d75-f320-41cb-9ef4-af34ff59dfda"
+        },
+        {
+         "bbox": [
+          1672,
+          2934,
+          10,
+          10
+         ],
+         "center": [
+          1677,
+          2939
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N6",
+         "uuid": "563ec31d-38a5-4dc7-ade4-139b5c0e923c"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          1677.0,
+          2923.0728
+         ],
+         "point2": [
+          1677.0,
+          2939.0
+         ]
+        }
+       ],
+       "line_id": "09c52afc-899a-46b8-9744-2f2b2d63a209",
+       "segment_id": null,
+       "source": "0bb80d75-f320-41cb-9ef4-af34ff59dfda",
+       "system_id": null,
+       "tag_number": null,
+       "target": "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+       "text": null
+      }
+     ]
+    },
+    {
+     "classification": "companion_line_context",
+     "equipment_tag": "N7",
+     "nearby_candidate_ids": [
+      389280,
+      155856,
+      278736,
+      204920,
+      344272
+     ],
+     "nearby_instruments": [],
+     "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+     "source": "hilt_graph",
+     "source_bbox": [
+      1997,
+      915,
+      10,
+      10
+     ],
+     "source_component": "565352",
+     "source_component_tag": "N8_N7",
+     "source_component_tag_raw": "N8",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          1999,
+          2933,
+          10,
+          10
+         ],
+         "center": [
+          2004.4337706892,
+          2938
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": "N8",
+         "uuid": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342"
+        },
+        {
+         "bbox": [
+          1998,
+          2903,
+          13,
+          29
+         ],
+         "center": [
+          2004.4337706891997,
+          2917.25812392885
+         ],
+         "entity_class": "flange",
+         "entity_type": "piping_component",
+         "tag_number": "50",
+         "uuid": "42d8c939-9d56-4c8b-8d12-2fd383fc843b"
+        }
+       ],
+       "entity_class": "companion_line",
+       "entity_type": "internal_special",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          2004.4338,
+          2938.0
+         ],
+         "point2": [
+          2004.4338,
+          2922.0
+         ]
+        }
+       ],
+       "line_id": "3323ae8c-31e1-4ddd-a436-188e5e0a8b88",
+       "segment_id": null,
+       "source": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+       "system_id": null,
+       "tag_number": null,
+       "target": "42d8c939-9d56-4c8b-8d12-2fd383fc843b",
+       "text": null
+      }
+     ]
+    }
+   ],
+   "detected_isolation_schemes": {
+    "items": [],
+    "status": "completed",
+    "summary": {
+     "counts_by_type": {},
+     "scheme_count": 0
+    }
+   },
+   "downstream_impact": {
+    "debug": {
+     "closed_barrier_count": 8,
+     "hilt_y_flip_calibrated": 3846.389565416716,
+     "max_hops": 24,
+     "start_count": 8,
+     "unknown_flow_path_count": 5,
+     "warning_count": 5
+    },
+    "status": "completed",
+    "warnings": [
+     {
+      "affected_bbox": [
+       279,
+       258,
+       234,
+       92
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "35dc51d6-d978-415b-9d54-16fddabb9d31",
+      "affected_tag": "VESSEL, 1HGA20 AT001, PID-0133, CO2 PRE-CONDITIONING",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 4,
+      "severity": "possible",
+      "source_candidate_id": "512104",
+      "source_candidate_tag": null,
+      "source_tag": "N1"
+     },
+     {
+      "affected_bbox": [
+       279,
+       981,
+       237,
+       78
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "81596076-6adc-413b-a95f-f853df5b2bdb",
+      "affected_tag": "RETURN HEADER, SEA WATER, PID-0055",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 12,
+      "severity": "possible",
+      "source_candidate_id": "344272",
+      "source_candidate_tag": null,
+      "source_tag": "N4"
+     },
+     {
+      "affected_bbox": [
+       280,
+       448,
+       232,
+       70
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "3cd4ffb7-274f-4d04-9e7b-49ae310353c8",
+      "affected_tag": "SUPPLY HEADER, PID-0055, SEA WATER",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 13,
+      "severity": "possible",
+      "source_candidate_id": "278736",
+      "source_candidate_tag": null,
+      "source_tag": "N3"
+     },
+     {
+      "affected_bbox": [
+       280,
+       448,
+       232,
+       70
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "3cd4ffb7-274f-4d04-9e7b-49ae310353c8",
+      "affected_tag": "SUPPLY HEADER, PID-0055, SEA WATER",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 16,
+      "severity": "possible",
+      "source_candidate_id": "344272",
+      "source_candidate_tag": null,
+      "source_tag": "N4"
+     },
+     {
+      "affected_bbox": [
+       279,
+       981,
+       237,
+       78
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "81596076-6adc-413b-a95f-f853df5b2bdb",
+      "affected_tag": "RETURN HEADER, SEA WATER, PID-0055",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 17,
+      "severity": "possible",
+      "source_candidate_id": "278736",
+      "source_candidate_tag": null,
+      "source_tag": "N3"
+     }
+    ]
+   },
+   "input_details": {
+    "cnvrt_project_id": "277",
+    "collection_id": "206",
+    "collection_name": "Test",
+    "job_id": "2151",
+    "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
+    "project_id": "15",
+    "selected_equipment": [
+     "N7"
+    ],
+    "target_mode": "selected_equipment",
+    "unigraph_project_id": "15"
+   },
+   "instrument_context": {
+    "checks": {
+     "before_isolation": [
+      {
+       "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+       "action": "Record baseline temperature reading at TT1753-1HGA30CT002 before shutdown/isolation.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+       "instrument_type": "transmitter",
+       "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+       "limitation": "Safe temperature limits are site-specific.",
+       "measured_variable": "temperature",
+       "prefix": "TT",
+       "purpose": "Track thermal condition before and after isolation.",
+       "tag": "TT1753-1HGA30CT002",
+       "use": "pre_isolation_reading"
+      },
+      {
+       "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+       "action": "Record baseline temperature reading at TT1751-OPAB10CT008 before shutdown/isolation.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+       "instrument_type": "transmitter",
+       "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+       "limitation": "Safe temperature limits are site-specific.",
+       "measured_variable": "temperature",
+       "prefix": "TT",
+       "purpose": "Track thermal condition before and after isolation.",
+       "tag": "TT1751-OPAB10CT008",
+       "use": "pre_isolation_reading"
+      }
+     ],
+     "restoration_reenergization": [
+      {
+       "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+       "action": "Before lock removal and after controlled re-energization, compare TT1753-1HGA30CT002 against expected safe operating range.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+       "instrument_type": "transmitter",
+       "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+       "limitation": "Safe temperature limits are site-specific.",
+       "measured_variable": "temperature",
+       "prefix": "TT",
+       "purpose": "Track thermal condition before and after isolation.",
+       "tag": "TT1753-1HGA30CT002",
+       "use": "restoration_monitoring"
+      },
+      {
+       "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+       "action": "Before lock removal and after controlled re-energization, compare TT1751-OPAB10CT008 against expected safe operating range.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+       "instrument_type": "transmitter",
+       "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+       "limitation": "Safe temperature limits are site-specific.",
+       "measured_variable": "temperature",
+       "prefix": "TT",
+       "purpose": "Track thermal condition before and after isolation.",
+       "tag": "TT1751-OPAB10CT008",
+       "use": "restoration_monitoring"
+      }
+     ],
+     "stored_energy_relief": [
+      {
+       "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+       "action": "Monitor temperature trend at TT1753-1HGA30CT002 during cooldown.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+       "instrument_type": "transmitter",
+       "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+       "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+       "measured_variable": "temperature",
+       "prefix": "TT",
+       "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+       "tag": "TT1753-1HGA30CT002",
+       "use": "stored_energy_monitoring"
+      },
+      {
+       "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+       "action": "Monitor temperature trend at TT1751-OPAB10CT008 during cooldown.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+       "instrument_type": "transmitter",
+       "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+       "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+       "measured_variable": "temperature",
+       "prefix": "TT",
+       "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+       "tag": "TT1751-OPAB10CT008",
+       "use": "stored_energy_monitoring"
+      }
+     ]
+    },
+    "debug": {
+     "evidence_policy": "advisory_only",
+     "hilt_link_count": 229,
+     "hilt_node_count": 268,
+     "instrument_count": 2,
+     "relevance_scope": "hilt_connected",
+     "target_node_count": 10
+    },
+    "instruments": [
+     {
+      "bbox": [
+       2164,
+       1906,
+       144,
+       74
+      ],
+      "entity_class": "locally_mounted_instrument",
+      "entity_type": "instrument",
+      "id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+      "instrument_type": "transmitter",
+      "measured_variable": "temperature",
+      "name": "temperature transmitter",
+      "path_hops": 4,
+      "prefix": "TT",
+      "relevance": "hilt_connected",
+      "relevance_basis": "reachable from selected equipment or selected isolation section through HILT topology",
+      "sop_uses": [
+       "pre_isolation_reading",
+       "stored_energy_monitoring",
+       "restoration_monitoring"
+      ],
+      "tag": "TT1753-1HGA30CT002",
+      "verification_note": "Remote temperature transmission is supporting context only."
+     },
+     {
+      "bbox": [
+       1340,
+       1057,
+       136,
+       70
+      ],
+      "entity_class": "locally_mounted_instrument",
+      "entity_type": "instrument",
+      "id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+      "instrument_type": "transmitter",
+      "measured_variable": "temperature",
+      "name": "temperature transmitter",
+      "path_hops": 7,
+      "prefix": "TT",
+      "relevance": "hilt_connected",
+      "relevance_basis": "reachable from selected equipment or selected isolation section through HILT topology",
+      "sop_uses": [
+       "pre_isolation_reading",
+       "stored_energy_monitoring",
+       "restoration_monitoring"
+      ],
+      "tag": "TT1751-OPAB10CT008",
+      "verification_note": "Remote temperature transmission is supporting context only."
+     }
+    ],
+    "policy": "advisory_only",
+    "status": "completed"
+   },
+   "isolated_envelope": {
+    "boundary_valve_ids": [],
+    "line_count": 0,
+    "line_ids": [],
+    "node_count": 8,
+    "node_ids": [
+     "24097b03-0637-4867-b25d-bb74a3afaff4",
+     "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+     "64c19827-852b-4098-826e-cde7b43c8554",
+     "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+     "cb72ee7d-768d-483e-811d-335a04fa8754",
+     "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+     "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+     "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74"
+    ],
+    "reason": "",
+    "status": "completed",
+    "unresolved_paths": []
+   },
+   "isolation_obligations": {
+    "debug": {
+     "manual_candidate_count": 0,
+     "source_count": 8,
+     "unresolved_source_ids": []
+    },
+    "items": [
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "131192",
+      "source_component_tag": "N3_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "147600",
+      "source_component_tag": "N2_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "159952",
+      "source_component_tag": "N4_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "192752",
+      "source_component_tag": "N5_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "450664",
+      "source_component_tag": "N1_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "487584",
+      "source_component_tag": "unlabeled graph-only source",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "512160",
+      "source_component_tag": "N6_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "equipment_tag": "N7",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "565352",
+      "source_component_tag": "N8_N7",
+      "source_type": "instrument_context",
+      "status": "context"
+     }
+    ],
+    "status": "completed",
+    "summary": {
+     "context_count": 8,
+     "isolated_count": 0,
+     "manual_candidate_count": 0,
+     "obligation_count": 8,
+     "process_obligation_count": 0,
+     "unresolved_count": 0
+    }
+   },
+   "isolation_points": [
+    {
+     "bbox": [
+      1896,
+      668,
+      27,
+      12
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N5. Candidate vertex id: 114808. Source component: N5.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 192752,
+     "source_component_tag": "N5",
+     "source_visual_id": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74",
+     "tag_number": null,
+     "uuid": "114808"
+    },
+    {
+     "bbox": [
+      1942,
+      914,
+      7,
+      27
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N2. Candidate vertex id: 204920. Source component: N2.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 147600,
+     "source_component_tag": "N2",
+     "source_visual_id": "cb72ee7d-768d-483e-811d-335a04fa8754",
+     "tag_number": null,
+     "uuid": "204920"
+    },
+    {
+     "bbox": [
+      1613,
+      652,
+      6,
+      27
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N3. Candidate vertex id: 278736. Source component: N3.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 131192,
+     "source_component_tag": "N3",
+     "source_visual_id": "24097b03-0637-4867-b25d-bb74a3afaff4",
+     "tag_number": null,
+     "uuid": "278736"
+    },
+    {
+     "bbox": [
+      1613,
+      927,
+      6,
+      26
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N4. Candidate vertex id: 344272. Source component: N4.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 159952,
+     "source_component_tag": "N4",
+     "source_visual_id": "64c19827-852b-4098-826e-cde7b43c8554",
+     "tag_number": null,
+     "uuid": "344272"
+    },
+    {
+     "bbox": [
+      1661,
+      935,
+      29,
+      14
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N6. Candidate vertex id: 376936. Source component: N6.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 512160,
+     "source_component_tag": "N6",
+     "source_visual_id": "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+     "tag_number": null,
+     "uuid": "376936"
+    },
+    {
+     "bbox": [
+      1989,
+      934,
+      29,
+      13
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N8. Candidate vertex id: 389280. Source component: N8.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 565352,
+     "source_component_tag": "N8",
+     "source_visual_id": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+     "tag_number": null,
+     "uuid": "389280"
+    },
+    {
+     "bbox": [
+      1671,
+      651,
+      6,
+      28
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near N1. Candidate vertex id: 512104. Source component: N1.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 450664,
+     "source_component_tag": "N1",
+     "source_visual_id": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+     "tag_number": null,
+     "uuid": "512104"
+    },
+    {
+     "bbox": [
+      1999,
+      652,
+      6,
+      26
+     ],
+     "branch_basis": null,
+     "branch_context_devices": [],
+     "branch_id": null,
+     "branch_path_node_classes": [],
+     "branch_path_node_ids": [],
+     "branch_status": null,
+     "energy_type": "process",
+     "entity_class": "flange",
+     "equipment_id": "N7",
+     "isolation_method": "isolate and lock/tag",
+     "policy_decision": "automatic",
+     "reason": "Matched flange at depth 1 in component direct neighbor near 487584. Candidate vertex id: 573544. Source component: 487584.",
+     "required_branch_isolation": false,
+     "requires_manual_review": false,
+     "source_component": 487584,
+     "source_component_tag": "487584",
+     "source_visual_id": "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+     "tag_number": null,
+     "uuid": "573544"
+    }
+   ],
+   "isolation_validation": {
+    "assurance_status": "provisional_unproven_isolation",
+    "barrier_candidate_ids": [
+     114808,
+     204920,
+     278736,
+     344272,
+     376936,
+     389280,
+     512104,
+     573544
+    ],
+    "boundary_context_sources": [
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       278736,
+       180368,
+       204920,
+       344272,
+       114808
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1613,
+       692,
+       10,
+       10
+      ],
+      "source_component": "131192",
+      "source_component_tag": "N3_N7",
+      "source_component_tag_raw": "N3",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1613,
+           3167,
+           6,
+           27
+          ],
+          "center": [
+           1616,
+           3181.061565399225
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom"
+         },
+         {
+          "bbox": [
+           1611,
+           3156,
+           10,
+           10
+          ],
+          "center": [
+           1616,
+           3161
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N3",
+          "uuid": "24097b03-0637-4867-b25d-bb74a3afaff4"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1616.0,
+           3177.8759
+          ],
+          "point2": [
+           1616.0,
+           3161.0
+          ]
+         }
+        ],
+        "line_id": "bb4cf97b-89b5-4089-ab8b-308bea3b01e4",
+        "segment_id": null,
+        "source": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom",
+        "system_id": null,
+        "tag_number": null,
+        "target": "24097b03-0637-4867-b25d-bb74a3afaff4",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       204920,
+       557160,
+       278736,
+       344272,
+       114808
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1939,
+       915,
+       10,
+       10
+      ],
+      "source_component": "147600",
+      "source_component_tag": "N2_N7",
+      "source_component_tag_raw": "N2",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1940,
+           2933,
+           10,
+           10
+          ],
+          "center": [
+           1945,
+           2938
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N2",
+          "uuid": "cb72ee7d-768d-483e-811d-335a04fa8754"
+         },
+         {
+          "bbox": [
+           1942,
+           2905,
+           7,
+           27
+          ],
+          "center": [
+           1945,
+           2918.9750595093
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "44b132e3-a849-454f-851c-4af1191e108b-split-top"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1945.0,
+           2938.0
+          ],
+          "point2": [
+           1945.0,
+           2922.0
+          ]
+         }
+        ],
+        "line_id": "3ce821ab-af40-41a1-810b-7291c74ab1bb",
+        "segment_id": null,
+        "source": "cb72ee7d-768d-483e-811d-335a04fa8754",
+        "system_id": null,
+        "tag_number": null,
+        "target": "44b132e3-a849-454f-851c-4af1191e108b-split-top",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       344272,
+       282832,
+       278736,
+       204920,
+       114808
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1611,
+       915,
+       10,
+       10
+      ],
+      "source_component": "159952",
+      "source_component_tag": "N4_N7",
+      "source_component_tag_raw": "N4",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1611,
+           2933,
+           10,
+           10
+          ],
+          "center": [
+           1616,
+           2938
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N4",
+          "uuid": "64c19827-852b-4098-826e-cde7b43c8554"
+         },
+         {
+          "bbox": [
+           1613,
+           2893,
+           6,
+           26
+          ],
+          "center": [
+           1616,
+           2905.9755783081
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1616.0,
+           2938.0
+          ],
+          "point2": [
+           1616.0,
+           2914.0
+          ]
+         }
+        ],
+        "line_id": "c72759d3-72aa-44d7-8948-e34e3d3ecb44",
+        "segment_id": null,
+        "source": "64c19827-852b-4098-826e-cde7b43c8554",
+        "system_id": null,
+        "tag_number": null,
+        "target": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       114808,
+       217328,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1903,
+       693,
+       10,
+       10
+      ],
+      "source_component": "192752",
+      "source_component_tag": "N5_N7",
+      "source_component_tag_raw": "N5",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1904,
+           3155,
+           10,
+           10
+          ],
+          "center": [
+           1909.1690063477001,
+           3160
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N5",
+          "uuid": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74"
+         },
+         {
+          "bbox": [
+           1903,
+           3171,
+           12,
+           27
+          ],
+          "center": [
+           1909.1690063477004,
+           3183.8758850097997
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": "PP AA569",
+          "uuid": "bae0a077-b51d-427c-a3bd-963269be988c"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1909.169,
+           3160.0
+          ],
+          "point2": [
+           1909.169,
+           3181.5994
+          ]
+         }
+        ],
+        "line_id": "04bf38bb-fc1c-4d56-bad7-e66ea7738f91",
+        "segment_id": null,
+        "source": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74",
+        "system_id": null,
+        "tag_number": null,
+        "target": "bae0a077-b51d-427c-a3bd-963269be988c",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       512104,
+       299160,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1672,
+       686,
+       10,
+       10
+      ],
+      "source_component": "450664",
+      "source_component_tag": "N1_N7",
+      "source_component_tag_raw": "N1",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1671,
+           3168,
+           6,
+           28
+          ],
+          "center": [
+           1674,
+           3181.6397094727
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom"
+         },
+         {
+          "bbox": [
+           1669,
+           3162,
+           10,
+           10
+          ],
+          "center": [
+           1674,
+           3167
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N1",
+          "uuid": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1674.0,
+           3180.7334
+          ],
+          "point2": [
+           1674.0,
+           3167.0
+          ]
+         }
+        ],
+        "line_id": "4052fdd8-7624-4919-baa6-ce06c497ee96",
+        "segment_id": null,
+        "source": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom",
+        "system_id": null,
+        "tag_number": null,
+        "target": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       573544,
+       290976,
+       311400,
+       278736,
+       204920
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1997,
+       691,
+       10,
+       10
+      ],
+      "source_component": "487584",
+      "source_component_tag": "unlabeled graph-only source",
+      "source_component_tag_raw": "487584",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1999,
+           3168,
+           6,
+           26
+          ],
+          "center": [
+           2001.9683227539003,
+           3181.27593231205
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom"
+         },
+         {
+          "bbox": [
+           1997,
+           3157,
+           10,
+           10
+          ],
+          "center": [
+           2001.9683227539,
+           3162
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "e648a6af-9e80-4b86-b9b1-4d77e5a24806"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           2001.9683,
+           3182.5178
+          ],
+          "point2": [
+           2001.9683,
+           3162.0
+          ]
+         }
+        ],
+        "line_id": "c550016d-bb9f-4806-b02e-aef6950d3180",
+        "segment_id": null,
+        "source": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom",
+        "system_id": null,
+        "tag_number": null,
+        "target": "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       376936,
+       204944,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1672,
+       914,
+       10,
+       10
+      ],
+      "source_component": "512160",
+      "source_component_tag": "N6_N7",
+      "source_component_tag_raw": "N6",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1670,
+           2902,
+           14,
+           29
+          ],
+          "center": [
+           1677,
+           2916.13926696775
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": "50",
+          "uuid": "0bb80d75-f320-41cb-9ef4-af34ff59dfda"
+         },
+         {
+          "bbox": [
+           1672,
+           2934,
+           10,
+           10
+          ],
+          "center": [
+           1677,
+           2939
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N6",
+          "uuid": "563ec31d-38a5-4dc7-ade4-139b5c0e923c"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1677.0,
+           2923.0728
+          ],
+          "point2": [
+           1677.0,
+           2939.0
+          ]
+         }
+        ],
+        "line_id": "09c52afc-899a-46b8-9744-2f2b2d63a209",
+        "segment_id": null,
+        "source": "0bb80d75-f320-41cb-9ef4-af34ff59dfda",
+        "system_id": null,
+        "tag_number": null,
+        "target": "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       389280,
+       155856,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1997,
+       915,
+       10,
+       10
+      ],
+      "source_component": "565352",
+      "source_component_tag": "N8_N7",
+      "source_component_tag_raw": "N8",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1999,
+           2933,
+           10,
+           10
+          ],
+          "center": [
+           2004.4337706892,
+           2938
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N8",
+          "uuid": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342"
+         },
+         {
+          "bbox": [
+           1998,
+           2903,
+           13,
+           29
+          ],
+          "center": [
+           2004.4337706891997,
+           2917.25812392885
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": "50",
+          "uuid": "42d8c939-9d56-4c8b-8d12-2fd383fc843b"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           2004.4338,
+           2938.0
+          ],
+          "point2": [
+           2004.4338,
+           2922.0
+          ]
+         }
+        ],
+        "line_id": "3323ae8c-31e1-4ddd-a436-188e5e0a8b88",
+        "segment_id": null,
+        "source": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+        "system_id": null,
+        "tag_number": null,
+        "target": "42d8c939-9d56-4c8b-8d12-2fd383fc843b",
+        "text": null
+       }
+      ]
+     }
+    ],
+    "bypass_candidate_ids": [],
+    "candidate_count": 8,
+    "code_version": "local_validator_2026-06-29_v1",
+    "context_instruments": [
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       278736,
+       180368,
+       204920,
+       344272,
+       114808
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1613,
+       692,
+       10,
+       10
+      ],
+      "source_component": "131192",
+      "source_component_tag": "N3_N7",
+      "source_component_tag_raw": "N3",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1613,
+           3167,
+           6,
+           27
+          ],
+          "center": [
+           1616,
+           3181.061565399225
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom"
+         },
+         {
+          "bbox": [
+           1611,
+           3156,
+           10,
+           10
+          ],
+          "center": [
+           1616,
+           3161
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N3",
+          "uuid": "24097b03-0637-4867-b25d-bb74a3afaff4"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1616.0,
+           3177.8759
+          ],
+          "point2": [
+           1616.0,
+           3161.0
+          ]
+         }
+        ],
+        "line_id": "bb4cf97b-89b5-4089-ab8b-308bea3b01e4",
+        "segment_id": null,
+        "source": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom",
+        "system_id": null,
+        "tag_number": null,
+        "target": "24097b03-0637-4867-b25d-bb74a3afaff4",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       204920,
+       557160,
+       278736,
+       344272,
+       114808
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1939,
+       915,
+       10,
+       10
+      ],
+      "source_component": "147600",
+      "source_component_tag": "N2_N7",
+      "source_component_tag_raw": "N2",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1940,
+           2933,
+           10,
+           10
+          ],
+          "center": [
+           1945,
+           2938
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N2",
+          "uuid": "cb72ee7d-768d-483e-811d-335a04fa8754"
+         },
+         {
+          "bbox": [
+           1942,
+           2905,
+           7,
+           27
+          ],
+          "center": [
+           1945,
+           2918.9750595093
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "44b132e3-a849-454f-851c-4af1191e108b-split-top"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1945.0,
+           2938.0
+          ],
+          "point2": [
+           1945.0,
+           2922.0
+          ]
+         }
+        ],
+        "line_id": "3ce821ab-af40-41a1-810b-7291c74ab1bb",
+        "segment_id": null,
+        "source": "cb72ee7d-768d-483e-811d-335a04fa8754",
+        "system_id": null,
+        "tag_number": null,
+        "target": "44b132e3-a849-454f-851c-4af1191e108b-split-top",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       344272,
+       282832,
+       278736,
+       204920,
+       114808
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1611,
+       915,
+       10,
+       10
+      ],
+      "source_component": "159952",
+      "source_component_tag": "N4_N7",
+      "source_component_tag_raw": "N4",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1611,
+           2933,
+           10,
+           10
+          ],
+          "center": [
+           1616,
+           2938
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N4",
+          "uuid": "64c19827-852b-4098-826e-cde7b43c8554"
+         },
+         {
+          "bbox": [
+           1613,
+           2893,
+           6,
+           26
+          ],
+          "center": [
+           1616,
+           2905.9755783081
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1616.0,
+           2938.0
+          ],
+          "point2": [
+           1616.0,
+           2914.0
+          ]
+         }
+        ],
+        "line_id": "c72759d3-72aa-44d7-8948-e34e3d3ecb44",
+        "segment_id": null,
+        "source": "64c19827-852b-4098-826e-cde7b43c8554",
+        "system_id": null,
+        "tag_number": null,
+        "target": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       114808,
+       217328,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1903,
+       693,
+       10,
+       10
+      ],
+      "source_component": "192752",
+      "source_component_tag": "N5_N7",
+      "source_component_tag_raw": "N5",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1904,
+           3155,
+           10,
+           10
+          ],
+          "center": [
+           1909.1690063477001,
+           3160
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N5",
+          "uuid": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74"
+         },
+         {
+          "bbox": [
+           1903,
+           3171,
+           12,
+           27
+          ],
+          "center": [
+           1909.1690063477004,
+           3183.8758850097997
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": "PP AA569",
+          "uuid": "bae0a077-b51d-427c-a3bd-963269be988c"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1909.169,
+           3160.0
+          ],
+          "point2": [
+           1909.169,
+           3181.5994
+          ]
+         }
+        ],
+        "line_id": "04bf38bb-fc1c-4d56-bad7-e66ea7738f91",
+        "segment_id": null,
+        "source": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74",
+        "system_id": null,
+        "tag_number": null,
+        "target": "bae0a077-b51d-427c-a3bd-963269be988c",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       512104,
+       299160,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1672,
+       686,
+       10,
+       10
+      ],
+      "source_component": "450664",
+      "source_component_tag": "N1_N7",
+      "source_component_tag_raw": "N1",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1671,
+           3168,
+           6,
+           28
+          ],
+          "center": [
+           1674,
+           3181.6397094727
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom"
+         },
+         {
+          "bbox": [
+           1669,
+           3162,
+           10,
+           10
+          ],
+          "center": [
+           1674,
+           3167
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N1",
+          "uuid": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1674.0,
+           3180.7334
+          ],
+          "point2": [
+           1674.0,
+           3167.0
+          ]
+         }
+        ],
+        "line_id": "4052fdd8-7624-4919-baa6-ce06c497ee96",
+        "segment_id": null,
+        "source": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom",
+        "system_id": null,
+        "tag_number": null,
+        "target": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       573544,
+       290976,
+       311400,
+       278736,
+       204920
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1997,
+       691,
+       10,
+       10
+      ],
+      "source_component": "487584",
+      "source_component_tag": "unlabeled graph-only source",
+      "source_component_tag_raw": "487584",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1999,
+           3168,
+           6,
+           26
+          ],
+          "center": [
+           2001.9683227539003,
+           3181.27593231205
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": null,
+          "uuid": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom"
+         },
+         {
+          "bbox": [
+           1997,
+           3157,
+           10,
+           10
+          ],
+          "center": [
+           2001.9683227539,
+           3162
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "e648a6af-9e80-4b86-b9b1-4d77e5a24806"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           2001.9683,
+           3182.5178
+          ],
+          "point2": [
+           2001.9683,
+           3162.0
+          ]
+         }
+        ],
+        "line_id": "c550016d-bb9f-4806-b02e-aef6950d3180",
+        "segment_id": null,
+        "source": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom",
+        "system_id": null,
+        "tag_number": null,
+        "target": "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       376936,
+       204944,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1672,
+       914,
+       10,
+       10
+      ],
+      "source_component": "512160",
+      "source_component_tag": "N6_N7",
+      "source_component_tag_raw": "N6",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1670,
+           2902,
+           14,
+           29
+          ],
+          "center": [
+           1677,
+           2916.13926696775
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": "50",
+          "uuid": "0bb80d75-f320-41cb-9ef4-af34ff59dfda"
+         },
+         {
+          "bbox": [
+           1672,
+           2934,
+           10,
+           10
+          ],
+          "center": [
+           1677,
+           2939
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N6",
+          "uuid": "563ec31d-38a5-4dc7-ade4-139b5c0e923c"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           1677.0,
+           2923.0728
+          ],
+          "point2": [
+           1677.0,
+           2939.0
+          ]
+         }
+        ],
+        "line_id": "09c52afc-899a-46b8-9744-2f2b2d63a209",
+        "segment_id": null,
+        "source": "0bb80d75-f320-41cb-9ef4-af34ff59dfda",
+        "system_id": null,
+        "tag_number": null,
+        "target": "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+        "text": null
+       }
+      ]
+     },
+     {
+      "classification": "companion_line_context",
+      "equipment_tag": "N7",
+      "nearby_candidate_ids": [
+       389280,
+       155856,
+       278736,
+       204920,
+       344272
+      ],
+      "nearby_instruments": [],
+      "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "source": "hilt_graph",
+      "source_bbox": [
+       1997,
+       915,
+       10,
+       10
+      ],
+      "source_component": "565352",
+      "source_component_tag": "N8_N7",
+      "source_component_tag_raw": "N8",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           1999,
+           2933,
+           10,
+           10
+          ],
+          "center": [
+           2004.4337706892,
+           2938
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": "N8",
+          "uuid": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342"
+         },
+         {
+          "bbox": [
+           1998,
+           2903,
+           13,
+           29
+          ],
+          "center": [
+           2004.4337706891997,
+           2917.25812392885
+          ],
+          "entity_class": "flange",
+          "entity_type": "piping_component",
+          "tag_number": "50",
+          "uuid": "42d8c939-9d56-4c8b-8d12-2fd383fc843b"
+         }
+        ],
+        "entity_class": "companion_line",
+        "entity_type": "internal_special",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           2004.4338,
+           2938.0
+          ],
+          "point2": [
+           2004.4338,
+           2922.0
+          ]
+         }
+        ],
+        "line_id": "3323ae8c-31e1-4ddd-a436-188e5e0a8b88",
+        "segment_id": null,
+        "source": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+        "system_id": null,
+        "tag_number": null,
+        "target": "42d8c939-9d56-4c8b-8d12-2fd383fc843b",
+        "text": null
+       }
+      ]
+     }
+    ],
+    "covered_boundary_source_count": 0,
+    "expected_boundary_count": 0,
+    "isolation_obligations": {
+     "debug": {
+      "manual_candidate_count": 0,
+      "source_count": 8,
+      "unresolved_source_ids": []
+     },
+     "items": [
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "131192",
+       "source_component_tag": "N3_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "147600",
+       "source_component_tag": "N2_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "159952",
+       "source_component_tag": "N4_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "192752",
+       "source_component_tag": "N5_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "450664",
+       "source_component_tag": "N1_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "487584",
+       "source_component_tag": "unlabeled graph-only source",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "512160",
+       "source_component_tag": "N6_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "equipment_tag": "N7",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "565352",
+       "source_component_tag": "N8_N7",
+       "source_type": "instrument_context",
+       "status": "context"
+      }
+     ],
+     "status": "completed",
+     "summary": {
+      "context_count": 8,
+      "isolated_count": 0,
+      "manual_candidate_count": 0,
+      "obligation_count": 8,
+      "process_obligation_count": 0,
+      "unresolved_count": 0
+     }
+    },
+    "manual_review_candidate_ids": [],
+    "missing_boundary_count": 0,
+    "missing_evidence": [
+     "No bleed, vent, drain, gauge, pressure indicator, or approved test-point evidence was found.",
+     "Bleed, vent, or drain evidence check is required but has not been completed by this local deterministic runner.",
+     "Pressure gauge, pressure indicator, or test-point evidence check is required but has not been completed by this local deterministic runner.",
+     "Bypass or alternate-route evidence check is required but has not been completed by this local deterministic runner."
+    ],
+    "positive_candidate_ids": [
+     114808,
+     204920,
+     278736,
+     344272,
+     376936,
+     389280,
+     512104,
+     573544
+    ],
+    "rationale": "Selected barriers exist, but safety-critical evidence checks remain unresolved.",
+    "terminal": false,
+    "unresolved_bbox_candidate_ids": [],
+    "unresolved_evidence_checks": [
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2151",
+       "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
+       "project_id": "15"
+      },
+      "check_name": "find_bleeds_vents_drains",
+      "priority": "high",
+      "reason": "Find stored-energy release points for proving zero or safe energy.",
+      "source": "deterministic_rule",
+      "status": "required"
+     },
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2151",
+       "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
+       "project_id": "15"
+      },
+      "check_name": "find_pressure_indicators",
+      "priority": "high",
+      "reason": "Find pressure gauges, pressure indicators, or approved test points near isolated sections.",
+      "source": "deterministic_rule",
+      "status": "required"
+     },
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2151",
+       "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
+       "project_id": "15"
+      },
+      "check_name": "find_bypass_paths",
+      "priority": "medium",
+      "reason": "Check for bypasses or alternate routes around selected barriers.",
+      "source": "deterministic_rule",
+      "status": "required"
+     }
+    ],
+    "unresolved_isolation_obligations": [],
+    "unselected_boundary_sources": [],
+    "verification_candidate_ids": []
+   },
+   "job_id": 2151,
+   "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
+   "loto_procedure": {
+    "assurance_status": "provisional_unproven_isolation",
+    "detected_isolation_schemes": {
+     "items": [],
+     "status": "completed",
+     "summary": {
+      "counts_by_type": {},
+      "scheme_count": 0
+     }
+    },
+    "energy_types": [
+     "process"
+    ],
+    "equipment_tag": "N7",
+    "instrument_context": {
+     "checks": {
+      "before_isolation": [
+       {
+        "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+        "action": "Record baseline temperature reading at TT1753-1HGA30CT002 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+        "instrument_type": "transmitter",
+        "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+        "limitation": "Safe temperature limits are site-specific.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Track thermal condition before and after isolation.",
+        "tag": "TT1753-1HGA30CT002",
+        "use": "pre_isolation_reading"
+       },
+       {
+        "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+        "action": "Record baseline temperature reading at TT1751-OPAB10CT008 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+        "instrument_type": "transmitter",
+        "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+        "limitation": "Safe temperature limits are site-specific.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Track thermal condition before and after isolation.",
+        "tag": "TT1751-OPAB10CT008",
+        "use": "pre_isolation_reading"
+       }
+      ],
+      "restoration_reenergization": [
+       {
+        "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+        "action": "Before lock removal and after controlled re-energization, compare TT1753-1HGA30CT002 against expected safe operating range.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+        "instrument_type": "transmitter",
+        "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+        "limitation": "Safe temperature limits are site-specific.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Track thermal condition before and after isolation.",
+        "tag": "TT1753-1HGA30CT002",
+        "use": "restoration_monitoring"
+       },
+       {
+        "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+        "action": "Before lock removal and after controlled re-energization, compare TT1751-OPAB10CT008 against expected safe operating range.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+        "instrument_type": "transmitter",
+        "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+        "limitation": "Safe temperature limits are site-specific.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Track thermal condition before and after isolation.",
+        "tag": "TT1751-OPAB10CT008",
+        "use": "restoration_monitoring"
+       }
+      ],
+      "stored_energy_relief": [
+       {
+        "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+        "action": "Monitor temperature trend at TT1753-1HGA30CT002 during cooldown.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+        "instrument_type": "transmitter",
+        "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+        "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+        "tag": "TT1753-1HGA30CT002",
+        "use": "stored_energy_monitoring"
+       },
+       {
+        "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+        "action": "Monitor temperature trend at TT1751-OPAB10CT008 during cooldown.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+        "instrument_type": "transmitter",
+        "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+        "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+        "tag": "TT1751-OPAB10CT008",
+        "use": "stored_energy_monitoring"
+       }
+      ]
+     },
+     "debug": {
+      "evidence_policy": "advisory_only",
+      "hilt_link_count": 229,
+      "hilt_node_count": 268,
+      "instrument_count": 2,
+      "relevance_scope": "hilt_connected",
+      "target_node_count": 10
+     },
+     "instruments": [
+      {
+       "bbox": [
+        2164,
+        1906,
+        144,
+        74
+       ],
+       "entity_class": "locally_mounted_instrument",
+       "entity_type": "instrument",
+       "id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+       "instrument_type": "transmitter",
+       "measured_variable": "temperature",
+       "name": "temperature transmitter",
+       "path_hops": 4,
+       "prefix": "TT",
+       "relevance": "hilt_connected",
+       "relevance_basis": "reachable from selected equipment or selected isolation section through HILT topology",
+       "sop_uses": [
+        "pre_isolation_reading",
+        "stored_energy_monitoring",
+        "restoration_monitoring"
+       ],
+       "tag": "TT1753-1HGA30CT002",
+       "verification_note": "Remote temperature transmission is supporting context only."
+      },
+      {
+       "bbox": [
+        1340,
+        1057,
+        136,
+        70
+       ],
+       "entity_class": "locally_mounted_instrument",
+       "entity_type": "instrument",
+       "id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+       "instrument_type": "transmitter",
+       "measured_variable": "temperature",
+       "name": "temperature transmitter",
+       "path_hops": 7,
+       "prefix": "TT",
+       "relevance": "hilt_connected",
+       "relevance_basis": "reachable from selected equipment or selected isolation section through HILT topology",
+       "sop_uses": [
+        "pre_isolation_reading",
+        "stored_energy_monitoring",
+        "restoration_monitoring"
+       ],
+       "tag": "TT1751-OPAB10CT008",
+       "verification_note": "Remote temperature transmission is supporting context only."
+      }
+     ],
+     "policy": "advisory_only",
+     "status": "completed"
+    },
+    "open_gaps": [
+     "stored_energy_relief_unknown",
+     "verification_method_unknown",
+     "deterministic_missing_evidence"
+    ],
+    "ordered_steps": [
+     {
+      "action": "Preparation for shutdown.",
+      "phase": 1,
+      "ref": "1910.147(d)(1)",
+      "step": 1,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+      "action": "Record baseline temperature reading at TT1753-1HGA30CT002 before shutdown/isolation. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+      "instrument_tag": "TT1753-1HGA30CT002",
+      "instrument_type": "transmitter",
+      "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+      "limitation": "Safe temperature limits are site-specific.",
+      "measured_variable": "temperature",
+      "phase": 1,
+      "purpose": "Track thermal condition before and after isolation.",
+      "ref": "1910.147(d)(1)",
+      "step": 2,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+      "action": "Record baseline temperature reading at TT1751-OPAB10CT008 before shutdown/isolation. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+      "instrument_tag": "TT1751-OPAB10CT008",
+      "instrument_type": "transmitter",
+      "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+      "limitation": "Safe temperature limits are site-specific.",
+      "measured_variable": "temperature",
+      "phase": 1,
+      "purpose": "Track thermal condition before and after isolation.",
+      "ref": "1910.147(d)(1)",
+      "step": 3,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "action": "Equipment shutdown.",
+      "phase": 2,
+      "ref": "1910.147(d)(2)",
+      "step": 4,
+      "title": "Equipment shutdown"
+     },
+     {
+      "action": "Close & lock flange (source N1 [INLET])",
+      "device_tag": null,
+      "device_uuid": "512104",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N1",
+      "step": 5,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source N3 [INLET])",
+      "device_tag": null,
+      "device_uuid": "278736",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N3",
+      "step": 6,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source N6 [INLET])",
+      "device_tag": null,
+      "device_uuid": "376936",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N6",
+      "step": 7,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source N2 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "204920",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N2",
+      "step": 8,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source N4 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "344272",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N4",
+      "step": 9,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source N5 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "114808",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N5",
+      "step": 10,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source N8 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "389280",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N8",
+      "step": 11,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock flange (source 487584)",
+      "device_tag": null,
+      "device_uuid": "573544",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "487584",
+      "step": 12,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N1 [INLET])",
+      "device_tag": null,
+      "device_uuid": "512104",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N1",
+      "step": 13,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N3 [INLET])",
+      "device_tag": null,
+      "device_uuid": "278736",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N3",
+      "step": 14,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N6 [INLET])",
+      "device_tag": null,
+      "device_uuid": "376936",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N6",
+      "step": 15,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N2 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "204920",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N2",
+      "step": 16,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N4 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "344272",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N4",
+      "step": 17,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N5 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "114808",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N5",
+      "step": 18,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source N8 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "389280",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N8",
+      "step": 19,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to flange (source 487584)",
+      "device_tag": null,
+      "device_uuid": "573544",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "487584",
+      "step": 20,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Relieve stored/residual energy. FIELD GAP: no bleed/vent/drain on P&ID -- field-locate one.",
+      "field_gap": true,
+      "phase": 5,
+      "ref": "1910.147(d)(5)",
+      "step": 21,
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+      "action": "Monitor temperature trend at TT1753-1HGA30CT002 during cooldown. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+      "instrument_tag": "TT1753-1HGA30CT002",
+      "instrument_type": "transmitter",
+      "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+      "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+      "measured_variable": "temperature",
+      "phase": 5,
+      "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+      "ref": "1910.147(d)(5)",
+      "step": 22,
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+      "action": "Monitor temperature trend at TT1751-OPAB10CT008 during cooldown. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+      "instrument_tag": "TT1751-OPAB10CT008",
+      "instrument_type": "transmitter",
+      "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+      "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+      "measured_variable": "temperature",
+      "phase": 5,
+      "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+      "ref": "1910.147(d)(5)",
+      "step": 23,
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "action": "Verify isolation & de-energization. FIELD GAP: no gauge/test point on P&ID -- field-verify zero energy.",
+      "field_gap": true,
+      "phase": 6,
+      "ref": "1910.147(d)(6)",
+      "step": 24,
+      "title": "Verification of isolation"
+     }
+    ],
+    "phase_order_is_regulatory": true,
+    "phases": [
+     {
+      "field_action_required": [
+       "Confirm actual energy type and magnitude (pressure/temperature) at the equipment."
+      ],
+      "instrument_checks": [
+       {
+        "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+        "action": "Record baseline temperature reading at TT1753-1HGA30CT002 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+        "instrument_type": "transmitter",
+        "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+        "limitation": "Safe temperature limits are site-specific.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Track thermal condition before and after isolation.",
+        "tag": "TT1753-1HGA30CT002",
+        "use": "pre_isolation_reading"
+       },
+       {
+        "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+        "action": "Record baseline temperature reading at TT1751-OPAB10CT008 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+        "instrument_type": "transmitter",
+        "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+        "limitation": "Safe temperature limits are site-specific.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Track thermal condition before and after isolation.",
+        "tag": "TT1751-OPAB10CT008",
+        "use": "pre_isolation_reading"
+       }
+      ],
+      "known": {
+       "energy_types": [
+        "process"
+       ],
+       "isolation_device_count": 8,
+       "requires_positive_isolation": true
+      },
+      "objective": "Identify type and magnitude of energy, hazards, and control method.",
+      "phase": 1,
+      "ref": "1910.147(d)(1)",
+      "title": "Preparation for shutdown"
+     },
+     {
+      "field_action_required": [
+       "Follow the plant's established shutdown procedure for this equipment (not derivable from the P&ID graph). An orderly shutdown avoids additional hazard."
+      ],
+      "instrument_checks": [],
+      "objective": "Orderly shutdown using the established process procedure.",
+      "phase": 2,
+      "ref": "1910.147(d)(2)",
+      "steps": [],
+      "title": "Equipment shutdown"
+     },
+     {
+      "detected_scheme_summary": {
+       "counts_by_type": {},
+       "scheme_count": 0
+      },
+      "detected_schemes": [],
+      "devices": [
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N1",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "512104"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N3",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "278736"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N6",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "376936"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N2",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "204920"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N4",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "344272"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N5",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "114808"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N8",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "389280"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "487584",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "573544"
+       }
+      ],
+      "devices_by_source": {
+       "487584": [
+        "573544"
+       ],
+       "N1": [
+        "512104"
+       ],
+       "N2": [
+        "204920"
+       ],
+       "N3": [
+        "278736"
+       ],
+       "N4": [
+        "344272"
+       ],
+       "N5": [
+        "114808"
+       ],
+       "N6": [
+        "376936"
+       ],
+       "N8": [
+        "389280"
+       ]
+      },
+      "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
+      "phase": 3,
+      "positive_isolation_devices": [
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N1",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "512104"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N3",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "278736"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N6",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "376936"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N2",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "204920"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N4",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "344272"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N5",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "114808"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N8",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "389280"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "487584",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "573544"
+       }
+      ],
+      "ref": "1910.147(d)(3)",
+      "supplementary_scheme_devices": [],
+      "title": "Equipment isolation",
+      "within_phase_order_is_regulatory": false,
+      "within_phase_order_source": "flow_grounding_inlet_first_default",
+      "within_phase_ordering_note": "OSHA 1910.147 does NOT prescribe the order in which multiple isolating devices are operated within this phase -- only that all are operated. The within-phase order shown is either the agent's committed judgment or a flow-grounded default (isolate INLET / upstream devices first) derived from the HILT-parsed flow direction (source_flow_role). Each device's source_flow_role (inlet/outlet) is provided -- use it to justify the order."
+     },
+     {
+      "devices": [
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N1",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "512104"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N3",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "278736"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N6",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "376936"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N2",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "204920"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N4",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "344272"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N5",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "114808"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "N8",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "389280"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "source_component": "487584",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "573544"
+       }
+      ],
+      "field_action_required": [
+       "Each authorized employee applies their assigned individual lock to every isolating device."
+      ],
+      "objective": "Affix an individual lock (and tag) to EACH energy-isolating device, holding it in safe/off.",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "supplementary_scheme_devices": [],
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "field_action_required": [
+       "NO bleed/vent/drain point was found on the P&ID. Treat trapped process energy as present; field-verify a means to bleed/vent before beginning work, and continue monitoring if reaccumulation is possible (1910.147(d)(5)(ii))."
+      ],
+      "instrument_checks": [
+       {
+        "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+        "action": "Monitor temperature trend at TT1753-1HGA30CT002 during cooldown.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+        "instrument_type": "transmitter",
+        "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+        "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+        "tag": "TT1753-1HGA30CT002",
+        "use": "stored_energy_monitoring"
+       },
+       {
+        "acceptance_criteria": "Temperature reaches the configured safe work limit and remains stable.",
+        "action": "Monitor temperature trend at TT1751-OPAB10CT008 during cooldown.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+        "instrument_type": "transmitter",
+        "interpretation": "A temperature trend toward ambient or a site-defined safe temperature supports cooldown/warmup.",
+        "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Temperature indication does not prove process isolation.",
+        "measured_variable": "temperature",
+        "prefix": "TT",
+        "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
+        "tag": "TT1751-OPAB10CT008",
+        "use": "stored_energy_monitoring"
+       }
+      ],
+      "objective": "Relieve, disconnect, restrain, or render safe all stored/residual energy (bleed/vent/drain).",
+      "phase": 5,
+      "ref": "1910.147(d)(5)",
+      "relief_devices": [],
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "field_action_required": [
+       "NO pressure gauge / indicator / test point was found on the P&ID near the isolated section. Field-verify zero energy by an approved method before starting work."
+      ],
+      "instrument_checks": [],
+      "objective": "Verify isolation and de-energization (e.g. pressure gauge reads zero / test point confirms no flow).",
+      "phase": 6,
+      "ref": "1910.147(d)(6)",
+      "title": "Verification of isolation",
+      "verify_devices": []
+     }
+    ],
+    "regulatory_sequence_ref": "1910.147(d)",
+    "release_from_loto_ref": "1910.147(e)",
+    "release_note": "On completion: inspect area, ensure personnel clear, verify controls neutral, remove locks (reverse order), re-energize, notify affected employees. Before lock removal and after controlled re-energization, review supporting instrument indications/alarms (TT1753-1HGA30CT002, TT1751-OPAB10CT008) for expected safe conditions.",
+    "relief_candidates": {
+     "items": [],
+     "status": "completed",
+     "summary": {
+      "candidate_count": 0,
+      "counts_by_type": {}
+     }
+    },
+    "restoration_checks": [
+     {
+      "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+      "action": "Before lock removal and after controlled re-energization, compare TT1753-1HGA30CT002 against expected safe operating range.",
+      "basis": "configured instrument semantics; advisory-only",
+      "instrument_id": "e034d08b-35f0-4869-8367-fbf2bd2061ae",
+      "instrument_type": "transmitter",
+      "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+      "limitation": "Safe temperature limits are site-specific.",
+      "measured_variable": "temperature",
+      "prefix": "TT",
+      "purpose": "Track thermal condition before and after isolation.",
+      "tag": "TT1753-1HGA30CT002",
+      "use": "restoration_monitoring"
+     },
+     {
+      "acceptance_criteria": "Reading is within site-defined safe limits for the planned work/restoration state.",
+      "action": "Before lock removal and after controlled re-energization, compare TT1751-OPAB10CT008 against expected safe operating range.",
+      "basis": "configured instrument semantics; advisory-only",
+      "instrument_id": "ba2fd154-1b6f-4f7a-b68a-1ca1c70f80d0",
+      "instrument_type": "transmitter",
+      "interpretation": "Temperature provides thermal-energy context for work and restoration.",
+      "limitation": "Safe temperature limits are site-specific.",
+      "measured_variable": "temperature",
+      "prefix": "TT",
+      "purpose": "Track thermal condition before and after isolation.",
+      "tag": "TT1751-OPAB10CT008",
+      "use": "restoration_monitoring"
+     }
+    ],
+    "standard": "29 CFR 1910.147",
+    "within_phase_order_is_regulatory": false,
+    "within_phase_order_source": "flow_grounding_inlet_first_default",
+    "work_scope": {
+     "confined_space_entry": false,
+     "high_risk_service": true,
+     "hot_work": false,
+     "intrusive_work": true
+    }
+   },
+   "manual_visual_isolation_checks": [],
+   "project_id": 15,
+   "project_name": "Project 15",
+   "relief_candidates": {
+    "items": [],
+    "status": "completed",
+    "summary": {
+     "candidate_count": 0,
+     "counts_by_type": {}
+    }
+   },
+   "selected_equipment": [
+    "N7"
+   ],
+   "selected_equipment_overlays": [
+    {
+     "bbox": [
+      1592,
+      692,
+      435,
+      231
+     ],
+     "entity_class": "double_pipe_heat_exchange",
+     "equipment_id": 434336,
+     "reason": "Selected equipment of interest resolved from STLM/HILT symbol.",
+     "tag": "N7",
+     "uuid": "4911ddd9-73fd-488f-b919-0fb7462ecec4"
+    }
+   ],
+   "unselected_boundary_sources": []
+  }
+ ],
+ "debug": {
+  "assurance_status": "provisional_unproven_isolation",
+  "bbox_candidate_finder_mode": "nearest_exact_bbox_candidate_per_source_component",
+  "bbox_candidate_pool_resolved_count": 81,
+  "bbox_parallel_companion_selection_count": 0,
+  "bbox_parallel_companion_selection_samples": [],
+  "bbox_resolved_count": 8,
+  "bbox_selectable_candidate_pool_count": 81,
+  "bbox_source_visual_selection_samples": [],
+  "bbox_stlm_symbol_count": 206,
+  "bbox_unresolved_candidate_ids": [],
+  "bbox_unselected_source_component_count": 0,
+  "bbox_unselected_source_components": [],
+  "candidate_finder_mode": "local_nearest_boundary_candidate_per_source_component",
+  "candidate_pool_count": 81,
+  "conditional_manual_review_candidate_count": 0,
+  "context_instrument_source_component_count": 8,
+  "context_instruments": [
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     278736,
+     180368,
+     204920,
+     344272,
+     114808
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1613,
+     692,
+     10,
+     10
+    ],
+    "source_component": "131192",
+    "source_component_tag": "N3_N7",
+    "source_component_tag_raw": "N3",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1613,
+         3167,
+         6,
+         27
+        ],
+        "center": [
+         1616,
+         3181.061565399225
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": null,
+        "uuid": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom"
+       },
+       {
+        "bbox": [
+         1611,
+         3156,
+         10,
+         10
+        ],
+        "center": [
+         1616,
+         3161
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N3",
+        "uuid": "24097b03-0637-4867-b25d-bb74a3afaff4"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         1616.0,
+         3177.8759
+        ],
+        "point2": [
+         1616.0,
+         3161.0
+        ]
+       }
+      ],
+      "line_id": "bb4cf97b-89b5-4089-ab8b-308bea3b01e4",
+      "segment_id": null,
+      "source": "e6a4f28a-ebf6-4301-9e3e-72634abe1e79-split-bottom",
+      "system_id": null,
+      "tag_number": null,
+      "target": "24097b03-0637-4867-b25d-bb74a3afaff4",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     204920,
+     557160,
+     278736,
+     344272,
+     114808
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1939,
+     915,
+     10,
+     10
+    ],
+    "source_component": "147600",
+    "source_component_tag": "N2_N7",
+    "source_component_tag_raw": "N2",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1940,
+         2933,
+         10,
+         10
+        ],
+        "center": [
+         1945,
+         2938
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N2",
+        "uuid": "cb72ee7d-768d-483e-811d-335a04fa8754"
+       },
+       {
+        "bbox": [
+         1942,
+         2905,
+         7,
+         27
+        ],
+        "center": [
+         1945,
+         2918.9750595093
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": null,
+        "uuid": "44b132e3-a849-454f-851c-4af1191e108b-split-top"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         1945.0,
+         2938.0
+        ],
+        "point2": [
+         1945.0,
+         2922.0
+        ]
+       }
+      ],
+      "line_id": "3ce821ab-af40-41a1-810b-7291c74ab1bb",
+      "segment_id": null,
+      "source": "cb72ee7d-768d-483e-811d-335a04fa8754",
+      "system_id": null,
+      "tag_number": null,
+      "target": "44b132e3-a849-454f-851c-4af1191e108b-split-top",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     344272,
+     282832,
+     278736,
+     204920,
+     114808
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1611,
+     915,
+     10,
+     10
+    ],
+    "source_component": "159952",
+    "source_component_tag": "N4_N7",
+    "source_component_tag_raw": "N4",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1611,
+         2933,
+         10,
+         10
+        ],
+        "center": [
+         1616,
+         2938
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N4",
+        "uuid": "64c19827-852b-4098-826e-cde7b43c8554"
+       },
+       {
+        "bbox": [
+         1613,
+         2893,
+         6,
+         26
+        ],
+        "center": [
+         1616,
+         2905.9755783081
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": null,
+        "uuid": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         1616.0,
+         2938.0
+        ],
+        "point2": [
+         1616.0,
+         2914.0
+        ]
+       }
+      ],
+      "line_id": "c72759d3-72aa-44d7-8948-e34e3d3ecb44",
+      "segment_id": null,
+      "source": "64c19827-852b-4098-826e-cde7b43c8554",
+      "system_id": null,
+      "tag_number": null,
+      "target": "db6cf0a3-8710-4f23-abe3-50f519a8e870-split-top",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     114808,
+     217328,
+     278736,
+     204920,
+     344272
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1903,
+     693,
+     10,
+     10
+    ],
+    "source_component": "192752",
+    "source_component_tag": "N5_N7",
+    "source_component_tag_raw": "N5",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1904,
+         3155,
+         10,
+         10
+        ],
+        "center": [
+         1909.1690063477001,
+         3160
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N5",
+        "uuid": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74"
+       },
+       {
+        "bbox": [
+         1903,
+         3171,
+         12,
+         27
+        ],
+        "center": [
+         1909.1690063477004,
+         3183.8758850097997
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": "PP AA569",
+        "uuid": "bae0a077-b51d-427c-a3bd-963269be988c"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         1909.169,
+         3160.0
+        ],
+        "point2": [
+         1909.169,
+         3181.5994
+        ]
+       }
+      ],
+      "line_id": "04bf38bb-fc1c-4d56-bad7-e66ea7738f91",
+      "segment_id": null,
+      "source": "eef73cd8-d9a2-42b2-8655-bfd9b2c61c74",
+      "system_id": null,
+      "tag_number": null,
+      "target": "bae0a077-b51d-427c-a3bd-963269be988c",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     512104,
+     299160,
+     278736,
+     204920,
+     344272
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1672,
+     686,
+     10,
+     10
+    ],
+    "source_component": "450664",
+    "source_component_tag": "N1_N7",
+    "source_component_tag_raw": "N1",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1671,
+         3168,
+         6,
+         28
+        ],
+        "center": [
+         1674,
+         3181.6397094727
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": null,
+        "uuid": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom"
+       },
+       {
+        "bbox": [
+         1669,
+         3162,
+         10,
+         10
+        ],
+        "center": [
+         1674,
+         3167
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N1",
+        "uuid": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         1674.0,
+         3180.7334
+        ],
+        "point2": [
+         1674.0,
+         3167.0
+        ]
+       }
+      ],
+      "line_id": "4052fdd8-7624-4919-baa6-ce06c497ee96",
+      "segment_id": null,
+      "source": "f3f9e37d-8c4a-4290-a2e5-b198b58f8a2a-split-bottom",
+      "system_id": null,
+      "tag_number": null,
+      "target": "d1e0ddad-95ec-4c1a-a2df-a4a4b0862768",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     573544,
+     290976,
+     311400,
+     278736,
+     204920
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1997,
+     691,
+     10,
+     10
+    ],
+    "source_component": "487584",
+    "source_component_tag": "unlabeled graph-only source",
+    "source_component_tag_raw": "487584",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1999,
+         3168,
+         6,
+         26
+        ],
+        "center": [
+         2001.9683227539003,
+         3181.27593231205
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": null,
+        "uuid": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom"
+       },
+       {
+        "bbox": [
+         1997,
+         3157,
+         10,
+         10
+        ],
+        "center": [
+         2001.9683227539,
+         3162
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": null,
+        "uuid": "e648a6af-9e80-4b86-b9b1-4d77e5a24806"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         2001.9683,
+         3182.5178
+        ],
+        "point2": [
+         2001.9683,
+         3162.0
+        ]
+       }
+      ],
+      "line_id": "c550016d-bb9f-4806-b02e-aef6950d3180",
+      "segment_id": null,
+      "source": "7ba9625b-874b-433a-a4b5-158015f0a77c-split-bottom",
+      "system_id": null,
+      "tag_number": null,
+      "target": "e648a6af-9e80-4b86-b9b1-4d77e5a24806",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     376936,
+     204944,
+     278736,
+     204920,
+     344272
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1672,
+     914,
+     10,
+     10
+    ],
+    "source_component": "512160",
+    "source_component_tag": "N6_N7",
+    "source_component_tag_raw": "N6",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1670,
+         2902,
+         14,
+         29
+        ],
+        "center": [
+         1677,
+         2916.13926696775
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": "50",
+        "uuid": "0bb80d75-f320-41cb-9ef4-af34ff59dfda"
+       },
+       {
+        "bbox": [
+         1672,
+         2934,
+         10,
+         10
+        ],
+        "center": [
+         1677,
+         2939
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N6",
+        "uuid": "563ec31d-38a5-4dc7-ade4-139b5c0e923c"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         1677.0,
+         2923.0728
+        ],
+        "point2": [
+         1677.0,
+         2939.0
+        ]
+       }
+      ],
+      "line_id": "09c52afc-899a-46b8-9744-2f2b2d63a209",
+      "segment_id": null,
+      "source": "0bb80d75-f320-41cb-9ef4-af34ff59dfda",
+      "system_id": null,
+      "tag_number": null,
+      "target": "563ec31d-38a5-4dc7-ade4-139b5c0e923c",
+      "text": null
+     }
+    ]
+   },
+   {
+    "classification": "companion_line_context",
+    "equipment_tag": "N7",
+    "nearby_candidate_ids": [
+     389280,
+     155856,
+     278736,
+     204920,
+     344272
+    ],
+    "nearby_instruments": [],
+    "reason": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+    "source": "hilt_graph",
+    "source_bbox": [
+     1997,
+     915,
+     10,
+     10
+    ],
+    "source_component": "565352",
+    "source_component_tag": "N8_N7",
+    "source_component_tag_raw": "N8",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         1999,
+         2933,
+         10,
+         10
+        ],
+        "center": [
+         2004.4337706892,
+         2938
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": "N8",
+        "uuid": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342"
+       },
+       {
+        "bbox": [
+         1998,
+         2903,
+         13,
+         29
+        ],
+        "center": [
+         2004.4337706891997,
+         2917.25812392885
+        ],
+        "entity_class": "flange",
+        "entity_type": "piping_component",
+        "tag_number": "50",
+        "uuid": "42d8c939-9d56-4c8b-8d12-2fd383fc843b"
+       }
+      ],
+      "entity_class": "companion_line",
+      "entity_type": "internal_special",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         2004.4338,
+         2938.0
+        ],
+        "point2": [
+         2004.4338,
+         2922.0
+        ]
+       }
+      ],
+      "line_id": "3323ae8c-31e1-4ddd-a436-188e5e0a8b88",
+      "segment_id": null,
+      "source": "c1db9b27-0bdf-4f44-b1be-f35fd8ebb342",
+      "system_id": null,
+      "tag_number": null,
+      "target": "42d8c939-9d56-4c8b-8d12-2fd383fc843b",
+      "text": null
+     }
+    ]
+   }
+  ],
+  "context_overridden_by_isolation_valve": [],
+  "deduped_candidate_count": 8,
+  "detected_isolation_scheme_count": 0,
+  "evidence_barrier_candidate_count": 8,
+  "evidence_candidate_count": 8,
+  "evidence_isolation_obligation_count": 8,
+  "evidence_manual_review_candidate_count": 0,
+  "evidence_missing_evidence_count": 1,
+  "evidence_positive_candidate_count": 8,
+  "evidence_unresolved_isolation_obligation_count": 0,
+  "evidence_verification_candidate_count": 0,
+  "flow_candidate_role_counts": {
+   "bidirectional": 0,
+   "inlet": 3,
+   "outlet": 4,
+   "unknown": 1
+  },
+  "flow_nozzle_classified_count": 18,
+  "hilt_branch_count": 0,
+  "hilt_branch_isolated_count": 0,
+  "hilt_branch_source_count": 0,
+  "hilt_graph_link_count": 229,
+  "hilt_graph_node_count": 268,
+  "hilt_source_line_context_count": 458,
+  "hilt_topology_authoritative_count": 0,
+  "hilt_topology_nozzle_count": 0,
+  "hilt_topology_valve_count": 0,
+  "hilt_y_flip_calibrated": 3846.389565416716,
+  "instrument_context_count": 2,
+  "instrument_context_status": "completed",
+  "isolated_envelope_node_count": 8,
+  "llm_relief_candidate_count": 0,
+  "manual_visual_isolation_check_count": 0,
+  "manual_visual_isolation_checks": [],
+  "pid_image_bytes": 1527736,
+  "pid_image_content_type": "image/png",
+  "pid_image_file_id": 8558,
+  "planner_code_version": "local_deterministic_planner_2026-06-29_v1",
+  "planner_mode": "deterministic_graph_api_evidence_checks",
+  "planner_required_evidence_check_count": 4,
+  "planner_required_evidence_checks": [
+   "find_bleeds_vents_drains",
+   "find_pressure_indicators",
+   "find_bypass_paths",
+   "fetch_pid_visual_json"
+  ],
+  "raw_candidate_count_before_dedupe": 81,
+  "relief_analysis_status": "completed",
+  "relief_candidate_count": 0,
+  "selectable_candidate_count": 81,
+  "skipped_count": 100,
+  "source_component_selection_samples": [
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     278736
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 131192
+   },
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     204920
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 147600
+   },
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     344272
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 159952
+   },
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     114808
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 192752
+   },
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     512104
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 450664
+   },
+   {
+    "candidate_count": 11,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     573544
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 487584
+   },
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     376936
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 512160
+   },
+   {
+    "candidate_count": 10,
+    "equipment_tag": "N7",
+    "selected_candidate_ids": [
+     389280
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 565352
+   }
+  ],
+  "target_equipment_bbox_resolved_count": 1,
+  "traversal_limit_hit": false,
+  "unigraph_metadata": {
+   "cnvrt_collection_id": "206",
+   "cnvrt_project_id": "277",
+   "cnvrt_project_matches": [
+    {
+     "cnvrt_project_id": "277",
+     "id": "13",
+     "name": "Aker 277",
+     "no_of_collections": null,
+     "no_of_pnids": null,
+     "status": "imported"
+    },
+    {
+     "cnvrt_project_id": "277",
+     "id": "15",
+     "name": "testdirection2 acker 277",
+     "no_of_collections": null,
+     "no_of_pnids": null,
+     "status": "imported"
+    }
+   ],
+   "collections": [
+    {
+     "cnvrt_collection_id": "206",
+     "export_type": "project_export",
+     "id": "57",
+     "name": "Test",
+     "no_of_pnids": null
+    },
+    {
+     "cnvrt_collection_id": "201",
+     "export_type": "project_export",
+     "id": "58",
+     "name": "Demo",
+     "no_of_pnids": null
+    },
+    {
+     "cnvrt_collection_id": "247",
+     "export_type": "project_export",
+     "id": "59",
+     "name": "Training ATK",
+     "no_of_pnids": null
+    },
+    {
+     "cnvrt_collection_id": "251",
+     "export_type": "project_export",
+     "id": "60",
+     "name": "Test 24/04",
+     "no_of_pnids": null
+    }
+   ],
+   "direction_review_errors": [],
+   "job_count": 11,
+   "jobs": [
+    {
+     "cnvrt_job_id": "2152",
+     "pending_choices": null,
+     "pnid_id": "223",
+     "pnid_name": "PID-0134-1"
+    },
+    {
+     "cnvrt_job_id": "2151",
+     "pending_choices": null,
+     "pnid_id": "224",
+     "pnid_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A"
+    },
+    {
+     "cnvrt_job_id": "2192",
+     "pending_choices": null,
+     "pnid_id": "225",
+     "pnid_name": "PID-0134-2"
+    },
+    {
+     "cnvrt_job_id": "2193",
+     "pending_choices": null,
+     "pnid_id": "226",
+     "pnid_name": "PID-0134-3"
+    },
+    {
+     "cnvrt_job_id": "2194",
+     "pending_choices": null,
+     "pnid_id": "227",
+     "pnid_name": "PID-0134-4"
+    },
+    {
+     "cnvrt_job_id": "2195",
+     "pending_choices": null,
+     "pnid_id": "228",
+     "pnid_name": "PID-0134-5"
+    },
+    {
+     "cnvrt_job_id": "2483",
+     "pending_choices": null,
+     "pnid_id": "229",
+     "pnid_name": "Dadon-2"
+    },
+    {
+     "cnvrt_job_id": "2472",
+     "pending_choices": null,
+     "pnid_id": "230",
+     "pnid_name": "Janusz-1"
+    },
+    {
+     "cnvrt_job_id": "2467",
+     "pending_choices": null,
+     "pnid_id": "231",
+     "pnid_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-13"
+    },
+    {
+     "cnvrt_job_id": "2474",
+     "pending_choices": null,
+     "pnid_id": "232",
+     "pnid_name": "Dadon-1"
+    },
+    {
+     "cnvrt_job_id": "2468",
+     "pending_choices": null,
+     "pnid_id": "233",
+     "pnid_name": "PID-0134-6"
+    }
+   ],
+   "project": {
+    "cnvrt_project_id": "",
+    "id": "15",
+    "name": "testdirection2 acker 277",
+    "no_of_collections": 4,
+    "no_of_pnids": 12,
+    "status": ""
+   },
+   "selected_collection": {
+    "cnvrt_collection_id": "206",
+    "export_type": "project_export",
+    "id": "57",
+    "name": "Test",
+    "no_of_pnids": null
+   },
+   "status": "completed",
+   "unigraph_api_base_url": "https://api.plant360.ai/plantgraph",
+   "unigraph_project_id": "15"
+  },
+  "validator_manual_review_candidate_count": 0,
+  "validator_missing_evidence_count": 4,
+  "validator_terminal": false,
+  "validator_unresolved_evidence_check_count": 3
+ },
+ "error": false,
+ "message": "Completed"
+}

@@ -14,15 +14,9 @@ from __future__ import annotations
 
 from collections import deque
 
-from domain.classification import class_matches, classify_candidate, is_policy_isolation_device, normalize_class
+from domain.classification import class_matches, classify_candidate, normalize_class
 from domain.enums import IsolationDecision
-
-PROCESS_LINE_CLASSES = {
-    "secondary_process_line",
-    "main_process_line",
-    "primary_process_line",
-    "process_line",
-}
+from domain.topology import PROCESS_LINE_CLASSES, normalize_tag, nozzle_belongs_to_equipment
 
 BRANCH_CONTEXT_VALVE_CLASSES = {"check_valve", "control_valve"}
 
@@ -48,7 +42,7 @@ def resolve_nozzle_isolation(hilt_payload: dict, equipment_tag: str, y_flip: flo
         if payload.get("entity_class") != "equipment_nozzle":
             continue
         tag = _attr(payload.get("attributes"), "tag")
-        if tag and eq_norm and _norm(tag).endswith("_" + eq_norm):
+        if tag and eq_norm and nozzle_belongs_to_equipment(tag, equipment_tag):
             nid = node.get("id") or payload.get("id")
             if nid:
                 nozzles[str(tag)] = str(nid)
@@ -161,7 +155,7 @@ def _nearest_branch_devices(start, adj, node_by_id, max_hops, y_flip=None, polic
             found.append(_unresolved_branch(path, context_devices, "max_hops_reached", node_by_id))
             continue
         expanded = False
-        for nbr in adj.get(node, ()):
+        for nbr in sorted(adj.get(node, ())):
             if nbr in seen:
                 continue
             seen.add(nbr)
@@ -264,12 +258,6 @@ def _hilt_bbox(payload: dict, y_flip: float | None = None) -> list:
     return [int(round(x)), int(round(y)), int(round(w)), int(round(h))]
 
 
-def _is_isolation_device_class(entity_class, policy):
-    if policy is None:
-        return "valve" in str(entity_class or "").lower()
-    return is_policy_isolation_device(entity_class, policy)
-
-
 def _attr(attributes, name):
     target = str(name or "").strip().lower()
     for attr in attributes or []:
@@ -281,4 +269,4 @@ def _attr(attributes, name):
 
 
 def _norm(value):
-    return str(value or "").strip().upper().replace("-", "")
+    return normalize_tag(value)

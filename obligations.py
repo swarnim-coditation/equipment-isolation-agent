@@ -1,14 +1,7 @@
 from domain.enums import ObligationStatus, SourceType
-
-
-HILT_PROCESS_LINE_CLASSES = {"primary_process_line", "secondary_process_line", "main_process_line", "process_line"}
-HILT_CONTEXT_LINE_CLASSES = {
-    "piping_to_instrument_line",
-    "companion_line",
-    "instrument_signal_line",
-    "signal_line",
-    "electrical_signal_line",
-}
+from domain.topology import CONTEXT_LINE_CLASSES as HILT_CONTEXT_LINE_CLASSES
+from domain.topology import PROCESS_LINE_CLASSES as HILT_PROCESS_LINE_CLASSES
+from domain.topology import normalize_tag
 
 
 def analyze_isolation_obligations(candidate_data, config):
@@ -287,4 +280,4 @@ def _valid_bbox(bbox):
 
 
 def _norm(value):
-    return str(value or "").strip().lower()
+    return normalize_tag(value)

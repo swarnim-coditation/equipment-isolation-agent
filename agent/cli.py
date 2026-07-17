@@ -66,7 +66,7 @@ def parse_args():
     )
     parser.add_argument("--max-steps", type=int, default=16, help="Cap on agent tool-calling iterations")
     parser.add_argument("--max-depth", type=int, default=None)
-    parser.add_argument("--output-dir", default="/tmp/eia_agent")
+    parser.add_argument("--output-dir", default="output_agent")
     parser.add_argument("--image-url", default="", help="Optional P&ID image URL for HTML overlay")
     parser.add_argument("--non-intrusive", action="store_true")
     parser.add_argument("--not-high-risk", action="store_true")
@@ -232,6 +232,8 @@ def main():
         final_payload.setdefault("data", [{}])[0].setdefault("loto_procedure", session.loto_procedure)
     if session.instrument_context:
         final_payload.setdefault("data", [{}])[0].setdefault("instrument_context", session.instrument_context)
+    if session.relief_analysis:
+        final_payload.setdefault("data", [{}])[0].update(session.relief_analysis)
 
     image_url = args.image_url
     if not image_url:

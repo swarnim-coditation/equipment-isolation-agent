@@ -28,6 +28,7 @@ from loto import build_loto_procedure as _build_loto_procedure
 from obligations import analyze_isolation_obligations as _analyze_isolation_obligations
 from output import build_final_payload
 from planner import plan_requests
+from relief import analyze_isolation_schemes_and_relief as _analyze_isolation_schemes_and_relief
 from validator import validate
 
 from agent import osha
@@ -185,6 +186,25 @@ def t_analyze_isolation_obligations(session: AgentSession, **_) -> dict:
     return _summarize_isolation_obligations(session.isolation_obligations)
 
 
+def t_analyze_isolation_schemes_and_relief(session: AgentSession, **_) -> dict:
+    if not session.bbox_data:
+        return {"error": "call resolve_bboxes first"}
+    data = _analyze_isolation_schemes_and_relief(session.bbox_data, session.config)
+    session.bbox_data = data
+    session.relief_analysis = {
+        "isolated_envelope": data.get("isolated_envelope") or {},
+        "detected_isolation_schemes": data.get("detected_isolation_schemes") or {},
+        "relief_candidates": data.get("relief_candidates") or {},
+    }
+    for target in (session.evidence_data, session.planner_data, session.validation_data):
+        if target is not None:
+            target.update(session.relief_analysis)
+    if session.final_payload:
+        payload_data = session.final_payload.setdefault("data", [{}])[0]
+        payload_data.update(session.relief_analysis)
+    return _summarize_relief_analysis(session.relief_analysis)
+
+
 def _summarize_isolation_obligations(result: dict) -> dict:
     summary = result.get("summary") or {}
     items = result.get("items") or []
@@ -317,8 +337,18 @@ def t_build_evidence(session: AgentSession, **_) -> dict:
         source = _analyze_isolation_obligations(session.bbox_data, session.config)
         session.bbox_data = source
         session.isolation_obligations = source.get("isolation_obligations") or {}
+    if session.bbox_data and session.relief_analysis is None:
+        source = _analyze_isolation_schemes_and_relief(session.bbox_data, session.config)
+        session.bbox_data = source
+        session.relief_analysis = {
+            "isolated_envelope": source.get("isolated_envelope") or {},
+            "detected_isolation_schemes": source.get("detected_isolation_schemes") or {},
+            "relief_candidates": source.get("relief_candidates") or {},
+        }
     if session.instrument_context:
         source["instrument_context"] = session.instrument_context
+    if session.relief_analysis:
+        source.update(session.relief_analysis)
     data = build_evidence(source, session.config)
     session.evidence_data = data
     return _summarize_evidence(data)
@@ -370,6 +400,8 @@ def _summarize_validation(data: dict) -> dict:
 def t_finalize_plan(session: AgentSession, **_) -> dict:
     if not session.validation_data:
         return {"error": "call validate first"}
+    if session.relief_analysis:
+        session.validation_data.update(session.relief_analysis)
     payload = build_final_payload(session.validation_data, session.config, downstream_impact=session.downstream_impact)
     if session.instrument_context:
         payload.setdefault("data", [{}])[0]["instrument_context"] = session.instrument_context
@@ -502,8 +534,12 @@ def t_build_loto_procedure(session: AgentSession, **_) -> dict:
         return {"error": "call validate first"}
     if session.instrument_context:
         source["instrument_context"] = session.instrument_context
+    if session.relief_analysis:
+        source.update(session.relief_analysis)
     procedure = _build_loto_procedure(source, session.config, isolation_order=session.isolation_order)
     session.loto_procedure = procedure
+    if session.final_payload:
+        session.final_payload.setdefault("data", [{}])[0]["loto_procedure"] = procedure
     return _summarize_loto(procedure)
 
 
@@ -571,6 +607,39 @@ def _summarize_loto(procedure: dict) -> dict:
     }
 
 
+def _summarize_relief_analysis(result: dict) -> dict:
+    schemes = (result.get("detected_isolation_schemes") or {}).get("items") or []
+    relief = (result.get("relief_candidates") or {}).get("items") or []
+    envelope = result.get("isolated_envelope") or {}
+    return {
+        "envelope_node_count": envelope.get("node_count"),
+        "scheme_count": len(schemes),
+        "scheme_counts": ((result.get("detected_isolation_schemes") or {}).get("summary") or {}).get("counts_by_type"),
+        "relief_candidate_count": len(relief),
+        "relief_counts": ((result.get("relief_candidates") or {}).get("summary") or {}).get("counts_by_type"),
+        "schemes": [
+            {
+                "source": item.get("source_component_tag") or item.get("source_component"),
+                "scheme_type": item.get("scheme_type"),
+                "barrier_ids": item.get("barrier_ids") or [],
+                "relief_candidate_ids": item.get("relief_candidate_ids") or [],
+            }
+            for item in schemes[:10]
+        ],
+        "relief_candidates": [
+            {
+                "id": item.get("id"),
+                "tag": item.get("tag"),
+                "relief_type": item.get("relief_type"),
+                "classified_by": item.get("classified_by"),
+                "confidence": item.get("classification_confidence"),
+            }
+            for item in relief[:10]
+        ],
+        "note": "Detected from existing topology/data. Does not recommend or invent stronger isolation schemes.",
+    }
+
+
 TOOL_SPECS: list[dict] = [
     {
         "name": "fetch_boundary",
@@ -620,6 +689,17 @@ TOOL_SPECS: list[dict] = [
         ),
         "parameters": {"type": "object", "properties": {}, "required": []},
         "fn": t_analyze_isolation_obligations,
+    },
+    {
+        "name": "analyze_isolation_schemes_and_relief",
+        "description": (
+            "Detect available isolation schemes and stored-energy relief candidates from existing HILT "
+            "topology. It reports single block, double block, double block with bleed, and positive "
+            "isolation when present; it does not recommend stronger schemes from hazard assumptions. "
+            "Ambiguous relief candidates may be classified by LLM as advisory metadata. Requires resolve_bboxes."
+        ),
+        "parameters": {"type": "object", "properties": {}, "required": []},
+        "fn": t_analyze_isolation_schemes_and_relief,
     },
     {
         "name": "list_unselected_sources",

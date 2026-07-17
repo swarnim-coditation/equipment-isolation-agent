@@ -1,6 +1,7 @@
 from domain.classification import class_matches, classify_candidate, normalize_class
 from domain.enums import IsolationDecision
 from domain.models import BBox, IsolationCandidate
+from domain.topology import tag_prefix as _tag_prefix
 
 
 VALVE_KEYWORDS = {
@@ -271,11 +272,3 @@ def _norm(value):
     return normalize_class(value)
 
 
-def _tag_prefix(value):
-    result = []
-    for char in str(value or "").strip().lower():
-        if char.isalpha():
-            result.append(char)
-            continue
-        break
-    return "".join(result)

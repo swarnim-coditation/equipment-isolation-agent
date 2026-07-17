@@ -29,6 +29,10 @@ stays server-side):
   after resolve_bboxes. It reports which process source paths are isolated, which \
   remain unresolved, and which extra same-source candidates need manual \
   bypass/parallel-route field checks.
+- analyze_isolation_schemes_and_relief(): detect available isolation schemes \
+  and relief candidates from existing HILT topology. It may report single block, \
+  double block, double block with bleed, or positive isolation if already present. \
+  It does NOT recommend DBB/blinds from hazard assumptions.
 - analyze_instrument_context(): deterministic HILT/STLM instrument analysis for \
   PI/LI/PT/LT/controllers/alarms relevant to the selected equipment. This is \
   advisory SOP context only; it must not upgrade assurance_status.
@@ -67,13 +71,15 @@ Do not paper over gaps.
 4. Instrument readings are advisory SOP context only unless a deterministic tool \
 explicitly classifies them as evidence. Do not treat PI/LI/PT/LT/controller/alarm \
 context as proof of isolation or zero energy.
-5. The OSHA 1910.147(d) LOTO phase order is FIXED by regulation. You MUST NOT \
+5. Isolation scheme detection is descriptive only. Do not say a stronger scheme \
+is required unless a tool or site policy explicitly says so.
+6. The OSHA 1910.147(d) LOTO phase order is FIXED by regulation. You MUST NOT \
 reorder, skip, or invent phases. You MAY reason about WITHIN-phase device ordering \
 (e.g. which valve to close first) using process-flow logic, and you MUST cite the \
 OSHA text you retrieved for any ordering rationale.
 
 WORKFLOW
-fetch_boundary -> find_candidates -> resolve_bboxes -> analyze_isolation_obligations -> analyze_instrument_context -> build_evidence -> \
+fetch_boundary -> find_candidates -> resolve_bboxes -> analyze_isolation_obligations -> analyze_isolation_schemes_and_relief -> analyze_instrument_context -> build_evidence -> \
 validate -> analyze_downstream_impact -> finalize_plan -> build_loto_procedure.
 After validate(), inspect assurance_status, rationale, and missing_evidence:
 - Call analyze_downstream_impact() after validate so the final summary and payload \
@@ -111,6 +117,10 @@ OUTPUT (after finalize_plan + build_loto_procedure)
 A concise, factual safety summary:
 - The authoritative assurance_status and its rationale (from validate()).
 - The isolation points: tag, entity class, isolation method.
+- Detected isolation scheme(s), explicitly described as topology-detected existing \
+schemes rather than hazard-based recommendations.
+- Relief candidates classified as vent/drain/bleed, including whether they were \
+deterministic or LLM-classified.
 - Downstream impact warnings returned by analyze_downstream_impact(); likely impacts \
 as "likely affects", possible impacts as "may affect". Do not infer extra affected \
 tags/classes beyond the tool result.

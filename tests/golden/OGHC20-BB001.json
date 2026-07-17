@@ -1,0 +1,3693 @@
+{
+ "data": [
+  {
+   "assurance_status": "not_isolated",
+   "boundary_context_sources": [],
+   "collection_id": 206,
+   "collection_name": "Test",
+   "context_instruments": [],
+   "detected_isolation_schemes": {
+    "items": [
+     {
+      "barrier_ids": [
+       "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+       "e608721d-5ac8-4549-a254-63bcfd6d1725"
+      ],
+      "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+      "branch_id": "307344:branch:1",
+      "context_device_ids": [],
+      "devices": [
+       {
+        "bbox": [
+         645,
+         1758,
+         42,
+         29
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+        "tag": "",
+        "text": ""
+       },
+       {
+        "bbox": [
+         640,
+         1693,
+         51,
+         30
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "e608721d-5ac8-4549-a254-63bcfd6d1725",
+        "tag": "",
+        "text": ""
+       }
+      ],
+      "relief_candidate_ids": [],
+      "scheme_type": "double block",
+      "source_component": "307344",
+      "source_component_tag": "307344"
+     },
+     {
+      "barrier_ids": [
+       "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+      ],
+      "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+      "branch_id": "307344:branch:2",
+      "context_device_ids": [],
+      "devices": [
+       {
+        "bbox": [
+         593,
+         1693,
+         42,
+         29
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+        "tag": "",
+        "text": ""
+       }
+      ],
+      "relief_candidate_ids": [],
+      "scheme_type": "single block",
+      "source_component": "307344",
+      "source_component_tag": "307344",
+      "unverified_additional_blocks": [
+       {
+        "bbox": [
+         645,
+         1630,
+         42,
+         28
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "3ba9e207-825f-486a-a899-97a53b18129e",
+        "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
+        "tag": "",
+        "text": ""
+       }
+      ]
+     },
+     {
+      "barrier_ids": [
+       "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+       "738248eb-1d65-4b5d-9897-f74b9db2cf0f"
+      ],
+      "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+      "branch_id": "393368:branch:1",
+      "context_device_ids": [],
+      "devices": [
+       {
+        "bbox": [
+         1015,
+         2106,
+         41,
+         29
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+        "tag": "AA501-AA002",
+        "text": "AA501 AA002"
+       },
+       {
+        "bbox": [
+         1066,
+         2106,
+         53,
+         31
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
+        "tag": "",
+        "text": ""
+       }
+      ],
+      "relief_candidate_ids": [],
+      "scheme_type": "double block",
+      "source_component": "393368",
+      "source_component_tag": "393368"
+     },
+     {
+      "barrier_ids": [
+       "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+      ],
+      "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+      "branch_id": "516304:branch:1",
+      "context_device_ids": [
+       "7910e17a-e6b0-46f3-aaa3-a1ed953910c3"
+      ],
+      "devices": [
+       {
+        "bbox": [
+         888,
+         2196,
+         47,
+         34
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+        "tag": "AA502",
+        "text": "AA502"
+       }
+      ],
+      "relief_candidate_ids": [],
+      "scheme_type": "single block",
+      "source_component": "516304",
+      "source_component_tag": "516304",
+      "unverified_additional_blocks": [
+       {
+        "bbox": [
+         3767,
+         1691,
+         40,
+         27
+        ],
+        "entity_class": "undefined_valve",
+        "entity_type": "piping_component",
+        "id": "a33b7186-4cd1-4541-be16-33f309ab79f7",
+        "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
+        "tag": "",
+        "text": ""
+       }
+      ]
+     }
+    ],
+    "status": "completed",
+    "summary": {
+     "counts_by_type": {
+      "double block": 2,
+      "single block": 2
+     },
+     "scheme_count": 4
+    }
+   },
+   "downstream_impact": {
+    "debug": {
+     "closed_barrier_count": 4,
+     "hilt_y_flip_calibrated": 3859.093882825178,
+     "max_hops": 24,
+     "start_count": 6,
+     "unknown_flow_path_count": 7,
+     "warning_count": 7
+    },
+    "status": "completed",
+    "warnings": [
+     {
+      "affected_bbox": [
+       564,
+       1293,
+       52,
+       52
+      ],
+      "affected_class": "open_vent",
+      "affected_id": "5d3f2b9e-a91a-4eeb-a0af-c760246ea534",
+      "affected_tag": "5d3f2b9e-a91a-4eeb-a0af-c760246ea534",
+      "affected_type": "relief_context",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "relief_or_vent_context_affected",
+      "path_hops": 6,
+      "severity": "possible",
+      "source_candidate_id": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+      "source_candidate_tag": null,
+      "source_tag": "307344"
+     },
+     {
+      "affected_bbox": [
+       152,
+       1360,
+       366,
+       72
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "d7b3791a-e64c-4ee5-b0da-3d34663ee51d",
+      "affected_tag": "FROM SHEET 1",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 6,
+      "severity": "possible",
+      "source_candidate_id": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+      "source_candidate_tag": null,
+      "source_tag": "307344"
+     },
+     {
+      "affected_bbox": [
+       564,
+       1293,
+       52,
+       52
+      ],
+      "affected_class": "open_vent",
+      "affected_id": "5d3f2b9e-a91a-4eeb-a0af-c760246ea534",
+      "affected_tag": "5d3f2b9e-a91a-4eeb-a0af-c760246ea534",
+      "affected_type": "relief_context",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "relief_or_vent_context_affected",
+      "path_hops": 7,
+      "severity": "possible",
+      "source_candidate_id": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+      "source_candidate_tag": null,
+      "source_tag": "307344"
+     },
+     {
+      "affected_bbox": [
+       152,
+       1360,
+       366,
+       72
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "d7b3791a-e64c-4ee5-b0da-3d34663ee51d",
+      "affected_tag": "FROM SHEET 1",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 7,
+      "severity": "possible",
+      "source_candidate_id": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+      "source_candidate_tag": null,
+      "source_tag": "307344"
+     },
+     {
+      "affected_bbox": [
+       2920,
+       1952,
+       212,
+       54
+      ],
+      "affected_class": "locally_mounted_instrument",
+      "affected_id": "0a82e762-d5c4-41d2-85fa-e2599e74d2df",
+      "affected_tag": "TT, OGHC30 CT001",
+      "affected_type": "instrument_or_control_loop",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "instrument_reading_or_control_affected",
+      "path_hops": 17,
+      "severity": "possible",
+      "source_candidate_id": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+      "source_candidate_tag": "AA502",
+      "source_tag": "516304"
+     },
+     {
+      "affected_bbox": [
+       4297,
+       2322,
+       411,
+       76
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "1742c342-09d6-4094-afce-d339fd03ee64",
+      "affected_tag": "51209830-101-0GHC10-111 - PID - 0056, TO CCP",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 19,
+      "severity": "possible",
+      "source_candidate_id": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+      "source_candidate_tag": "AA502",
+      "source_tag": "516304"
+     },
+     {
+      "affected_bbox": [
+       4293,
+       1789,
+       415,
+       76
+      ],
+      "affected_class": "off_or_on_page_connector",
+      "affected_id": "636f7457-401b-4c72-a618-74daf0aadc7b",
+      "affected_tag": "TO SPS PLANT, 51209830-301-0GHC00-111 - PID - 0334",
+      "affected_type": "endpoint",
+      "basis": "reachable via HILT process-line graph with unknown or weak flow direction",
+      "impact_type": "off_page_or_terminal_path_affected",
+      "path_hops": 19,
+      "severity": "possible",
+      "source_candidate_id": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+      "source_candidate_tag": "AA502",
+      "source_tag": "516304"
+     }
+    ]
+   },
+   "input_details": {
+    "cnvrt_project_id": "277",
+    "collection_id": "206",
+    "collection_name": "Test",
+    "job_id": "2483",
+    "job_name": "Dadon-2",
+    "project_id": "15",
+    "selected_equipment": [
+     "OGHC20-BB001"
+    ],
+    "target_mode": "selected_equipment",
+    "unigraph_project_id": "15"
+   },
+   "instrument_context": {
+    "checks": {
+     "before_isolation": [
+      {
+       "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+       "action": "Record baseline level reading at LI-OGHC20CL002 before shutdown/isolation.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+       "instrument_type": "local_indicator",
+       "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+       "limitation": "Baseline reading is context, not proof of isolation.",
+       "measured_variable": "level",
+       "prefix": "LI",
+       "purpose": "Establish initial liquid inventory condition before isolation.",
+       "tag": "LI-OGHC20CL002",
+       "use": "pre_isolation_reading"
+      },
+      {
+       "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+       "action": "Record baseline level reading at LT-OGHC20CL001 before shutdown/isolation.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+       "instrument_type": "transmitter",
+       "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+       "limitation": "Baseline reading is context, not proof of isolation.",
+       "measured_variable": "level",
+       "prefix": "LT",
+       "purpose": "Establish initial liquid inventory condition before isolation.",
+       "tag": "LT-OGHC20CL001",
+       "use": "pre_isolation_reading"
+      }
+     ],
+     "control_state": [
+      {
+       "acceptance_criteria": "Controller is in the site-required safe/manual/neutral mode and its output is not commanding unsafe valve, pump, or process movement.",
+       "action": "Place associated controller LIC in safe/neutral/manual state per site procedure before isolation changes.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "cb713ba4-9d61-49d2-b38c-876f1cdb6560",
+       "instrument_type": "controller",
+       "interpretation": "Controller indication/output shows the control loop state, not physical energy isolation.",
+       "limitation": "A controller is not an energy-isolating device under OSHA 1910.147.",
+       "measured_variable": "level",
+       "prefix": "LIC",
+       "purpose": "Prevent automatic control action from fighting the isolation or re-energizing a controlled path.",
+       "tag": "LIC",
+       "use": "control_state"
+      }
+     ],
+     "restoration_reenergization": [
+      {
+       "acceptance_criteria": "Level remains within the site-defined safe operating band with no unexpected rise, drop, or alarm.",
+       "action": "Before lock removal and after controlled re-energization, compare LI-OGHC20CL002 against expected safe operating range.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+       "instrument_type": "local_indicator",
+       "interpretation": "Level should change only as expected for the approved restoration/startup sequence.",
+       "limitation": "Operating limits are site-specific and are not derivable from the P&ID.",
+       "measured_variable": "level",
+       "prefix": "LI",
+       "purpose": "Detect abnormal filling, draining, or level response during restoration.",
+       "tag": "LI-OGHC20CL002",
+       "use": "restoration_monitoring"
+      },
+      {
+       "acceptance_criteria": "Level remains within the site-defined safe operating band with no unexpected rise, drop, or alarm.",
+       "action": "Before lock removal and after controlled re-energization, compare LT-OGHC20CL001 against expected safe operating range.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+       "instrument_type": "transmitter",
+       "interpretation": "Level should change only as expected for the approved restoration/startup sequence.",
+       "limitation": "Operating limits are site-specific and are not derivable from the P&ID.",
+       "measured_variable": "level",
+       "prefix": "LT",
+       "purpose": "Detect abnormal filling, draining, or level response during restoration.",
+       "tag": "LT-OGHC20CL001",
+       "use": "restoration_monitoring"
+      }
+     ],
+     "stored_energy_relief": [
+      {
+       "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+       "action": "Monitor level trend at LI-OGHC20CL002 while draining/emptying.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+       "instrument_type": "local_indicator",
+       "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+       "limitation": "Local indication is stronger field context, but still advisory in this tool. Level indication does not prove zero pressure or complete energy isolation.",
+       "measured_variable": "level",
+       "prefix": "LI",
+       "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+       "tag": "LI-OGHC20CL002",
+       "use": "stored_energy_monitoring"
+      },
+      {
+       "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+       "action": "Monitor level trend at LT-OGHC20CL001 while draining/emptying.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+       "instrument_type": "transmitter",
+       "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+       "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Level indication does not prove zero pressure or complete energy isolation.",
+       "measured_variable": "level",
+       "prefix": "LT",
+       "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+       "tag": "LT-OGHC20CL001",
+       "use": "stored_energy_monitoring"
+      }
+     ],
+     "verification_before_work": [
+      {
+       "acceptance_criteria": "Use as supporting context with approved field verification for zero energy and trapped pressure.",
+       "action": "Use LI-OGHC20CL002 as supporting indication only; field-verify zero energy by an approved method.",
+       "basis": "configured instrument semantics; advisory-only",
+       "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+       "instrument_type": "local_indicator",
+       "interpretation": "Low or empty level supports that liquid inventory has been removed from the measured section.",
+       "limitation": "A level reading cannot prove depressurization; trapped pressure may still exist.",
+       "measured_variable": "level",
+       "prefix": "LI",
+       "purpose": "Support inventory/removal verification before work.",
+       "tag": "LI-OGHC20CL002",
+       "use": "verification_support"
+      }
+     ]
+    },
+    "debug": {
+     "evidence_policy": "advisory_only",
+     "hilt_link_count": 160,
+     "hilt_node_count": 173,
+     "instrument_count": 3,
+     "relevance_scope": "hilt_connected",
+     "target_node_count": 5
+    },
+    "instruments": [
+     {
+      "bbox": [
+       378,
+       2052,
+       211,
+       54
+      ],
+      "entity_class": "locally_mounted_instrument",
+      "entity_type": "instrument",
+      "id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+      "instrument_type": "local_indicator",
+      "measured_variable": "level",
+      "name": "level indicator",
+      "path_hops": null,
+      "prefix": "LI",
+      "relevance": "stlm_target_adjacent",
+      "relevance_basis": "recognized STLM instrument visually adjacent to selected equipment",
+      "sop_uses": [
+       "pre_isolation_reading",
+       "stored_energy_monitoring",
+       "verification_support",
+       "restoration_monitoring"
+      ],
+      "tag": "LI-OGHC20CL002",
+      "verification_note": "Level indication supports inventory/drain-down checks but does not prove zero pressure."
+     },
+     {
+      "bbox": [
+       441,
+       1832,
+       86,
+       83
+      ],
+      "entity_class": "dcs_function_in_control_room",
+      "entity_type": "control_unit",
+      "id": "cb713ba4-9d61-49d2-b38c-876f1cdb6560",
+      "instrument_type": "controller",
+      "measured_variable": "level",
+      "name": "level indicating controller",
+      "path_hops": null,
+      "prefix": "LIC",
+      "relevance": "stlm_target_adjacent",
+      "relevance_basis": "recognized STLM instrument visually adjacent to selected equipment",
+      "sop_uses": [
+       "control_state"
+      ],
+      "tag": "LIC",
+      "verification_note": "Controller state is not an energy-isolating device and does not prove isolation."
+     },
+     {
+      "bbox": [
+       377,
+       1960,
+       215,
+       59
+      ],
+      "entity_class": "locally_mounted_instrument",
+      "entity_type": "instrument",
+      "id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+      "instrument_type": "transmitter",
+      "measured_variable": "level",
+      "name": "level transmitter",
+      "path_hops": null,
+      "prefix": "LT",
+      "relevance": "stlm_target_adjacent",
+      "relevance_basis": "recognized STLM instrument visually adjacent to selected equipment",
+      "sop_uses": [
+       "pre_isolation_reading",
+       "stored_energy_monitoring",
+       "restoration_monitoring"
+      ],
+      "tag": "LT-OGHC20CL001",
+      "verification_note": "Remote level transmission is supporting context only unless site procedure accepts it."
+     }
+    ],
+    "policy": "advisory_only",
+    "status": "completed"
+   },
+   "isolated_envelope": {
+    "boundary_valve_ids": [
+     "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+     "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+     "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+     "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+    ],
+    "line_count": 8,
+    "line_ids": [
+     "2e972d64-bda2-4a2b-b820-81df1d1fa12d",
+     "55df0540-4981-4f2b-b4d1-ee5db1704ca4",
+     "60e108c1-d0f9-42c0-80d6-54d7ae2acd4d",
+     "9c4b8c5c-90ab-4021-94cc-b1c08ff96269",
+     "a4d1ef79-d046-4fe1-b4d7-dbbf5c0590f2",
+     "c0d1cccc-3e0d-447e-8c7b-eddb6d9d6c73",
+     "e56b9d27-6a5a-4135-a81a-7f6728b78f43",
+     "ede97d78-5d49-486a-9ab9-85e8e3020f58"
+    ],
+    "node_count": 7,
+    "node_ids": [
+     "316aefef-1d76-480d-a08c-b05b79d49bc5",
+     "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+     "7f7f4de6-93f7-4c29-a62c-8c6267d33891",
+     "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+     "a2604fcd-0dbd-4264-8c6d-eaa8c18d3989",
+     "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+     "fcf25656-39c5-4699-9158-a9ac0228ec29"
+    ],
+    "reason": "",
+    "status": "completed",
+    "unresolved_paths": []
+   },
+   "isolation_obligations": {
+    "debug": {
+     "manual_candidate_count": 0,
+     "source_count": 7,
+     "unresolved_source_ids": [
+      "266384"
+     ]
+    },
+    "items": [
+     {
+      "basis": "no_required_isolation_device_found",
+      "branch_context_devices": [],
+      "branch_id": "266384:branch:1",
+      "branch_index": 1,
+      "branch_path_node_classes": [
+       "equipment_nozzle",
+       "junction",
+       "inline_sight_glass"
+      ],
+      "branch_path_node_ids": [
+       "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+       "ed9fd60c-08d5-4ead-9b5a-5f967b23130f",
+       "a9c667a5-05d1-4dae-804e-4b66e4bdea82"
+      ],
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "266384",
+      "source_component_tag": "266384",
+      "source_type": "process",
+      "source_visual_id": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+      "status": "unresolved"
+     },
+     {
+      "basis": "first required isolation device on HILT process branch",
+      "branch_context_devices": [],
+      "branch_id": "307344:branch:1",
+      "branch_index": 1,
+      "branch_path_node_classes": [
+       "equipment_nozzle",
+       "tee",
+       "undefined_valve"
+      ],
+      "branch_path_node_ids": [
+       "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+       "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+       "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+      ],
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [
+       "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+      ],
+      "source_component": "307344",
+      "source_component_tag": "307344",
+      "source_type": "process",
+      "source_visual_id": "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+      "status": "isolated"
+     },
+     {
+      "basis": "first required isolation device on HILT process branch",
+      "branch_context_devices": [],
+      "branch_id": "307344:branch:2",
+      "branch_index": 2,
+      "branch_path_node_classes": [
+       "equipment_nozzle",
+       "tee",
+       "junction",
+       "undefined_valve"
+      ],
+      "branch_path_node_ids": [
+       "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+       "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+       "7f7f4de6-93f7-4c29-a62c-8c6267d33891",
+       "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+      ],
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [
+       "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+      ],
+      "source_component": "307344",
+      "source_component_tag": "307344",
+      "source_type": "process",
+      "source_visual_id": "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+      "status": "isolated"
+     },
+     {
+      "basis": "first required isolation device on HILT process branch",
+      "branch_context_devices": [],
+      "branch_id": "393368:branch:1",
+      "branch_index": 1,
+      "branch_path_node_classes": [
+       "equipment_nozzle",
+       "flexible_hose",
+       "undefined_valve"
+      ],
+      "branch_path_node_ids": [
+       "fcf25656-39c5-4699-9158-a9ac0228ec29",
+       "a2604fcd-0dbd-4264-8c6d-eaa8c18d3989",
+       "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+      ],
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [
+       "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+      ],
+      "source_component": "393368",
+      "source_component_tag": "393368",
+      "source_type": "process",
+      "source_visual_id": "fcf25656-39c5-4699-9158-a9ac0228ec29",
+      "status": "isolated"
+     },
+     {
+      "basis": "first required isolation device on HILT process branch",
+      "branch_context_devices": [],
+      "branch_id": "516304:branch:1",
+      "branch_index": 1,
+      "branch_path_node_classes": [
+       "equipment_nozzle",
+       "junction",
+       "undefined_valve"
+      ],
+      "branch_path_node_ids": [
+       "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+       "316aefef-1d76-480d-a08c-b05b79d49bc5",
+       "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+      ],
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [
+       "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+      ],
+      "source_component": "516304",
+      "source_component_tag": "516304",
+      "source_type": "process",
+      "source_visual_id": "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+      "status": "isolated"
+     },
+     {
+      "basis": "source lines are non-process instrument/context lines",
+      "candidate_count": 1,
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "min_candidate_depth": 3,
+      "selected_candidate_ids": [
+       "426224"
+      ],
+      "source_component": "487632",
+      "source_component_tag": "487632",
+      "source_hilt_line_kind": "context",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           477,
+           1733,
+           10,
+           10
+          ],
+          "center": [
+           482,
+           1738
+          ],
+          "entity_class": "junction",
+          "entity_type": "internal_special",
+          "tag_number": null,
+          "uuid": "2a9b4064-45f3-4a2c-b889-1a9e72541385"
+         },
+         {
+          "bbox": [
+           608,
+           1733,
+           10,
+           10
+          ],
+          "center": [
+           613,
+           1738
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "2f37b047-7286-42da-a6cf-69a5a9337efe"
+         }
+        ],
+        "entity_class": "signal_line",
+        "entity_type": "signal_line",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           482.0,
+           1738.0
+          ],
+          "point2": [
+           613.0,
+           1738.0
+          ]
+         }
+        ],
+        "line_id": "c266b419-ac96-4bc0-8943-ef2663d5c201",
+        "segment_id": null,
+        "source": "2a9b4064-45f3-4a2c-b889-1a9e72541385",
+        "system_id": null,
+        "tag_number": null,
+        "target": "2f37b047-7286-42da-a6cf-69a5a9337efe",
+        "text": null
+       }
+      ],
+      "source_type": "instrument_context",
+      "status": "context"
+     },
+     {
+      "basis": "source lines are non-process instrument/context lines",
+      "candidate_count": 1,
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "min_candidate_depth": 3,
+      "selected_candidate_ids": [
+       "426224"
+      ],
+      "source_component": "741480",
+      "source_component_tag": "741480",
+      "source_hilt_line_kind": "context",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           477,
+           1825,
+           10,
+           10
+          ],
+          "center": [
+           482,
+           1830
+          ],
+          "entity_class": "junction",
+          "entity_type": "internal_special",
+          "tag_number": null,
+          "uuid": "6a7c84ad-101d-42c2-b088-4790599c70d6"
+         },
+         {
+          "bbox": [
+           608,
+           1825,
+           10,
+           10
+          ],
+          "center": [
+           613,
+           1830
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "5cef289f-684e-4074-a420-c1cf85496fb9"
+         }
+        ],
+        "entity_class": "signal_line",
+        "entity_type": "signal_line",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           482.0,
+           1830.0
+          ],
+          "point2": [
+           613.0,
+           1830.0
+          ]
+         }
+        ],
+        "line_id": "8d4ecf22-dd07-4062-aaed-170b970b6198",
+        "segment_id": null,
+        "source": "6a7c84ad-101d-42c2-b088-4790599c70d6",
+        "system_id": null,
+        "tag_number": null,
+        "target": "5cef289f-684e-4074-a420-c1cf85496fb9",
+        "text": null
+       }
+      ],
+      "source_type": "instrument_context",
+      "status": "context"
+     }
+    ],
+    "status": "completed",
+    "summary": {
+     "context_count": 2,
+     "isolated_count": 4,
+     "manual_candidate_count": 0,
+     "obligation_count": 7,
+     "process_obligation_count": 5,
+     "unresolved_count": 1
+    }
+   },
+   "isolation_points": [
+    {
+     "bbox": [
+      645,
+      1758,
+      42,
+      29
+     ],
+     "branch_basis": "first required isolation device on HILT process branch",
+     "branch_context_devices": [],
+     "branch_id": "307344:branch:1",
+     "branch_path_node_classes": [
+      "equipment_nozzle",
+      "tee",
+      "undefined_valve"
+     ],
+     "branch_path_node_ids": [
+      "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+      "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+      "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+     ],
+     "branch_status": "isolated",
+     "energy_type": "process",
+     "entity_class": "undefined_valve",
+     "equipment_id": "OGHC20-BB001",
+     "isolation_method": "close and lock valve",
+     "policy_decision": "conditional_manual_review",
+     "reason": "Connected to 307344 via HILT piping topology (2 hops). Topology-authoritative.. Candidate vertex id: 9b161de3-391e-461e-af1c-cfb9199cf8b7. Source component: 307344.",
+     "required_branch_isolation": true,
+     "requires_manual_review": true,
+     "source_component": "307344",
+     "source_component_tag": "307344",
+     "source_visual_id": "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+     "tag_number": null,
+     "uuid": "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+    },
+    {
+     "bbox": [
+      593,
+      1693,
+      42,
+      29
+     ],
+     "branch_basis": "first required isolation device on HILT process branch",
+     "branch_context_devices": [],
+     "branch_id": "307344:branch:2",
+     "branch_path_node_classes": [
+      "equipment_nozzle",
+      "tee",
+      "junction",
+      "undefined_valve"
+     ],
+     "branch_path_node_ids": [
+      "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+      "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+      "7f7f4de6-93f7-4c29-a62c-8c6267d33891",
+      "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+     ],
+     "branch_status": "isolated",
+     "energy_type": "process",
+     "entity_class": "undefined_valve",
+     "equipment_id": "OGHC20-BB001",
+     "isolation_method": "close and lock valve",
+     "policy_decision": "conditional_manual_review",
+     "reason": "Connected to 307344 via HILT piping topology (3 hops). Topology-authoritative.. Candidate vertex id: 2036c709-4e8a-4250-9981-e2f30c0d8fdf. Source component: 307344.",
+     "required_branch_isolation": true,
+     "requires_manual_review": true,
+     "source_component": "307344",
+     "source_component_tag": "307344",
+     "source_visual_id": "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+     "tag_number": null,
+     "uuid": "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+    },
+    {
+     "bbox": [
+      1015,
+      2106,
+      41,
+      29
+     ],
+     "branch_basis": "first required isolation device on HILT process branch",
+     "branch_context_devices": [],
+     "branch_id": "393368:branch:1",
+     "branch_path_node_classes": [
+      "equipment_nozzle",
+      "flexible_hose",
+      "undefined_valve"
+     ],
+     "branch_path_node_ids": [
+      "fcf25656-39c5-4699-9158-a9ac0228ec29",
+      "a2604fcd-0dbd-4264-8c6d-eaa8c18d3989",
+      "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+     ],
+     "branch_status": "isolated",
+     "energy_type": "process",
+     "entity_class": "undefined_valve",
+     "equipment_id": "OGHC20-BB001",
+     "isolation_method": "close and lock valve",
+     "policy_decision": "conditional_manual_review",
+     "reason": "Connected to 393368 via HILT piping topology (2 hops). Topology-authoritative.. Candidate vertex id: 5c6a4463-cc05-484c-8893-dc50c21a85e3. Source component: 393368.",
+     "required_branch_isolation": true,
+     "requires_manual_review": true,
+     "source_component": "393368",
+     "source_component_tag": "393368",
+     "source_visual_id": "fcf25656-39c5-4699-9158-a9ac0228ec29",
+     "tag_number": "AA501-AA002",
+     "uuid": "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+    },
+    {
+     "bbox": [
+      888,
+      2196,
+      47,
+      34
+     ],
+     "branch_basis": "first required isolation device on HILT process branch",
+     "branch_context_devices": [],
+     "branch_id": "516304:branch:1",
+     "branch_path_node_classes": [
+      "equipment_nozzle",
+      "junction",
+      "undefined_valve"
+     ],
+     "branch_path_node_ids": [
+      "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+      "316aefef-1d76-480d-a08c-b05b79d49bc5",
+      "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+     ],
+     "branch_status": "isolated",
+     "energy_type": "process",
+     "entity_class": "undefined_valve",
+     "equipment_id": "OGHC20-BB001",
+     "isolation_method": "close and lock valve",
+     "policy_decision": "conditional_manual_review",
+     "reason": "Connected to 516304 via HILT piping topology (2 hops). Topology-authoritative.. Candidate vertex id: 108ec64c-33b2-4715-bd8c-bf92b3a3e25f. Source component: 516304.",
+     "required_branch_isolation": true,
+     "requires_manual_review": true,
+     "source_component": "516304",
+     "source_component_tag": "516304",
+     "source_visual_id": "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+     "tag_number": "AA502",
+     "uuid": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+    }
+   ],
+   "isolation_validation": {
+    "assurance_status": "not_isolated",
+    "barrier_candidate_ids": [
+     "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+     "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+     "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+     "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+    ],
+    "boundary_context_sources": [],
+    "bypass_candidate_ids": [],
+    "candidate_count": 4,
+    "code_version": "local_validator_2026-06-29_v1",
+    "context_instruments": [],
+    "covered_boundary_source_count": 4,
+    "expected_boundary_count": 5,
+    "isolation_obligations": {
+     "debug": {
+      "manual_candidate_count": 0,
+      "source_count": 7,
+      "unresolved_source_ids": [
+       "266384"
+      ]
+     },
+     "items": [
+      {
+       "basis": "no_required_isolation_device_found",
+       "branch_context_devices": [],
+       "branch_id": "266384:branch:1",
+       "branch_index": 1,
+       "branch_path_node_classes": [
+        "equipment_nozzle",
+        "junction",
+        "inline_sight_glass"
+       ],
+       "branch_path_node_ids": [
+        "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+        "ed9fd60c-08d5-4ead-9b5a-5f967b23130f",
+        "a9c667a5-05d1-4dae-804e-4b66e4bdea82"
+       ],
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [],
+       "source_component": "266384",
+       "source_component_tag": "266384",
+       "source_type": "process",
+       "source_visual_id": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+       "status": "unresolved"
+      },
+      {
+       "basis": "first required isolation device on HILT process branch",
+       "branch_context_devices": [],
+       "branch_id": "307344:branch:1",
+       "branch_index": 1,
+       "branch_path_node_classes": [
+        "equipment_nozzle",
+        "tee",
+        "undefined_valve"
+       ],
+       "branch_path_node_ids": [
+        "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+        "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+        "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+       ],
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [
+        "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+       ],
+       "source_component": "307344",
+       "source_component_tag": "307344",
+       "source_type": "process",
+       "source_visual_id": "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+       "status": "isolated"
+      },
+      {
+       "basis": "first required isolation device on HILT process branch",
+       "branch_context_devices": [],
+       "branch_id": "307344:branch:2",
+       "branch_index": 2,
+       "branch_path_node_classes": [
+        "equipment_nozzle",
+        "tee",
+        "junction",
+        "undefined_valve"
+       ],
+       "branch_path_node_ids": [
+        "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+        "97a98bc6-4363-4877-9c5d-6bd59fcd7917",
+        "7f7f4de6-93f7-4c29-a62c-8c6267d33891",
+        "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+       ],
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [
+        "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+       ],
+       "source_component": "307344",
+       "source_component_tag": "307344",
+       "source_type": "process",
+       "source_visual_id": "d74eaf38-6ca7-4bfa-ada9-bc08ad26c5ab",
+       "status": "isolated"
+      },
+      {
+       "basis": "first required isolation device on HILT process branch",
+       "branch_context_devices": [],
+       "branch_id": "393368:branch:1",
+       "branch_index": 1,
+       "branch_path_node_classes": [
+        "equipment_nozzle",
+        "flexible_hose",
+        "undefined_valve"
+       ],
+       "branch_path_node_ids": [
+        "fcf25656-39c5-4699-9158-a9ac0228ec29",
+        "a2604fcd-0dbd-4264-8c6d-eaa8c18d3989",
+        "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+       ],
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [
+        "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+       ],
+       "source_component": "393368",
+       "source_component_tag": "393368",
+       "source_type": "process",
+       "source_visual_id": "fcf25656-39c5-4699-9158-a9ac0228ec29",
+       "status": "isolated"
+      },
+      {
+       "basis": "first required isolation device on HILT process branch",
+       "branch_context_devices": [],
+       "branch_id": "516304:branch:1",
+       "branch_index": 1,
+       "branch_path_node_classes": [
+        "equipment_nozzle",
+        "junction",
+        "undefined_valve"
+       ],
+       "branch_path_node_ids": [
+        "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+        "316aefef-1d76-480d-a08c-b05b79d49bc5",
+        "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+       ],
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "selected_candidate_ids": [
+        "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+       ],
+       "source_component": "516304",
+       "source_component_tag": "516304",
+       "source_type": "process",
+       "source_visual_id": "5448a2a1-c7a4-4e3e-8204-506570425ce4",
+       "status": "isolated"
+      },
+      {
+       "basis": "source lines are non-process instrument/context lines",
+       "candidate_count": 1,
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "min_candidate_depth": 3,
+       "selected_candidate_ids": [
+        "426224"
+       ],
+       "source_component": "487632",
+       "source_component_tag": "487632",
+       "source_hilt_line_kind": "context",
+       "source_hilt_lines": [
+        {
+         "connected_nodes": [
+          {
+           "bbox": [
+            477,
+            1733,
+            10,
+            10
+           ],
+           "center": [
+            482,
+            1738
+           ],
+           "entity_class": "junction",
+           "entity_type": "internal_special",
+           "tag_number": null,
+           "uuid": "2a9b4064-45f3-4a2c-b889-1a9e72541385"
+          },
+          {
+           "bbox": [
+            608,
+            1733,
+            10,
+            10
+           ],
+           "center": [
+            613,
+            1738
+           ],
+           "entity_class": "equipment_nozzle",
+           "entity_type": "equipment_component",
+           "tag_number": null,
+           "uuid": "2f37b047-7286-42da-a6cf-69a5a9337efe"
+          }
+         ],
+         "entity_class": "signal_line",
+         "entity_type": "signal_line",
+         "graphical_lines": [
+          {
+           "line_type": "solid",
+           "point1": [
+            482.0,
+            1738.0
+           ],
+           "point2": [
+            613.0,
+            1738.0
+           ]
+          }
+         ],
+         "line_id": "c266b419-ac96-4bc0-8943-ef2663d5c201",
+         "segment_id": null,
+         "source": "2a9b4064-45f3-4a2c-b889-1a9e72541385",
+         "system_id": null,
+         "tag_number": null,
+         "target": "2f37b047-7286-42da-a6cf-69a5a9337efe",
+         "text": null
+        }
+       ],
+       "source_type": "instrument_context",
+       "status": "context"
+      },
+      {
+       "basis": "source lines are non-process instrument/context lines",
+       "candidate_count": 1,
+       "equipment_tag": "OGHC20-BB001",
+       "manual_candidate_count": 0,
+       "manual_candidates": [],
+       "min_candidate_depth": 3,
+       "selected_candidate_ids": [
+        "426224"
+       ],
+       "source_component": "741480",
+       "source_component_tag": "741480",
+       "source_hilt_line_kind": "context",
+       "source_hilt_lines": [
+        {
+         "connected_nodes": [
+          {
+           "bbox": [
+            477,
+            1825,
+            10,
+            10
+           ],
+           "center": [
+            482,
+            1830
+           ],
+           "entity_class": "junction",
+           "entity_type": "internal_special",
+           "tag_number": null,
+           "uuid": "6a7c84ad-101d-42c2-b088-4790599c70d6"
+          },
+          {
+           "bbox": [
+            608,
+            1825,
+            10,
+            10
+           ],
+           "center": [
+            613,
+            1830
+           ],
+           "entity_class": "equipment_nozzle",
+           "entity_type": "equipment_component",
+           "tag_number": null,
+           "uuid": "5cef289f-684e-4074-a420-c1cf85496fb9"
+          }
+         ],
+         "entity_class": "signal_line",
+         "entity_type": "signal_line",
+         "graphical_lines": [
+          {
+           "line_type": "solid",
+           "point1": [
+            482.0,
+            1830.0
+           ],
+           "point2": [
+            613.0,
+            1830.0
+           ]
+          }
+         ],
+         "line_id": "8d4ecf22-dd07-4062-aaed-170b970b6198",
+         "segment_id": null,
+         "source": "6a7c84ad-101d-42c2-b088-4790599c70d6",
+         "system_id": null,
+         "tag_number": null,
+         "target": "5cef289f-684e-4074-a420-c1cf85496fb9",
+         "text": null
+        }
+       ],
+       "source_type": "instrument_context",
+       "status": "context"
+      }
+     ],
+     "status": "completed",
+     "summary": {
+      "context_count": 2,
+      "isolated_count": 4,
+      "manual_candidate_count": 0,
+      "obligation_count": 7,
+      "process_obligation_count": 5,
+      "unresolved_count": 1
+     }
+    },
+    "manual_review_candidate_ids": [
+     "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+     "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+     "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+     "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+    ],
+    "missing_boundary_count": 1,
+    "missing_evidence": [
+     "No bleed, vent, drain, gauge, pressure indicator, or approved test-point evidence was found.",
+     "Work scope requires positive isolation evidence, but no blind, spade, blank flange, disconnection, breaker, or equivalent was found.",
+     "Selected conditional isolation candidate(s) require manual review before acceptance: undefined_valve for 307344, undefined_valve for 307344, AA501-AA002 for 393368, AA502 for 516304.",
+     "1 equipment boundary path(s) do not have a selected isolation candidate.",
+     "Unresolved process isolation obligation(s): 266384. Field/UI resolution is required.",
+     "Bleed, vent, or drain evidence check is required but has not been completed by this local deterministic runner.",
+     "Pressure gauge, pressure indicator, or test-point evidence check is required but has not been completed by this local deterministic runner.",
+     "Positive isolation evidence check is required but has not been completed by this local deterministic runner.",
+     "Bypass or alternate-route evidence check is required but has not been completed by this local deterministic runner."
+    ],
+    "positive_candidate_ids": [],
+    "rationale": "At least one equipment boundary path has no selected isolation barrier.",
+    "terminal": true,
+    "unresolved_bbox_candidate_ids": [],
+    "unresolved_evidence_checks": [
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2483",
+       "job_name": "Dadon-2",
+       "project_id": "15"
+      },
+      "check_name": "find_bleeds_vents_drains",
+      "priority": "high",
+      "reason": "Find stored-energy release points for proving zero or safe energy.",
+      "source": "deterministic_rule",
+      "status": "required"
+     },
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2483",
+       "job_name": "Dadon-2",
+       "project_id": "15"
+      },
+      "check_name": "find_pressure_indicators",
+      "priority": "high",
+      "reason": "Find pressure gauges, pressure indicators, or approved test points near isolated sections.",
+      "source": "deterministic_rule",
+      "status": "required"
+     },
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2483",
+       "job_name": "Dadon-2",
+       "project_id": "15"
+      },
+      "check_name": "find_blinds_spades_flanges",
+      "priority": "high",
+      "reason": "Work scope requires positive isolation evidence.",
+      "source": "deterministic_rule",
+      "status": "required"
+     },
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2483",
+       "job_name": "Dadon-2",
+       "project_id": "15"
+      },
+      "check_name": "find_bypass_paths",
+      "priority": "medium",
+      "reason": "Check for bypasses or alternate routes around selected barriers.",
+      "source": "deterministic_rule",
+      "status": "required"
+     }
+    ],
+    "unresolved_isolation_obligations": [
+     {
+      "basis": "no_required_isolation_device_found",
+      "branch_context_devices": [],
+      "branch_id": "266384:branch:1",
+      "branch_index": 1,
+      "branch_path_node_classes": [
+       "equipment_nozzle",
+       "junction",
+       "inline_sight_glass"
+      ],
+      "branch_path_node_ids": [
+       "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+       "ed9fd60c-08d5-4ead-9b5a-5f967b23130f",
+       "a9c667a5-05d1-4dae-804e-4b66e4bdea82"
+      ],
+      "equipment_tag": "OGHC20-BB001",
+      "manual_candidate_count": 0,
+      "manual_candidates": [],
+      "selected_candidate_ids": [],
+      "source_component": "266384",
+      "source_component_tag": "266384",
+      "source_type": "process",
+      "source_visual_id": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+      "status": "unresolved"
+     }
+    ],
+    "unselected_boundary_sources": [
+     {
+      "candidate_count": 1,
+      "equipment_tag": "OGHC20-BB001",
+      "min_candidate_depth": 3,
+      "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+      "source_component": "266384",
+      "source_component_tag": "",
+      "source_component_tag_raw": "266384",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           346,
+           1925,
+           10,
+           10
+          ],
+          "center": [
+           351,
+           1930
+          ],
+          "entity_class": "junction",
+          "entity_type": "internal_special",
+          "tag_number": null,
+          "uuid": "ed9fd60c-08d5-4ead-9b5a-5f967b23130f"
+         },
+         {
+          "bbox": [
+           608,
+           1925,
+           10,
+           10
+          ],
+          "center": [
+           613,
+           1930
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9"
+         }
+        ],
+        "entity_class": "main_process_line",
+        "entity_type": "process_line",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           351.0,
+           1930.0
+          ],
+          "point2": [
+           613.0,
+           1930.0
+          ]
+         }
+        ],
+        "line_id": "364dcf2a-a8de-40ae-a109-b84174ccd931",
+        "segment_id": "e4c898d7-deeb-4937-a7c0-8f8a4646a340",
+        "source": "ed9fd60c-08d5-4ead-9b5a-5f967b23130f",
+        "system_id": "fddcf0c8-78c6-4019-a35c-f3baacfb46d5",
+        "tag_number": null,
+        "target": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+        "text": null
+       }
+      ],
+      "source_label_confidence": "graph_only_unlabeled_component",
+      "source_nozzle_id": null
+     },
+     {
+      "candidate_count": 1,
+      "equipment_tag": "OGHC20-BB001",
+      "min_candidate_depth": 3,
+      "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+      "source_component": "487632",
+      "source_component_tag": "",
+      "source_component_tag_raw": "487632",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           477,
+           1733,
+           10,
+           10
+          ],
+          "center": [
+           482,
+           1738
+          ],
+          "entity_class": "junction",
+          "entity_type": "internal_special",
+          "tag_number": null,
+          "uuid": "2a9b4064-45f3-4a2c-b889-1a9e72541385"
+         },
+         {
+          "bbox": [
+           608,
+           1733,
+           10,
+           10
+          ],
+          "center": [
+           613,
+           1738
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "2f37b047-7286-42da-a6cf-69a5a9337efe"
+         }
+        ],
+        "entity_class": "signal_line",
+        "entity_type": "signal_line",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           482.0,
+           1738.0
+          ],
+          "point2": [
+           613.0,
+           1738.0
+          ]
+         }
+        ],
+        "line_id": "c266b419-ac96-4bc0-8943-ef2663d5c201",
+        "segment_id": null,
+        "source": "2a9b4064-45f3-4a2c-b889-1a9e72541385",
+        "system_id": null,
+        "tag_number": null,
+        "target": "2f37b047-7286-42da-a6cf-69a5a9337efe",
+        "text": null
+       }
+      ],
+      "source_label_confidence": "graph_only_unlabeled_component",
+      "source_nozzle_id": null
+     },
+     {
+      "candidate_count": 1,
+      "equipment_tag": "OGHC20-BB001",
+      "min_candidate_depth": 3,
+      "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+      "source_component": "741480",
+      "source_component_tag": "",
+      "source_component_tag_raw": "741480",
+      "source_hilt_lines": [
+       {
+        "connected_nodes": [
+         {
+          "bbox": [
+           477,
+           1825,
+           10,
+           10
+          ],
+          "center": [
+           482,
+           1830
+          ],
+          "entity_class": "junction",
+          "entity_type": "internal_special",
+          "tag_number": null,
+          "uuid": "6a7c84ad-101d-42c2-b088-4790599c70d6"
+         },
+         {
+          "bbox": [
+           608,
+           1825,
+           10,
+           10
+          ],
+          "center": [
+           613,
+           1830
+          ],
+          "entity_class": "equipment_nozzle",
+          "entity_type": "equipment_component",
+          "tag_number": null,
+          "uuid": "5cef289f-684e-4074-a420-c1cf85496fb9"
+         }
+        ],
+        "entity_class": "signal_line",
+        "entity_type": "signal_line",
+        "graphical_lines": [
+         {
+          "line_type": "solid",
+          "point1": [
+           482.0,
+           1830.0
+          ],
+          "point2": [
+           613.0,
+           1830.0
+          ]
+         }
+        ],
+        "line_id": "8d4ecf22-dd07-4062-aaed-170b970b6198",
+        "segment_id": null,
+        "source": "6a7c84ad-101d-42c2-b088-4790599c70d6",
+        "system_id": null,
+        "tag_number": null,
+        "target": "5cef289f-684e-4074-a420-c1cf85496fb9",
+        "text": null
+       }
+      ],
+      "source_label_confidence": "graph_only_unlabeled_component",
+      "source_nozzle_id": null
+     }
+    ],
+    "verification_candidate_ids": []
+   },
+   "job_id": 2483,
+   "job_name": "Dadon-2",
+   "loto_procedure": {
+    "assurance_status": "not_isolated",
+    "detected_isolation_schemes": {
+     "items": [
+      {
+       "barrier_ids": [
+        "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+        "e608721d-5ac8-4549-a254-63bcfd6d1725"
+       ],
+       "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+       "branch_id": "307344:branch:1",
+       "context_device_ids": [],
+       "devices": [
+        {
+         "bbox": [
+          645,
+          1758,
+          42,
+          29
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+         "tag": "",
+         "text": ""
+        },
+        {
+         "bbox": [
+          640,
+          1693,
+          51,
+          30
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "e608721d-5ac8-4549-a254-63bcfd6d1725",
+         "tag": "",
+         "text": ""
+        }
+       ],
+       "relief_candidate_ids": [],
+       "scheme_type": "double block",
+       "source_component": "307344",
+       "source_component_tag": "307344"
+      },
+      {
+       "barrier_ids": [
+        "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+       ],
+       "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+       "branch_id": "307344:branch:2",
+       "context_device_ids": [],
+       "devices": [
+        {
+         "bbox": [
+          593,
+          1693,
+          42,
+          29
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+         "tag": "",
+         "text": ""
+        }
+       ],
+       "relief_candidate_ids": [],
+       "scheme_type": "single block",
+       "source_component": "307344",
+       "source_component_tag": "307344",
+       "unverified_additional_blocks": [
+        {
+         "bbox": [
+          645,
+          1630,
+          42,
+          28
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "3ba9e207-825f-486a-a899-97a53b18129e",
+         "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
+         "tag": "",
+         "text": ""
+        }
+       ]
+      },
+      {
+       "barrier_ids": [
+        "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+        "738248eb-1d65-4b5d-9897-f74b9db2cf0f"
+       ],
+       "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+       "branch_id": "393368:branch:1",
+       "context_device_ids": [],
+       "devices": [
+        {
+         "bbox": [
+          1015,
+          2106,
+          41,
+          29
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+         "tag": "AA501-AA002",
+         "text": "AA501 AA002"
+        },
+        {
+         "bbox": [
+          1066,
+          2106,
+          53,
+          31
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
+         "tag": "",
+         "text": ""
+        }
+       ],
+       "relief_candidate_ids": [],
+       "scheme_type": "double block",
+       "source_component": "393368",
+       "source_component_tag": "393368"
+      },
+      {
+       "barrier_ids": [
+        "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+       ],
+       "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+       "branch_id": "516304:branch:1",
+       "context_device_ids": [
+        "7910e17a-e6b0-46f3-aaa3-a1ed953910c3"
+       ],
+       "devices": [
+        {
+         "bbox": [
+          888,
+          2196,
+          47,
+          34
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+         "tag": "AA502",
+         "text": "AA502"
+        }
+       ],
+       "relief_candidate_ids": [],
+       "scheme_type": "single block",
+       "source_component": "516304",
+       "source_component_tag": "516304",
+       "unverified_additional_blocks": [
+        {
+         "bbox": [
+          3767,
+          1691,
+          40,
+          27
+         ],
+         "entity_class": "undefined_valve",
+         "entity_type": "piping_component",
+         "id": "a33b7186-4cd1-4541-be16-33f309ab79f7",
+         "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
+         "tag": "",
+         "text": ""
+        }
+       ]
+      }
+     ],
+     "status": "completed",
+     "summary": {
+      "counts_by_type": {
+       "double block": 2,
+       "single block": 2
+      },
+      "scheme_count": 4
+     }
+    },
+    "energy_types": [
+     "process"
+    ],
+    "equipment_tag": "OGHC20-BB001",
+    "instrument_context": {
+     "checks": {
+      "before_isolation": [
+       {
+        "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+        "action": "Record baseline level reading at LI-OGHC20CL002 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+        "limitation": "Baseline reading is context, not proof of isolation.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Establish initial liquid inventory condition before isolation.",
+        "tag": "LI-OGHC20CL002",
+        "use": "pre_isolation_reading"
+       },
+       {
+        "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+        "action": "Record baseline level reading at LT-OGHC20CL001 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+        "instrument_type": "transmitter",
+        "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+        "limitation": "Baseline reading is context, not proof of isolation.",
+        "measured_variable": "level",
+        "prefix": "LT",
+        "purpose": "Establish initial liquid inventory condition before isolation.",
+        "tag": "LT-OGHC20CL001",
+        "use": "pre_isolation_reading"
+       }
+      ],
+      "control_state": [
+       {
+        "acceptance_criteria": "Controller is in the site-required safe/manual/neutral mode and its output is not commanding unsafe valve, pump, or process movement.",
+        "action": "Place associated controller LIC in safe/neutral/manual state per site procedure before isolation changes.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "cb713ba4-9d61-49d2-b38c-876f1cdb6560",
+        "instrument_type": "controller",
+        "interpretation": "Controller indication/output shows the control loop state, not physical energy isolation.",
+        "limitation": "A controller is not an energy-isolating device under OSHA 1910.147.",
+        "measured_variable": "level",
+        "prefix": "LIC",
+        "purpose": "Prevent automatic control action from fighting the isolation or re-energizing a controlled path.",
+        "tag": "LIC",
+        "use": "control_state"
+       }
+      ],
+      "restoration_reenergization": [
+       {
+        "acceptance_criteria": "Level remains within the site-defined safe operating band with no unexpected rise, drop, or alarm.",
+        "action": "Before lock removal and after controlled re-energization, compare LI-OGHC20CL002 against expected safe operating range.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "Level should change only as expected for the approved restoration/startup sequence.",
+        "limitation": "Operating limits are site-specific and are not derivable from the P&ID.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Detect abnormal filling, draining, or level response during restoration.",
+        "tag": "LI-OGHC20CL002",
+        "use": "restoration_monitoring"
+       },
+       {
+        "acceptance_criteria": "Level remains within the site-defined safe operating band with no unexpected rise, drop, or alarm.",
+        "action": "Before lock removal and after controlled re-energization, compare LT-OGHC20CL001 against expected safe operating range.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+        "instrument_type": "transmitter",
+        "interpretation": "Level should change only as expected for the approved restoration/startup sequence.",
+        "limitation": "Operating limits are site-specific and are not derivable from the P&ID.",
+        "measured_variable": "level",
+        "prefix": "LT",
+        "purpose": "Detect abnormal filling, draining, or level response during restoration.",
+        "tag": "LT-OGHC20CL001",
+        "use": "restoration_monitoring"
+       }
+      ],
+      "stored_energy_relief": [
+       {
+        "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+        "action": "Monitor level trend at LI-OGHC20CL002 while draining/emptying.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+        "limitation": "Local indication is stronger field context, but still advisory in this tool. Level indication does not prove zero pressure or complete energy isolation.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+        "tag": "LI-OGHC20CL002",
+        "use": "stored_energy_monitoring"
+       },
+       {
+        "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+        "action": "Monitor level trend at LT-OGHC20CL001 while draining/emptying.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+        "instrument_type": "transmitter",
+        "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+        "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Level indication does not prove zero pressure or complete energy isolation.",
+        "measured_variable": "level",
+        "prefix": "LT",
+        "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+        "tag": "LT-OGHC20CL001",
+        "use": "stored_energy_monitoring"
+       }
+      ],
+      "verification_before_work": [
+       {
+        "acceptance_criteria": "Use as supporting context with approved field verification for zero energy and trapped pressure.",
+        "action": "Use LI-OGHC20CL002 as supporting indication only; field-verify zero energy by an approved method.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "Low or empty level supports that liquid inventory has been removed from the measured section.",
+        "limitation": "A level reading cannot prove depressurization; trapped pressure may still exist.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Support inventory/removal verification before work.",
+        "tag": "LI-OGHC20CL002",
+        "use": "verification_support"
+       }
+      ]
+     },
+     "debug": {
+      "evidence_policy": "advisory_only",
+      "hilt_link_count": 160,
+      "hilt_node_count": 173,
+      "instrument_count": 3,
+      "relevance_scope": "hilt_connected",
+      "target_node_count": 5
+     },
+     "instruments": [
+      {
+       "bbox": [
+        378,
+        2052,
+        211,
+        54
+       ],
+       "entity_class": "locally_mounted_instrument",
+       "entity_type": "instrument",
+       "id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+       "instrument_type": "local_indicator",
+       "measured_variable": "level",
+       "name": "level indicator",
+       "path_hops": null,
+       "prefix": "LI",
+       "relevance": "stlm_target_adjacent",
+       "relevance_basis": "recognized STLM instrument visually adjacent to selected equipment",
+       "sop_uses": [
+        "pre_isolation_reading",
+        "stored_energy_monitoring",
+        "verification_support",
+        "restoration_monitoring"
+       ],
+       "tag": "LI-OGHC20CL002",
+       "verification_note": "Level indication supports inventory/drain-down checks but does not prove zero pressure."
+      },
+      {
+       "bbox": [
+        441,
+        1832,
+        86,
+        83
+       ],
+       "entity_class": "dcs_function_in_control_room",
+       "entity_type": "control_unit",
+       "id": "cb713ba4-9d61-49d2-b38c-876f1cdb6560",
+       "instrument_type": "controller",
+       "measured_variable": "level",
+       "name": "level indicating controller",
+       "path_hops": null,
+       "prefix": "LIC",
+       "relevance": "stlm_target_adjacent",
+       "relevance_basis": "recognized STLM instrument visually adjacent to selected equipment",
+       "sop_uses": [
+        "control_state"
+       ],
+       "tag": "LIC",
+       "verification_note": "Controller state is not an energy-isolating device and does not prove isolation."
+      },
+      {
+       "bbox": [
+        377,
+        1960,
+        215,
+        59
+       ],
+       "entity_class": "locally_mounted_instrument",
+       "entity_type": "instrument",
+       "id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+       "instrument_type": "transmitter",
+       "measured_variable": "level",
+       "name": "level transmitter",
+       "path_hops": null,
+       "prefix": "LT",
+       "relevance": "stlm_target_adjacent",
+       "relevance_basis": "recognized STLM instrument visually adjacent to selected equipment",
+       "sop_uses": [
+        "pre_isolation_reading",
+        "stored_energy_monitoring",
+        "restoration_monitoring"
+       ],
+       "tag": "LT-OGHC20CL001",
+       "verification_note": "Remote level transmission is supporting context only unless site procedure accepts it."
+      }
+     ],
+     "policy": "advisory_only",
+     "status": "completed"
+    },
+    "open_gaps": [
+     "stored_energy_relief_unknown",
+     "verification_method_unknown",
+     "deterministic_missing_evidence"
+    ],
+    "ordered_steps": [
+     {
+      "action": "Preparation for shutdown.",
+      "phase": 1,
+      "ref": "1910.147(d)(1)",
+      "step": 1,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+      "action": "Record baseline level reading at LI-OGHC20CL002 before shutdown/isolation. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+      "instrument_tag": "LI-OGHC20CL002",
+      "instrument_type": "local_indicator",
+      "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+      "limitation": "Baseline reading is context, not proof of isolation.",
+      "measured_variable": "level",
+      "phase": 1,
+      "purpose": "Establish initial liquid inventory condition before isolation.",
+      "ref": "1910.147(d)(1)",
+      "step": 2,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+      "action": "Record baseline level reading at LT-OGHC20CL001 before shutdown/isolation. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+      "instrument_tag": "LT-OGHC20CL001",
+      "instrument_type": "transmitter",
+      "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+      "limitation": "Baseline reading is context, not proof of isolation.",
+      "measured_variable": "level",
+      "phase": 1,
+      "purpose": "Establish initial liquid inventory condition before isolation.",
+      "ref": "1910.147(d)(1)",
+      "step": 3,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "action": "Equipment shutdown.",
+      "phase": 2,
+      "ref": "1910.147(d)(2)",
+      "step": 4,
+      "title": "Equipment shutdown"
+     },
+     {
+      "acceptance_criteria": "Controller is in the site-required safe/manual/neutral mode and its output is not commanding unsafe valve, pump, or process movement.",
+      "action": "Place associated controller LIC in safe/neutral/manual state per site procedure before isolation changes. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "cb713ba4-9d61-49d2-b38c-876f1cdb6560",
+      "instrument_tag": "LIC",
+      "instrument_type": "controller",
+      "interpretation": "Controller indication/output shows the control loop state, not physical energy isolation.",
+      "limitation": "A controller is not an energy-isolating device under OSHA 1910.147.",
+      "measured_variable": "level",
+      "phase": 2,
+      "purpose": "Prevent automatic control action from fighting the isolation or re-energizing a controlled path.",
+      "ref": "1910.147(d)(2)",
+      "step": 5,
+      "title": "Equipment shutdown"
+     },
+     {
+      "action": "Close & lock manual valve (source 307344)",
+      "device_tag": null,
+      "device_uuid": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "307344",
+      "step": 6,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock manual valve (source 307344)",
+      "device_tag": null,
+      "device_uuid": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "307344",
+      "step": 7,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock AA501-AA002 (source 393368)",
+      "device_tag": "AA501-AA002",
+      "device_uuid": "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "393368",
+      "step": 8,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock AA502 (source 516304)",
+      "device_tag": "AA502",
+      "device_uuid": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "516304",
+      "step": 9,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock detected double block device manual valve (source 307344)",
+      "device_tag": "",
+      "device_uuid": "e608721d-5ac8-4549-a254-63bcfd6d1725",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "307344",
+      "step": 10,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock detected double block device manual valve (source 393368)",
+      "device_tag": "",
+      "device_uuid": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "393368",
+      "step": 11,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Affix lock/tag to manual valve (source 307344)",
+      "device_tag": null,
+      "device_uuid": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "307344",
+      "step": 12,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to manual valve (source 307344)",
+      "device_tag": null,
+      "device_uuid": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "307344",
+      "step": 13,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to AA501-AA002 (source 393368)",
+      "device_tag": "AA501-AA002",
+      "device_uuid": "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "393368",
+      "step": 14,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to AA502 (source 516304)",
+      "device_tag": "AA502",
+      "device_uuid": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "516304",
+      "step": 15,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to detected double block device manual valve (source 307344)",
+      "device_tag": "",
+      "device_uuid": "e608721d-5ac8-4549-a254-63bcfd6d1725",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "307344",
+      "step": 16,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to detected double block device manual valve (source 393368)",
+      "device_tag": "",
+      "device_uuid": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "393368",
+      "step": 17,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Relieve stored/residual energy. FIELD GAP: no bleed/vent/drain on P&ID -- field-locate one.",
+      "field_gap": true,
+      "phase": 5,
+      "ref": "1910.147(d)(5)",
+      "step": 18,
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+      "action": "Monitor level trend at LI-OGHC20CL002 while draining/emptying. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+      "instrument_tag": "LI-OGHC20CL002",
+      "instrument_type": "local_indicator",
+      "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+      "limitation": "Local indication is stronger field context, but still advisory in this tool. Level indication does not prove zero pressure or complete energy isolation.",
+      "measured_variable": "level",
+      "phase": 5,
+      "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+      "ref": "1910.147(d)(5)",
+      "step": 19,
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+      "action": "Monitor level trend at LT-OGHC20CL001 while draining/emptying. Instrument context is advisory and does not prove isolation by itself.",
+      "advisory": true,
+      "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+      "instrument_tag": "LT-OGHC20CL001",
+      "instrument_type": "transmitter",
+      "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+      "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Level indication does not prove zero pressure or complete energy isolation.",
+      "measured_variable": "level",
+      "phase": 5,
+      "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+      "ref": "1910.147(d)(5)",
+      "step": 20,
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "action": "Verify isolation & de-energization. FIELD GAP: no gauge/test point on P&ID -- field-verify zero energy.",
+      "field_gap": true,
+      "phase": 6,
+      "ref": "1910.147(d)(6)",
+      "step": 21,
+      "title": "Verification of isolation"
+     },
+     {
+      "acceptance_criteria": "Use as supporting context with approved field verification for zero energy and trapped pressure.",
+      "action": "Use LI-OGHC20CL002 as supporting indication only; field-verify zero energy by an approved method.",
+      "advisory": true,
+      "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+      "instrument_tag": "LI-OGHC20CL002",
+      "instrument_type": "local_indicator",
+      "interpretation": "Low or empty level supports that liquid inventory has been removed from the measured section.",
+      "limitation": "A level reading cannot prove depressurization; trapped pressure may still exist.",
+      "measured_variable": "level",
+      "phase": 6,
+      "purpose": "Support inventory/removal verification before work.",
+      "ref": "1910.147(d)(6)",
+      "step": 22,
+      "title": "Verification of isolation"
+     }
+    ],
+    "phase_order_is_regulatory": true,
+    "phases": [
+     {
+      "field_action_required": [
+       "Confirm actual energy type and magnitude (pressure/temperature) at the equipment."
+      ],
+      "instrument_checks": [
+       {
+        "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+        "action": "Record baseline level reading at LI-OGHC20CL002 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+        "limitation": "Baseline reading is context, not proof of isolation.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Establish initial liquid inventory condition before isolation.",
+        "tag": "LI-OGHC20CL002",
+        "use": "pre_isolation_reading"
+       },
+       {
+        "acceptance_criteria": "Record value, units/percent if available, timestamp, and local/remote source before changing isolation state.",
+        "action": "Record baseline level reading at LT-OGHC20CL001 before shutdown/isolation.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+        "instrument_type": "transmitter",
+        "interpretation": "Baseline level helps compare drain-down trend after shutdown and draining.",
+        "limitation": "Baseline reading is context, not proof of isolation.",
+        "measured_variable": "level",
+        "prefix": "LT",
+        "purpose": "Establish initial liquid inventory condition before isolation.",
+        "tag": "LT-OGHC20CL001",
+        "use": "pre_isolation_reading"
+       }
+      ],
+      "known": {
+       "energy_types": [
+        "process"
+       ],
+       "isolation_device_count": 4,
+       "requires_positive_isolation": true
+      },
+      "objective": "Identify type and magnitude of energy, hazards, and control method.",
+      "phase": 1,
+      "ref": "1910.147(d)(1)",
+      "title": "Preparation for shutdown"
+     },
+     {
+      "field_action_required": [
+       "Follow the plant's established shutdown procedure for this equipment (not derivable from the P&ID graph). An orderly shutdown avoids additional hazard."
+      ],
+      "instrument_checks": [
+       {
+        "acceptance_criteria": "Controller is in the site-required safe/manual/neutral mode and its output is not commanding unsafe valve, pump, or process movement.",
+        "action": "Place associated controller LIC in safe/neutral/manual state per site procedure before isolation changes.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "cb713ba4-9d61-49d2-b38c-876f1cdb6560",
+        "instrument_type": "controller",
+        "interpretation": "Controller indication/output shows the control loop state, not physical energy isolation.",
+        "limitation": "A controller is not an energy-isolating device under OSHA 1910.147.",
+        "measured_variable": "level",
+        "prefix": "LIC",
+        "purpose": "Prevent automatic control action from fighting the isolation or re-energizing a controlled path.",
+        "tag": "LIC",
+        "use": "control_state"
+       }
+      ],
+      "objective": "Orderly shutdown using the established process procedure.",
+      "phase": 2,
+      "ref": "1910.147(d)(2)",
+      "steps": [],
+      "title": "Equipment shutdown"
+     },
+     {
+      "detected_scheme_summary": {
+       "counts_by_type": {
+        "double block": 2,
+        "single block": 2
+       },
+       "scheme_count": 4
+      },
+      "detected_schemes": [
+       {
+        "barrier_ids": [
+         "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+         "e608721d-5ac8-4549-a254-63bcfd6d1725"
+        ],
+        "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+        "branch_id": "307344:branch:1",
+        "context_device_ids": [],
+        "devices": [
+         {
+          "bbox": [
+           645,
+           1758,
+           42,
+           29
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+          "tag": "",
+          "text": ""
+         },
+         {
+          "bbox": [
+           640,
+           1693,
+           51,
+           30
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "e608721d-5ac8-4549-a254-63bcfd6d1725",
+          "tag": "",
+          "text": ""
+         }
+        ],
+        "relief_candidate_ids": [],
+        "scheme_type": "double block",
+        "source_component": "307344",
+        "source_component_tag": "307344"
+       },
+       {
+        "barrier_ids": [
+         "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+        ],
+        "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+        "branch_id": "307344:branch:2",
+        "context_device_ids": [],
+        "devices": [
+         {
+          "bbox": [
+           593,
+           1693,
+           42,
+           29
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "2036c709-4e8a-4250-9981-e2f30c0d8fdf",
+          "tag": "",
+          "text": ""
+         }
+        ],
+        "relief_candidate_ids": [],
+        "scheme_type": "single block",
+        "source_component": "307344",
+        "source_component_tag": "307344",
+        "unverified_additional_blocks": [
+         {
+          "bbox": [
+           645,
+           1630,
+           42,
+           28
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "3ba9e207-825f-486a-a899-97a53b18129e",
+          "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
+          "tag": "",
+          "text": ""
+         }
+        ]
+       },
+       {
+        "barrier_ids": [
+         "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+         "738248eb-1d65-4b5d-9897-f74b9db2cf0f"
+        ],
+        "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+        "branch_id": "393368:branch:1",
+        "context_device_ids": [],
+        "devices": [
+         {
+          "bbox": [
+           1015,
+           2106,
+           41,
+           29
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "5c6a4463-cc05-484c-8893-dc50c21a85e3",
+          "tag": "AA501-AA002",
+          "text": "AA501 AA002"
+         },
+         {
+          "bbox": [
+           1066,
+           2106,
+           53,
+           31
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
+          "tag": "",
+          "text": ""
+         }
+        ],
+        "relief_candidate_ids": [],
+        "scheme_type": "double block",
+        "source_component": "393368",
+        "source_component_tag": "393368"
+       },
+       {
+        "barrier_ids": [
+         "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+        ],
+        "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
+        "branch_id": "516304:branch:1",
+        "context_device_ids": [
+         "7910e17a-e6b0-46f3-aaa3-a1ed953910c3"
+        ],
+        "devices": [
+         {
+          "bbox": [
+           888,
+           2196,
+           47,
+           34
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f",
+          "tag": "AA502",
+          "text": "AA502"
+         }
+        ],
+        "relief_candidate_ids": [],
+        "scheme_type": "single block",
+        "source_component": "516304",
+        "source_component_tag": "516304",
+        "unverified_additional_blocks": [
+         {
+          "bbox": [
+           3767,
+           1691,
+           40,
+           27
+          ],
+          "entity_class": "undefined_valve",
+          "entity_type": "piping_component",
+          "id": "a33b7186-4cd1-4541-be16-33f309ab79f7",
+          "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
+          "tag": "",
+          "text": ""
+         }
+        ]
+       }
+      ],
+      "devices": [
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "307344",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 2,
+        "uuid": "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "307344",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 3,
+        "uuid": "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "AA501-AA002",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "393368",
+        "source_flow_role": "unknown",
+        "tag": "AA501-AA002",
+        "traversal_depth": 2,
+        "uuid": "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "AA502",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "516304",
+        "source_flow_role": "unknown",
+        "tag": "AA502",
+        "traversal_depth": 2,
+        "uuid": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+       }
+      ],
+      "devices_by_source": {
+       "307344": [
+        "9b161de3-391e-461e-af1c-cfb9199cf8b7",
+        "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+       ],
+       "393368": [
+        "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+       ],
+       "516304": [
+        "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+       ]
+      },
+      "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
+      "phase": 3,
+      "positive_isolation_devices": [],
+      "ref": "1910.147(d)(3)",
+      "supplementary_scheme_devices": [
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "scheme_type": "double block",
+        "source_component": "307344",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
+        "uuid": "e608721d-5ac8-4549-a254-63bcfd6d1725"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "scheme_type": "double block",
+        "source_component": "393368",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
+        "uuid": "738248eb-1d65-4b5d-9897-f74b9db2cf0f"
+       }
+      ],
+      "title": "Equipment isolation",
+      "within_phase_order_is_regulatory": false,
+      "within_phase_order_source": "engine_candidate_order_not_proposed",
+      "within_phase_ordering_note": "OSHA 1910.147 does NOT prescribe the order in which multiple isolating devices are operated within this phase -- only that all are operated. The within-phase order shown is either the agent's committed judgment or a flow-grounded default (isolate INLET / upstream devices first) derived from the HILT-parsed flow direction (source_flow_role). Each device's source_flow_role (inlet/outlet) is provided -- use it to justify the order."
+     },
+     {
+      "devices": [
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "307344",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 2,
+        "uuid": "9b161de3-391e-461e-af1c-cfb9199cf8b7"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "307344",
+        "source_flow_role": "unknown",
+        "tag": null,
+        "traversal_depth": 3,
+        "uuid": "2036c709-4e8a-4250-9981-e2f30c0d8fdf"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "AA501-AA002",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "393368",
+        "source_flow_role": "unknown",
+        "tag": "AA501-AA002",
+        "traversal_depth": 2,
+        "uuid": "5c6a4463-cc05-484c-8893-dc50c21a85e3"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "AA502",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "source_component": "516304",
+        "source_flow_role": "unknown",
+        "tag": "AA502",
+        "traversal_depth": 2,
+        "uuid": "108ec64c-33b2-4715-bd8c-bf92b3a3e25f"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "scheme_type": "double block",
+        "source_component": "307344",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
+        "uuid": "e608721d-5ac8-4549-a254-63bcfd6d1725"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "scheme_type": "double block",
+        "source_component": "393368",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
+        "uuid": "738248eb-1d65-4b5d-9897-f74b9db2cf0f"
+       }
+      ],
+      "field_action_required": [
+       "Each authorized employee applies their assigned individual lock to every isolating device."
+      ],
+      "objective": "Affix an individual lock (and tag) to EACH energy-isolating device, holding it in safe/off.",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "supplementary_scheme_devices": [],
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "field_action_required": [
+       "NO bleed/vent/drain point was found on the P&ID. Treat trapped process energy as present; field-verify a means to bleed/vent before beginning work, and continue monitoring if reaccumulation is possible (1910.147(d)(5)(ii))."
+      ],
+      "instrument_checks": [
+       {
+        "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+        "action": "Monitor level trend at LI-OGHC20CL002 while draining/emptying.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+        "limitation": "Local indication is stronger field context, but still advisory in this tool. Level indication does not prove zero pressure or complete energy isolation.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+        "tag": "LI-OGHC20CL002",
+        "use": "stored_energy_monitoring"
+       },
+       {
+        "acceptance_criteria": "Reading reaches the site-defined empty/low-safe level and remains stable with no unexpected refill.",
+        "action": "Monitor level trend at LT-OGHC20CL001 while draining/emptying.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+        "instrument_type": "transmitter",
+        "interpretation": "A falling level trend supports drain-down; low/empty level supports reduced liquid inventory.",
+        "limitation": "Remote transmitter readings are supporting trends only unless site procedure accepts them. Level indication does not prove zero pressure or complete energy isolation.",
+        "measured_variable": "level",
+        "prefix": "LT",
+        "purpose": "Confirm inventory is draining/emptying and detect unexpected refill.",
+        "tag": "LT-OGHC20CL001",
+        "use": "stored_energy_monitoring"
+       }
+      ],
+      "objective": "Relieve, disconnect, restrain, or render safe all stored/residual energy (bleed/vent/drain).",
+      "phase": 5,
+      "ref": "1910.147(d)(5)",
+      "relief_devices": [],
+      "title": "Stored / residual energy relief"
+     },
+     {
+      "field_action_required": [
+       "NO pressure gauge / indicator / test point was found on the P&ID near the isolated section. Field-verify zero energy by an approved method before starting work."
+      ],
+      "instrument_checks": [
+       {
+        "acceptance_criteria": "Use as supporting context with approved field verification for zero energy and trapped pressure.",
+        "action": "Use LI-OGHC20CL002 as supporting indication only; field-verify zero energy by an approved method.",
+        "basis": "configured instrument semantics; advisory-only",
+        "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+        "instrument_type": "local_indicator",
+        "interpretation": "Low or empty level supports that liquid inventory has been removed from the measured section.",
+        "limitation": "A level reading cannot prove depressurization; trapped pressure may still exist.",
+        "measured_variable": "level",
+        "prefix": "LI",
+        "purpose": "Support inventory/removal verification before work.",
+        "tag": "LI-OGHC20CL002",
+        "use": "verification_support"
+       }
+      ],
+      "objective": "Verify isolation and de-energization (e.g. pressure gauge reads zero / test point confirms no flow).",
+      "phase": 6,
+      "ref": "1910.147(d)(6)",
+      "title": "Verification of isolation",
+      "verify_devices": []
+     }
+    ],
+    "regulatory_sequence_ref": "1910.147(d)",
+    "release_from_loto_ref": "1910.147(e)",
+    "release_note": "On completion: inspect area, ensure personnel clear, verify controls neutral, remove locks (reverse order), re-energize, notify affected employees. Before lock removal and after controlled re-energization, review supporting instrument indications/alarms (LI-OGHC20CL002, LT-OGHC20CL001) for expected safe conditions.",
+    "relief_candidates": {
+     "items": [],
+     "status": "completed",
+     "summary": {
+      "candidate_count": 0,
+      "counts_by_type": {}
+     }
+    },
+    "restoration_checks": [
+     {
+      "acceptance_criteria": "Level remains within the site-defined safe operating band with no unexpected rise, drop, or alarm.",
+      "action": "Before lock removal and after controlled re-energization, compare LI-OGHC20CL002 against expected safe operating range.",
+      "basis": "configured instrument semantics; advisory-only",
+      "instrument_id": "453f5946-c31f-478b-87db-a8d2e98deb12",
+      "instrument_type": "local_indicator",
+      "interpretation": "Level should change only as expected for the approved restoration/startup sequence.",
+      "limitation": "Operating limits are site-specific and are not derivable from the P&ID.",
+      "measured_variable": "level",
+      "prefix": "LI",
+      "purpose": "Detect abnormal filling, draining, or level response during restoration.",
+      "tag": "LI-OGHC20CL002",
+      "use": "restoration_monitoring"
+     },
+     {
+      "acceptance_criteria": "Level remains within the site-defined safe operating band with no unexpected rise, drop, or alarm.",
+      "action": "Before lock removal and after controlled re-energization, compare LT-OGHC20CL001 against expected safe operating range.",
+      "basis": "configured instrument semantics; advisory-only",
+      "instrument_id": "0ef58692-1ecd-4eff-aab9-c972919e9313",
+      "instrument_type": "transmitter",
+      "interpretation": "Level should change only as expected for the approved restoration/startup sequence.",
+      "limitation": "Operating limits are site-specific and are not derivable from the P&ID.",
+      "measured_variable": "level",
+      "prefix": "LT",
+      "purpose": "Detect abnormal filling, draining, or level response during restoration.",
+      "tag": "LT-OGHC20CL001",
+      "use": "restoration_monitoring"
+     }
+    ],
+    "standard": "29 CFR 1910.147",
+    "within_phase_order_is_regulatory": false,
+    "within_phase_order_source": "engine_candidate_order_not_proposed",
+    "work_scope": {
+     "confined_space_entry": false,
+     "high_risk_service": true,
+     "hot_work": false,
+     "intrusive_work": true
+    }
+   },
+   "manual_visual_isolation_checks": [],
+   "project_id": 15,
+   "project_name": "Project 15",
+   "relief_candidates": {
+    "items": [],
+    "status": "completed",
+    "summary": {
+     "candidate_count": 0,
+     "counts_by_type": {}
+    }
+   },
+   "selected_equipment": [
+    "OGHC20-BB001"
+   ],
+   "selected_equipment_overlays": [
+    {
+     "bbox": [
+      610,
+      1879,
+      270,
+      287
+     ],
+     "entity_class": "vertical_vessel",
+     "equipment_id": 381168,
+     "reason": "Selected equipment of interest resolved from STLM/HILT symbol.",
+     "tag": "OGHC20-BB001",
+     "uuid": "e3ba271c-eaa6-483b-b9e2-f64fbc57196b"
+    }
+   ],
+   "unselected_boundary_sources": [
+    {
+     "candidate_count": 1,
+     "equipment_tag": "OGHC20-BB001",
+     "min_candidate_depth": 3,
+     "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+     "source_component": "266384",
+     "source_component_tag": "",
+     "source_component_tag_raw": "266384",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          346,
+          1925,
+          10,
+          10
+         ],
+         "center": [
+          351,
+          1930
+         ],
+         "entity_class": "junction",
+         "entity_type": "internal_special",
+         "tag_number": null,
+         "uuid": "ed9fd60c-08d5-4ead-9b5a-5f967b23130f"
+        },
+        {
+         "bbox": [
+          608,
+          1925,
+          10,
+          10
+         ],
+         "center": [
+          613,
+          1930
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": null,
+         "uuid": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9"
+        }
+       ],
+       "entity_class": "main_process_line",
+       "entity_type": "process_line",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          351.0,
+          1930.0
+         ],
+         "point2": [
+          613.0,
+          1930.0
+         ]
+        }
+       ],
+       "line_id": "364dcf2a-a8de-40ae-a109-b84174ccd931",
+       "segment_id": "e4c898d7-deeb-4937-a7c0-8f8a4646a340",
+       "source": "ed9fd60c-08d5-4ead-9b5a-5f967b23130f",
+       "system_id": "fddcf0c8-78c6-4019-a35c-f3baacfb46d5",
+       "tag_number": null,
+       "target": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+       "text": null
+      }
+     ],
+     "source_label_confidence": "graph_only_unlabeled_component",
+     "source_nozzle_id": null
+    },
+    {
+     "candidate_count": 1,
+     "equipment_tag": "OGHC20-BB001",
+     "min_candidate_depth": 3,
+     "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+     "source_component": "487632",
+     "source_component_tag": "",
+     "source_component_tag_raw": "487632",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          477,
+          1733,
+          10,
+          10
+         ],
+         "center": [
+          482,
+          1738
+         ],
+         "entity_class": "junction",
+         "entity_type": "internal_special",
+         "tag_number": null,
+         "uuid": "2a9b4064-45f3-4a2c-b889-1a9e72541385"
+        },
+        {
+         "bbox": [
+          608,
+          1733,
+          10,
+          10
+         ],
+         "center": [
+          613,
+          1738
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": null,
+         "uuid": "2f37b047-7286-42da-a6cf-69a5a9337efe"
+        }
+       ],
+       "entity_class": "signal_line",
+       "entity_type": "signal_line",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          482.0,
+          1738.0
+         ],
+         "point2": [
+          613.0,
+          1738.0
+         ]
+        }
+       ],
+       "line_id": "c266b419-ac96-4bc0-8943-ef2663d5c201",
+       "segment_id": null,
+       "source": "2a9b4064-45f3-4a2c-b889-1a9e72541385",
+       "system_id": null,
+       "tag_number": null,
+       "target": "2f37b047-7286-42da-a6cf-69a5a9337efe",
+       "text": null
+      }
+     ],
+     "source_label_confidence": "graph_only_unlabeled_component",
+     "source_nozzle_id": null
+    },
+    {
+     "candidate_count": 1,
+     "equipment_tag": "OGHC20-BB001",
+     "min_candidate_depth": 3,
+     "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+     "source_component": "741480",
+     "source_component_tag": "",
+     "source_component_tag_raw": "741480",
+     "source_hilt_lines": [
+      {
+       "connected_nodes": [
+        {
+         "bbox": [
+          477,
+          1825,
+          10,
+          10
+         ],
+         "center": [
+          482,
+          1830
+         ],
+         "entity_class": "junction",
+         "entity_type": "internal_special",
+         "tag_number": null,
+         "uuid": "6a7c84ad-101d-42c2-b088-4790599c70d6"
+        },
+        {
+         "bbox": [
+          608,
+          1825,
+          10,
+          10
+         ],
+         "center": [
+          613,
+          1830
+         ],
+         "entity_class": "equipment_nozzle",
+         "entity_type": "equipment_component",
+         "tag_number": null,
+         "uuid": "5cef289f-684e-4074-a420-c1cf85496fb9"
+        }
+       ],
+       "entity_class": "signal_line",
+       "entity_type": "signal_line",
+       "graphical_lines": [
+        {
+         "line_type": "solid",
+         "point1": [
+          482.0,
+          1830.0
+         ],
+         "point2": [
+          613.0,
+          1830.0
+         ]
+        }
+       ],
+       "line_id": "8d4ecf22-dd07-4062-aaed-170b970b6198",
+       "segment_id": null,
+       "source": "6a7c84ad-101d-42c2-b088-4790599c70d6",
+       "system_id": null,
+       "tag_number": null,
+       "target": "5cef289f-684e-4074-a420-c1cf85496fb9",
+       "text": null
+      }
+     ],
+     "source_label_confidence": "graph_only_unlabeled_component",
+     "source_nozzle_id": null
+    }
+   ]
+  }
+ ],
+ "debug": {
+  "assurance_status": "not_isolated",
+  "bbox_candidate_finder_mode": "nearest_exact_bbox_candidate_per_source_component",
+  "bbox_candidate_pool_resolved_count": 22,
+  "bbox_parallel_companion_selection_count": 0,
+  "bbox_parallel_companion_selection_samples": [],
+  "bbox_resolved_count": 3,
+  "bbox_selectable_candidate_pool_count": 22,
+  "bbox_source_visual_selection_samples": [
+   {
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     426224
+    ],
+    "selected_depths": [
+     1
+    ],
+    "selected_source_visual_distances": [
+     242.3412
+    ],
+    "source_component": "516304"
+   },
+   {
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     401560
+    ],
+    "selected_depths": [
+     2
+    ],
+    "selected_source_visual_distances": [
+     106.0012
+    ],
+    "source_component": "307344"
+   },
+   {
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     725096
+    ],
+    "selected_depths": [
+     2
+    ],
+    "selected_source_visual_distances": [
+     159.5008
+    ],
+    "source_component": "393368"
+   }
+  ],
+  "bbox_stlm_symbol_count": 117,
+  "bbox_unresolved_candidate_ids": [],
+  "bbox_unselected_source_component_count": 3,
+  "bbox_unselected_source_components": [
+   {
+    "candidate_count": 1,
+    "equipment_tag": "OGHC20-BB001",
+    "min_candidate_depth": 3,
+    "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+    "source_component": "266384",
+    "source_component_tag": "",
+    "source_component_tag_raw": "266384",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         346,
+         1925,
+         10,
+         10
+        ],
+        "center": [
+         351,
+         1930
+        ],
+        "entity_class": "junction",
+        "entity_type": "internal_special",
+        "tag_number": null,
+        "uuid": "ed9fd60c-08d5-4ead-9b5a-5f967b23130f"
+       },
+       {
+        "bbox": [
+         608,
+         1925,
+         10,
+         10
+        ],
+        "center": [
+         613,
+         1930
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": null,
+        "uuid": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9"
+       }
+      ],
+      "entity_class": "main_process_line",
+      "entity_type": "process_line",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         351.0,
+         1930.0
+        ],
+        "point2": [
+         613.0,
+         1930.0
+        ]
+       }
+      ],
+      "line_id": "364dcf2a-a8de-40ae-a109-b84174ccd931",
+      "segment_id": "e4c898d7-deeb-4937-a7c0-8f8a4646a340",
+      "source": "ed9fd60c-08d5-4ead-9b5a-5f967b23130f",
+      "system_id": "fddcf0c8-78c6-4019-a35c-f3baacfb46d5",
+      "tag_number": null,
+      "target": "1a6127fc-3cf0-4389-8876-a8be4c0b28e9",
+      "text": null
+     }
+    ],
+    "source_label_confidence": "graph_only_unlabeled_component",
+    "source_nozzle_id": null
+   },
+   {
+    "candidate_count": 1,
+    "equipment_tag": "OGHC20-BB001",
+    "min_candidate_depth": 3,
+    "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+    "source_component": "487632",
+    "source_component_tag": "",
+    "source_component_tag_raw": "487632",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         477,
+         1733,
+         10,
+         10
+        ],
+        "center": [
+         482,
+         1738
+        ],
+        "entity_class": "junction",
+        "entity_type": "internal_special",
+        "tag_number": null,
+        "uuid": "2a9b4064-45f3-4a2c-b889-1a9e72541385"
+       },
+       {
+        "bbox": [
+         608,
+         1733,
+         10,
+         10
+        ],
+        "center": [
+         613,
+         1738
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": null,
+        "uuid": "2f37b047-7286-42da-a6cf-69a5a9337efe"
+       }
+      ],
+      "entity_class": "signal_line",
+      "entity_type": "signal_line",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         482.0,
+         1738.0
+        ],
+        "point2": [
+         613.0,
+         1738.0
+        ]
+       }
+      ],
+      "line_id": "c266b419-ac96-4bc0-8943-ef2663d5c201",
+      "segment_id": null,
+      "source": "2a9b4064-45f3-4a2c-b889-1a9e72541385",
+      "system_id": null,
+      "tag_number": null,
+      "target": "2f37b047-7286-42da-a6cf-69a5a9337efe",
+      "text": null
+     }
+    ],
+    "source_label_confidence": "graph_only_unlabeled_component",
+    "source_nozzle_id": null
+   },
+   {
+    "candidate_count": 1,
+    "equipment_tag": "OGHC20-BB001",
+    "min_candidate_depth": 3,
+    "reason": "nearest_candidates_exceed_visual_selection_depth_limit",
+    "source_component": "741480",
+    "source_component_tag": "",
+    "source_component_tag_raw": "741480",
+    "source_hilt_lines": [
+     {
+      "connected_nodes": [
+       {
+        "bbox": [
+         477,
+         1825,
+         10,
+         10
+        ],
+        "center": [
+         482,
+         1830
+        ],
+        "entity_class": "junction",
+        "entity_type": "internal_special",
+        "tag_number": null,
+        "uuid": "6a7c84ad-101d-42c2-b088-4790599c70d6"
+       },
+       {
+        "bbox": [
+         608,
+         1825,
+         10,
+         10
+        ],
+        "center": [
+         613,
+         1830
+        ],
+        "entity_class": "equipment_nozzle",
+        "entity_type": "equipment_component",
+        "tag_number": null,
+        "uuid": "5cef289f-684e-4074-a420-c1cf85496fb9"
+       }
+      ],
+      "entity_class": "signal_line",
+      "entity_type": "signal_line",
+      "graphical_lines": [
+       {
+        "line_type": "solid",
+        "point1": [
+         482.0,
+         1830.0
+        ],
+        "point2": [
+         613.0,
+         1830.0
+        ]
+       }
+      ],
+      "line_id": "8d4ecf22-dd07-4062-aaed-170b970b6198",
+      "segment_id": null,
+      "source": "6a7c84ad-101d-42c2-b088-4790599c70d6",
+      "system_id": null,
+      "tag_number": null,
+      "target": "5cef289f-684e-4074-a420-c1cf85496fb9",
+      "text": null
+     }
+    ],
+    "source_label_confidence": "graph_only_unlabeled_component",
+    "source_nozzle_id": null
+   }
+  ],
+  "candidate_finder_mode": "local_nearest_boundary_candidate_per_source_component",
+  "candidate_pool_count": 22,
+  "conditional_manual_review_candidate_count": 22,
+  "context_instrument_source_component_count": 0,
+  "context_instruments": [],
+  "context_overridden_by_isolation_valve": [
+   "('OGHC20-BB001', '487632')",
+   "('OGHC20-BB001', '741480')"
+  ],
+  "deduped_candidate_count": 3,
+  "detected_isolation_scheme_count": 4,
+  "evidence_barrier_candidate_count": 4,
+  "evidence_candidate_count": 4,
+  "evidence_isolation_obligation_count": 7,
+  "evidence_manual_review_candidate_count": 4,
+  "evidence_missing_evidence_count": 5,
+  "evidence_positive_candidate_count": 0,
+  "evidence_unresolved_isolation_obligation_count": 1,
+  "evidence_verification_candidate_count": 0,
+  "flow_candidate_role_counts": {
+   "bidirectional": 0,
+   "inlet": 0,
+   "outlet": 0,
+   "unknown": 4
+  },
+  "flow_nozzle_classified_count": 3,
+  "hilt_branch_count": 5,
+  "hilt_branch_isolated_count": 4,
+  "hilt_branch_source_count": 4,
+  "hilt_graph_link_count": 160,
+  "hilt_graph_node_count": 173,
+  "hilt_source_line_context_count": 320,
+  "hilt_topology_authoritative_count": 4,
+  "hilt_topology_nozzle_count": 0,
+  "hilt_topology_valve_count": 0,
+  "hilt_y_flip_calibrated": 3859.093882825178,
+  "instrument_context_count": 3,
+  "instrument_context_status": "completed",
+  "isolated_envelope_node_count": 7,
+  "llm_relief_candidate_count": 0,
+  "manual_visual_isolation_check_count": 0,
+  "manual_visual_isolation_checks": [],
+  "pid_image_bytes": 744046,
+  "pid_image_content_type": "image/jpeg",
+  "pid_image_file_id": 11068,
+  "planner_code_version": "local_deterministic_planner_2026-06-29_v1",
+  "planner_mode": "deterministic_graph_api_evidence_checks",
+  "planner_required_evidence_check_count": 5,
+  "planner_required_evidence_checks": [
+   "find_bleeds_vents_drains",
+   "find_pressure_indicators",
+   "find_blinds_spades_flanges",
+   "find_bypass_paths",
+   "fetch_pid_visual_json"
+  ],
+  "raw_candidate_count_before_dedupe": 22,
+  "relief_analysis_status": "completed",
+  "relief_candidate_count": 0,
+  "selectable_candidate_count": 22,
+  "skipped_count": 161,
+  "source_component_selection_samples": [
+   {
+    "candidate_count": 1,
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     426224
+    ],
+    "selected_depths": [
+     3
+    ],
+    "source_component": 266384
+   },
+   {
+    "candidate_count": 6,
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     397552
+    ],
+    "selected_depths": [
+     2
+    ],
+    "source_component": 307344
+   },
+   {
+    "candidate_count": 5,
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     299152
+    ],
+    "selected_depths": [
+     2
+    ],
+    "source_component": 393368
+   },
+   {
+    "candidate_count": 1,
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     426224
+    ],
+    "selected_depths": [
+     3
+    ],
+    "source_component": 487632
+   },
+   {
+    "candidate_count": 8,
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     426224
+    ],
+    "selected_depths": [
+     1
+    ],
+    "source_component": 516304
+   },
+   {
+    "candidate_count": 1,
+    "equipment_tag": "OGHC20-BB001",
+    "selected_candidate_ids": [
+     426224
+    ],
+    "selected_depths": [
+     3
+    ],
+    "source_component": 741480
+   }
+  ],
+  "target_equipment_bbox_resolved_count": 1,
+  "traversal_limit_hit": false,
+  "unigraph_metadata": {
+   "cnvrt_collection_id": "206",
+   "cnvrt_project_id": "277",
+   "cnvrt_project_matches": [
+    {
+     "cnvrt_project_id": "277",
+     "id": "13",
+     "name": "Aker 277",
+     "no_of_collections": null,
+     "no_of_pnids": null,
+     "status": "imported"
+    },
+    {
+     "cnvrt_project_id": "277",
+     "id": "15",
+     "name": "testdirection2 acker 277",
+     "no_of_collections": null,
+     "no_of_pnids": null,
+     "status": "imported"
+    }
+   ],
+   "collections": [
+    {
+     "cnvrt_collection_id": "206",
+     "export_type": "project_export",
+     "id": "57",
+     "name": "Test",
+     "no_of_pnids": null
+    },
+    {
+     "cnvrt_collection_id": "201",
+     "export_type": "project_export",
+     "id": "58",
+     "name": "Demo",
+     "no_of_pnids": null
+    },
+    {
+     "cnvrt_collection_id": "247",
+     "export_type": "project_export",
+     "id": "59",
+     "name": "Training ATK",
+     "no_of_pnids": null
+    },
+    {
+     "cnvrt_collection_id": "251",
+     "export_type": "project_export",
+     "id": "60",
+     "name": "Test 24/04",
+     "no_of_pnids": null
+    }
+   ],
+   "direction_review_errors": [],
+   "job_count": 11,
+   "jobs": [
+    {
+     "cnvrt_job_id": "2152",
+     "pending_choices": null,
+     "pnid_id": "223",
+     "pnid_name": "PID-0134-1"
+    },
+    {
+     "cnvrt_job_id": "2151",
+     "pending_choices": null,
+     "pnid_id": "224",
+     "pnid_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A"
+    },
+    {
+     "cnvrt_job_id": "2192",
+     "pending_choices": null,
+     "pnid_id": "225",
+     "pnid_name": "PID-0134-2"
+    },
+    {
+     "cnvrt_job_id": "2193",
+     "pending_choices": null,
+     "pnid_id": "226",
+     "pnid_name": "PID-0134-3"
+    },
+    {
+     "cnvrt_job_id": "2194",
+     "pending_choices": null,
+     "pnid_id": "227",
+     "pnid_name": "PID-0134-4"
+    },
+    {
+     "cnvrt_job_id": "2195",
+     "pending_choices": null,
+     "pnid_id": "228",
+     "pnid_name": "PID-0134-5"
+    },
+    {
+     "cnvrt_job_id": "2483",
+     "pending_choices": null,
+     "pnid_id": "229",
+     "pnid_name": "Dadon-2"
+    },
+    {
+     "cnvrt_job_id": "2472",
+     "pending_choices": null,
+     "pnid_id": "230",
+     "pnid_name": "Janusz-1"
+    },
+    {
+     "cnvrt_job_id": "2467",
+     "pending_choices": null,
+     "pnid_id": "231",
+     "pnid_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-13"
+    },
+    {
+     "cnvrt_job_id": "2474",
+     "pending_choices": null,
+     "pnid_id": "232",
+     "pnid_name": "Dadon-1"
+    },
+    {
+     "cnvrt_job_id": "2468",
+     "pending_choices": null,
+     "pnid_id": "233",
+     "pnid_name": "PID-0134-6"
+    }
+   ],
+   "project": {
+    "cnvrt_project_id": "",
+    "id": "15",
+    "name": "testdirection2 acker 277",
+    "no_of_collections": 4,
+    "no_of_pnids": 12,
+    "status": ""
+   },
+   "selected_collection": {
+    "cnvrt_collection_id": "206",
+    "export_type": "project_export",
+    "id": "57",
+    "name": "Test",
+    "no_of_pnids": null
+   },
+   "status": "completed",
+   "unigraph_api_base_url": "https://api.plant360.ai/plantgraph",
+   "unigraph_project_id": "15"
+  },
+  "validator_manual_review_candidate_count": 4,
+  "validator_missing_evidence_count": 9,
+  "validator_terminal": true,
+  "validator_unresolved_evidence_check_count": 4
+ },
+ "error": false,
+ "message": "Completed"
+}
