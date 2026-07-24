@@ -1,0 +1,27 @@
+info:
+  name: list equipment
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/equipment"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "cnvrt_project_id": "{{CNVRT_PROJECT_ID}}",
+        "unigraph_project_id": "{{UNIGRAPH_PROJECT_ID}}",
+        "collection_id": "{{COLLECTION_ID}}",
+        "collection_name": "{{COLLECTION_NAME}}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

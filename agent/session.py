@@ -8,11 +8,11 @@ non-deterministic system.
 """
 from __future__ import annotations
 
-from dataclasses import replace
 from time import time
 from typing import Any
 
-from config import JOB_IDS_BY_NAME, RunConfig
+from config import RunConfig
+from pipeline.job_inference import _config_with_inferred_job
 
 
 class AgentSession:
@@ -51,30 +51,23 @@ class AgentSession:
         return entry
 
     def infer_job_from_candidates(self) -> bool:
-        """Mirror ``run._config_with_inferred_job``: infer the P&ID job from the
-        job/P&ID property of selected candidates, updating ``self.config`` in place.
-        Called automatically by the ``resolve_bboxes`` tool before bbox lookup.
+        """Infer the P&ID job, using the SAME algorithm as run.py.
+
+        Delegates to ``pipeline.job_inference``: candidate job properties, then
+        boundary-derived unit names, then an STLM lookup fallback. Previously
+        this implemented only the first of the three, so the agent could leave a
+        job unresolved that run.py would have resolved -- which changes bbox
+        resolution and therefore candidate selection.
+
+        NOTE: the STLM fallback issues one API call per known job, inside a tool
+        call. That is the cost of matching run.py's coverage.
         """
         if not self.candidate_data:
             return False
-        counts: dict[str, int] = {}
-        for cand in self.candidate_data.get("candidates", []) or []:
-            job_name = _candidate_job_name(cand, self.config.job_ids_by_name)
-            if job_name:
-                counts[job_name] = counts.get(job_name, 0) + 1
-        if not counts:
+        config = _config_with_inferred_job(self.config, self.candidate_data, self.boundary_data)
+        if config is self.config:  # returns the same object when nothing was inferred
             return False
-        inferred_job_name = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[0][0]
-        if inferred_job_name == self.config.job_name:
-            return False
-        inferred_job_id = self.config.job_ids_by_name.get(inferred_job_name, "") or JOB_IDS_BY_NAME.get(inferred_job_name, "")
-        debug = self.candidate_data.setdefault("debug", {})
-        debug["input_job_name"] = self.config.job_name
-        debug["input_job_id"] = self.config.resolved_job_id
-        debug["inferred_job_name"] = inferred_job_name
-        debug["inferred_job_id"] = inferred_job_id
-        debug["inferred_job_source"] = "selected_candidate_job_property"
-        self.config = replace(self.config, job_name=inferred_job_name, job_id=inferred_job_id)
+        self.config = config
         self.candidate_data["context"] = self.config.context
         return True
 
@@ -96,13 +89,3 @@ def jsonable(value: Any) -> Any:
         except Exception:
             pass
     return str(value)
-
-
-def _candidate_job_name(candidate: dict, job_ids_by_name: dict[str, str] | None = None) -> str:
-    properties = candidate.get("properties") or {}
-    known_jobs = job_ids_by_name or JOB_IDS_BY_NAME
-    for key in ("unit_name", "pnid", "pnid_name", "job_name", "job"):
-        value = str(properties.get(key) or candidate.get(key) or "").strip()
-        if value in known_jobs:
-            return value
-    return ""

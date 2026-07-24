@@ -1,0 +1,27 @@
+info:
+  name: reject missing project context
+  type: http
+  seq: 12
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/isolation-runs"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "equipment_tag": "{{EQUIPMENT_TAG}}",
+        "cnvrt_project_id": "{{CNVRT_PROJECT_ID}}",
+        "collection_name": "{{COLLECTION_NAME}}",
+        "include_viewer": false
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

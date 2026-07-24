@@ -6,6 +6,7 @@ from domain.enums import ImpactSeverity, IsolationDecision
 from domain.models import BBox, DownstreamImpactWarning, IsolationCandidate
 from domain.serialization import to_jsonable
 from domain.topology import nozzle_belongs_to_equipment
+from evidence import candidate_flags
 
 
 class NozzleEquipmentMatchTests(unittest.TestCase):
@@ -65,6 +66,18 @@ class DomainModelTests(unittest.TestCase):
         self.assertFalse(candidate["requires_manual_review"])
         self.assertEqual(candidate["bbox"], [1, 2, 3, 4])
         self.assertEqual(candidate["classification"]["decision"], "automatic")
+
+    def test_evidence_roundtrip_preserves_serialized_barrier_flag(self):
+        classification = classify_candidate(
+            {"entity_class": "undefined_valve"},
+            "Component",
+            IsolationPolicy(include_conditional_candidates=True),
+        )
+        self.assertTrue(classification.is_barrier)
+
+        flags = candidate_flags({"classification": classification.to_dict()}, IsolationPolicy())
+
+        self.assertTrue(flags["barrier"])
 
     def test_to_jsonable_serializes_enums_and_dataclasses(self):
         warning = DownstreamImpactWarning(

@@ -1,7 +1,7 @@
 {
  "data": [
   {
-   "assurance_status": "provisional_unproven_isolation",
+   "assurance_status": "not_isolated",
    "boundary_context_sources": [
     {
      "classification": "companion_line_context",
@@ -1764,7 +1764,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N5. Candidate vertex id: 114808. Source component: N5.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1791,7 +1793,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N2. Candidate vertex id: 204920. Source component: N2.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1818,7 +1822,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N3. Candidate vertex id: 278736. Source component: N3.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1845,7 +1851,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N4. Candidate vertex id: 344272. Source component: N4.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1872,7 +1880,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N6. Candidate vertex id: 376936. Source component: N6.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1899,7 +1909,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N8. Candidate vertex id: 389280. Source component: N8.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1926,7 +1938,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near N1. Candidate vertex id: 512104. Source component: N1.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1953,7 +1967,9 @@
      "entity_class": "flange",
      "equipment_id": "N7",
      "isolation_method": "isolate and lock/tag",
+     "operation_kind": "field_confirmed_positive_isolation",
      "policy_decision": "automatic",
+     "positive_isolation_requires_field_confirmation": true,
      "reason": "Matched flange at depth 1 in component direct neighbor near 487584. Candidate vertex id: 573544. Source component: 487584.",
      "required_branch_isolation": false,
      "requires_manual_review": false,
@@ -1965,17 +1981,8 @@
     }
    ],
    "isolation_validation": {
-    "assurance_status": "provisional_unproven_isolation",
-    "barrier_candidate_ids": [
-     114808,
-     204920,
-     278736,
-     344272,
-     376936,
-     389280,
-     512104,
-     573544
-    ],
+    "assurance_status": "not_isolated",
+    "barrier_candidate_ids": [],
     "boundary_context_sources": [
      {
       "classification": "companion_line_context",
@@ -3423,22 +3430,15 @@
     "missing_boundary_count": 0,
     "missing_evidence": [
      "No bleed, vent, drain, gauge, pressure indicator, or approved test-point evidence was found.",
+     "Work scope requires positive isolation evidence, but no blind, spade, blank flange, disconnection, breaker, or equivalent was found.",
      "Bleed, vent, or drain evidence check is required but has not been completed by this local deterministic runner.",
      "Pressure gauge, pressure indicator, or test-point evidence check is required but has not been completed by this local deterministic runner.",
+     "Positive isolation evidence check is required but has not been completed by this local deterministic runner.",
      "Bypass or alternate-route evidence check is required but has not been completed by this local deterministic runner."
     ],
-    "positive_candidate_ids": [
-     114808,
-     204920,
-     278736,
-     344272,
-     376936,
-     389280,
-     512104,
-     573544
-    ],
-    "rationale": "Selected barriers exist, but safety-critical evidence checks remain unresolved.",
-    "terminal": false,
+    "positive_candidate_ids": [],
+    "rationale": "No selected candidate has deterministic isolation barrier evidence.",
+    "terminal": true,
     "unresolved_bbox_candidate_ids": [],
     "unresolved_evidence_checks": [
      {
@@ -3474,6 +3474,19 @@
        "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
        "project_id": "15"
       },
+      "check_name": "find_blinds_spades_flanges",
+      "priority": "high",
+      "reason": "Work scope requires positive isolation evidence.",
+      "source": "deterministic_rule",
+      "status": "required"
+     },
+     {
+      "arguments": {
+       "collection_id": "206",
+       "job_id": "2151",
+       "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
+       "project_id": "15"
+      },
       "check_name": "find_bypass_paths",
       "priority": "medium",
       "reason": "Check for bypasses or alternate routes around selected barriers.",
@@ -3488,7 +3501,7 @@
    "job_id": 2151,
    "job_name": "Aker-Clean-Carbon-Piping-and-Instrumentation-Diagrams-52_1A",
    "loto_procedure": {
-    "assurance_status": "provisional_unproven_isolation",
+    "assurance_status": "not_isolated",
     "detected_isolation_schemes": {
      "items": [],
      "status": "completed",
@@ -3703,170 +3716,290 @@
       "title": "Preparation for shutdown"
      },
      {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N3_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "131192",
+      "secondary_context_tag": "N3_N7",
+      "step": 4,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N2_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "147600",
+      "secondary_context_tag": "N2_N7",
+      "step": 5,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N4_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "159952",
+      "secondary_context_tag": "N4_N7",
+      "step": 6,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N5_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "192752",
+      "secondary_context_tag": "N5_N7",
+      "step": 7,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N1_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "450664",
+      "secondary_context_tag": "N1_N7",
+      "step": 8,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line 487584. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "487584",
+      "secondary_context_tag": "487584",
+      "step": 9,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N6_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "512160",
+      "secondary_context_tag": "N6_N7",
+      "step": 10,
+      "title": "Preparation for shutdown"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N8_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "565352",
+      "secondary_context_tag": "N8_N7",
+      "step": 11,
+      "title": "Preparation for shutdown"
+     },
+     {
       "action": "Equipment shutdown.",
       "phase": 2,
       "ref": "1910.147(d)(2)",
-      "step": 4,
+      "step": 12,
       "title": "Equipment shutdown"
      },
      {
-      "action": "Close & lock flange (source N1 [INLET])",
-      "device_tag": null,
-      "device_uuid": "512104",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "N1",
-      "step": 5,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source N3 [INLET])",
-      "device_tag": null,
-      "device_uuid": "278736",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "N3",
-      "step": 6,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source N6 [INLET])",
-      "device_tag": null,
-      "device_uuid": "376936",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "N6",
-      "step": 7,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source N2 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "204920",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "N2",
-      "step": 8,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source N4 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "344272",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "N4",
-      "step": 9,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source N5 [OUTLET])",
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N5 [OUTLET])",
       "device_tag": null,
       "device_uuid": "114808",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "N5",
-      "step": 10,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source N8 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "389280",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "N8",
-      "step": 11,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock flange (source 487584)",
-      "device_tag": null,
-      "device_uuid": "573544",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "487584",
-      "step": 12,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Affix lock/tag to flange (source N1 [INLET])",
-      "device_tag": null,
-      "device_uuid": "512104",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
-      "source": "N1",
       "step": 13,
-      "title": "Lockout/tagout device application"
+      "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to flange (source N3 [INLET])",
-      "device_tag": null,
-      "device_uuid": "278736",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
-      "source": "N3",
-      "step": 14,
-      "title": "Lockout/tagout device application"
-     },
-     {
-      "action": "Affix lock/tag to flange (source N6 [INLET])",
-      "device_tag": null,
-      "device_uuid": "376936",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
-      "source": "N6",
-      "step": 15,
-      "title": "Lockout/tagout device application"
-     },
-     {
-      "action": "Affix lock/tag to flange (source N2 [OUTLET])",
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N2 [OUTLET])",
       "device_tag": null,
       "device_uuid": "204920",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
       "source": "N2",
-      "step": 16,
-      "title": "Lockout/tagout device application"
+      "step": 14,
+      "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to flange (source N4 [OUTLET])",
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N3 [INLET])",
+      "device_tag": null,
+      "device_uuid": "278736",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N3",
+      "step": 15,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N4 [OUTLET])",
       "device_tag": null,
       "device_uuid": "344272",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
       "source": "N4",
-      "step": 17,
-      "title": "Lockout/tagout device application"
+      "step": 16,
+      "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to flange (source N5 [OUTLET])",
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N6 [INLET])",
       "device_tag": null,
-      "device_uuid": "114808",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
-      "source": "N5",
-      "step": 18,
-      "title": "Lockout/tagout device application"
+      "device_uuid": "376936",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N6",
+      "step": 17,
+      "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to flange (source N8 [OUTLET])",
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N8 [OUTLET])",
       "device_tag": null,
       "device_uuid": "389280",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
       "source": "N8",
-      "step": 19,
-      "title": "Lockout/tagout device application"
+      "step": 18,
+      "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to flange (source 487584)",
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source N1 [INLET])",
+      "device_tag": null,
+      "device_uuid": "512104",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "N1",
+      "step": 19,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Field-verify flange/line-break point flange; install an approved blind/spade or perform an approved line break before this point is accepted as isolation (source 487584)",
       "device_tag": null,
       "device_uuid": "573544",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
       "source": "487584",
       "step": 20,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N5 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "114808",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N5",
+      "step": 21,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N2 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "204920",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N2",
+      "step": 22,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N3 [INLET])",
+      "device_tag": null,
+      "device_uuid": "278736",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N3",
+      "step": 23,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N4 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "344272",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N4",
+      "step": 24,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N6 [INLET])",
+      "device_tag": null,
+      "device_uuid": "376936",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N6",
+      "step": 25,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N8 [OUTLET])",
+      "device_tag": null,
+      "device_uuid": "389280",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N8",
+      "step": 26,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source N1 [INLET])",
+      "device_tag": null,
+      "device_uuid": "512104",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "N1",
+      "step": 27,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag/hold point to the approved blind, spade, or line-break control at flange (source 487584)",
+      "device_tag": null,
+      "device_uuid": "573544",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "487584",
+      "step": 28,
       "title": "Lockout/tagout device application"
      },
      {
@@ -3874,7 +4007,7 @@
       "field_gap": true,
       "phase": 5,
       "ref": "1910.147(d)(5)",
-      "step": 21,
+      "step": 29,
       "title": "Stored / residual energy relief"
      },
      {
@@ -3890,7 +4023,7 @@
       "phase": 5,
       "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
       "ref": "1910.147(d)(5)",
-      "step": 22,
+      "step": 30,
       "title": "Stored / residual energy relief"
      },
      {
@@ -3906,7 +4039,7 @@
       "phase": 5,
       "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
       "ref": "1910.147(d)(5)",
-      "step": 23,
+      "step": 31,
       "title": "Stored / residual energy relief"
      },
      {
@@ -3914,7 +4047,7 @@
       "field_gap": true,
       "phase": 6,
       "ref": "1910.147(d)(6)",
-      "step": 24,
+      "step": 32,
       "title": "Verification of isolation"
      }
     ],
@@ -3958,12 +4091,703 @@
        "energy_types": [
         "process"
        ],
-       "isolation_device_count": 8,
+       "isolation_device_count": 0,
        "requires_positive_isolation": true
       },
       "objective": "Identify type and magnitude of energy, hazards, and control method.",
       "phase": 1,
       "ref": "1910.147(d)(1)",
+      "secondary_context_checks": [
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N3_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "278736",
+         "180368",
+         "204920",
+         "344272",
+         "114808"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "131192",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "131192",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "131192",
+          "tag": null,
+          "uuid": "344272"
+         },
+         {
+          "bbox": [
+           1896,
+           668,
+           27,
+           12
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "131192",
+          "tag": null,
+          "uuid": "114808"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1613,
+         692,
+         10,
+         10
+        ],
+        "source_component": "131192",
+        "source_component_tag": "N3_N7",
+        "source_component_tag_raw": "N3"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N2_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "204920",
+         "557160",
+         "278736",
+         "344272",
+         "114808"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "147600",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "147600",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "147600",
+          "tag": null,
+          "uuid": "344272"
+         },
+         {
+          "bbox": [
+           1896,
+           668,
+           27,
+           12
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "147600",
+          "tag": null,
+          "uuid": "114808"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1939,
+         915,
+         10,
+         10
+        ],
+        "source_component": "147600",
+        "source_component_tag": "N2_N7",
+        "source_component_tag_raw": "N2"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N4_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "344272",
+         "282832",
+         "278736",
+         "204920",
+         "114808"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "159952",
+          "tag": null,
+          "uuid": "344272"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "159952",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "159952",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1896,
+           668,
+           27,
+           12
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "159952",
+          "tag": null,
+          "uuid": "114808"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1611,
+         915,
+         10,
+         10
+        ],
+        "source_component": "159952",
+        "source_component_tag": "N4_N7",
+        "source_component_tag_raw": "N4"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N5_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "114808",
+         "217328",
+         "278736",
+         "204920",
+         "344272"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1896,
+           668,
+           27,
+           12
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "192752",
+          "tag": null,
+          "uuid": "114808"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "192752",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "192752",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "192752",
+          "tag": null,
+          "uuid": "344272"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1903,
+         693,
+         10,
+         10
+        ],
+        "source_component": "192752",
+        "source_component_tag": "N5_N7",
+        "source_component_tag_raw": "N5"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N1_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "512104",
+         "299160",
+         "278736",
+         "204920",
+         "344272"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1671,
+           651,
+           6,
+           28
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "450664",
+          "tag": null,
+          "uuid": "512104"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "450664",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "450664",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "450664",
+          "tag": null,
+          "uuid": "344272"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1672,
+         686,
+         10,
+         10
+        ],
+        "source_component": "450664",
+        "source_component_tag": "N1_N7",
+        "source_component_tag_raw": "N1"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line 487584. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "573544",
+         "290976",
+         "311400",
+         "278736",
+         "204920"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1999,
+           652,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "487584",
+          "tag": null,
+          "uuid": "573544"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "487584",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "487584",
+          "tag": null,
+          "uuid": "204920"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1997,
+         691,
+         10,
+         10
+        ],
+        "source_component": "487584",
+        "source_component_tag": "487584",
+        "source_component_tag_raw": "487584"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N6_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "376936",
+         "204944",
+         "278736",
+         "204920",
+         "344272"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1661,
+           935,
+           29,
+           14
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "512160",
+          "tag": null,
+          "uuid": "376936"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "512160",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "512160",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "512160",
+          "tag": null,
+          "uuid": "344272"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1672,
+         914,
+         10,
+         10
+        ],
+        "source_component": "512160",
+        "source_component_tag": "N6_N7",
+        "source_component_tag_raw": "N6"
+       },
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line N8_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "389280",
+         "155856",
+         "278736",
+         "204920",
+         "344272"
+        ],
+        "nearby_candidates": [
+         {
+          "bbox": [
+           1989,
+           934,
+           29,
+           13
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "565352",
+          "tag": null,
+          "uuid": "389280"
+         },
+         {
+          "bbox": [
+           1613,
+           652,
+           6,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "565352",
+          "tag": null,
+          "uuid": "278736"
+         },
+         {
+          "bbox": [
+           1942,
+           914,
+           7,
+           27
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "565352",
+          "tag": null,
+          "uuid": "204920"
+         },
+         {
+          "bbox": [
+           1613,
+           927,
+           6,
+           26
+          ],
+          "display_label": "candidate",
+          "entity_class": "Component",
+          "label": "verify secondary line",
+          "operation_kind": "isolation_device",
+          "source_component": "565352",
+          "tag": null,
+          "uuid": "344272"
+         }
+        ],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         1997,
+         915,
+         10,
+         10
+        ],
+        "source_component": "565352",
+        "source_component_tag": "N8_N7",
+        "source_component_tag_raw": "N8"
+       }
+      ],
       "title": "Preparation for shutdown"
      },
      {
@@ -3983,73 +4807,17 @@
        "scheme_count": 0
       },
       "detected_schemes": [],
-      "devices": [
+      "devices": [],
+      "devices_by_source": {},
+      "field_confirmed_positive_devices": [
        {
         "bbox_present": true,
         "display_label": "flange",
         "energy_type": "process",
         "entity_class": "flange",
         "method": "isolate and lock/tag",
-        "source_component": "N1",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "512104"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N3",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "278736"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N6",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "376936"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N2",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "204920"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N4",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "344272"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
         "source_component": "N5",
         "source_flow_role": "outlet",
         "tag": null,
@@ -4062,6 +4830,64 @@
         "energy_type": "process",
         "entity_class": "flange",
         "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N2",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "204920"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N3",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "278736"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N4",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "344272"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N6",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "376936"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
         "source_component": "N8",
         "source_flow_role": "outlet",
         "tag": null,
@@ -4074,6 +4900,22 @@
         "energy_type": "process",
         "entity_class": "flange",
         "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N1",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "512104"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
         "source_component": "487584",
         "source_flow_role": "unknown",
         "tag": null,
@@ -4081,207 +4923,30 @@
         "uuid": "573544"
        }
       ],
-      "devices_by_source": {
-       "487584": [
-        "573544"
-       ],
-       "N1": [
-        "512104"
-       ],
-       "N2": [
-        "204920"
-       ],
-       "N3": [
-        "278736"
-       ],
-       "N4": [
-        "344272"
-       ],
-       "N5": [
-        "114808"
-       ],
-       "N6": [
-        "376936"
-       ],
-       "N8": [
-        "389280"
-       ]
-      },
       "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
       "phase": 3,
-      "positive_isolation_devices": [
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N1",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "512104"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N3",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "278736"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N6",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "376936"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N2",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "204920"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N4",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "344272"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N5",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "114808"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N8",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "389280"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "487584",
-        "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "573544"
-       }
-      ],
+      "positive_isolation_devices": [],
       "ref": "1910.147(d)(3)",
       "supplementary_scheme_devices": [],
       "title": "Equipment isolation",
       "within_phase_order_is_regulatory": false,
-      "within_phase_order_source": "flow_grounding_inlet_first_default",
+      "within_phase_order_source": "engine_candidate_order_not_proposed",
       "within_phase_ordering_note": "OSHA 1910.147 does NOT prescribe the order in which multiple isolating devices are operated within this phase -- only that all are operated. The within-phase order shown is either the agent's committed judgment or a flow-grounded default (isolate INLET / upstream devices first) derived from the HILT-parsed flow direction (source_flow_role). Each device's source_flow_role (inlet/outlet) is provided -- use it to justify the order."
      },
      {
-      "devices": [
+      "devices": [],
+      "field_action_required": [
+       "Each authorized employee applies their assigned individual lock to every isolating device."
+      ],
+      "field_confirmed_positive_devices": [
        {
         "bbox_present": true,
         "display_label": "flange",
         "energy_type": "process",
         "entity_class": "flange",
         "method": "isolate and lock/tag",
-        "source_component": "N1",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "512104"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N3",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "278736"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N6",
-        "source_flow_role": "inlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "376936"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N2",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "204920"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
-        "source_component": "N4",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 1,
-        "uuid": "344272"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "flange",
-        "energy_type": "process",
-        "entity_class": "flange",
-        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
         "source_component": "N5",
         "source_flow_role": "outlet",
         "tag": null,
@@ -4294,6 +4959,64 @@
         "energy_type": "process",
         "entity_class": "flange",
         "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N2",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "204920"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N3",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "278736"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N4",
+        "source_flow_role": "outlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "344272"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N6",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "376936"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
         "source_component": "N8",
         "source_flow_role": "outlet",
         "tag": null,
@@ -4306,15 +5029,28 @@
         "energy_type": "process",
         "entity_class": "flange",
         "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
+        "source_component": "N1",
+        "source_flow_role": "inlet",
+        "tag": null,
+        "traversal_depth": 1,
+        "uuid": "512104"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "flange",
+        "energy_type": "process",
+        "entity_class": "flange",
+        "method": "isolate and lock/tag",
+        "operation_kind": "field_confirmed_positive_isolation",
+        "positive_isolation_requires_field_confirmation": true,
         "source_component": "487584",
         "source_flow_role": "unknown",
         "tag": null,
         "traversal_depth": 1,
         "uuid": "573544"
        }
-      ],
-      "field_action_required": [
-       "Each authorized employee applies their assigned individual lock to every isolating device."
       ],
       "objective": "Affix an individual lock (and tag) to EACH energy-isolating device, holding it in safe/off.",
       "phase": 4,
@@ -4415,9 +5151,708 @@
       "use": "restoration_monitoring"
      }
     ],
+    "secondary_energy_context": {
+     "items": [
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N3_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "278736",
+        "180368",
+        "204920",
+        "344272",
+        "114808"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "131192",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "131192",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "131192",
+         "tag": null,
+         "uuid": "344272"
+        },
+        {
+         "bbox": [
+          1896,
+          668,
+          27,
+          12
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "131192",
+         "tag": null,
+         "uuid": "114808"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1613,
+        692,
+        10,
+        10
+       ],
+       "source_component": "131192",
+       "source_component_tag": "N3_N7",
+       "source_component_tag_raw": "N3"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N2_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "204920",
+        "557160",
+        "278736",
+        "344272",
+        "114808"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "147600",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "147600",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "147600",
+         "tag": null,
+         "uuid": "344272"
+        },
+        {
+         "bbox": [
+          1896,
+          668,
+          27,
+          12
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "147600",
+         "tag": null,
+         "uuid": "114808"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1939,
+        915,
+        10,
+        10
+       ],
+       "source_component": "147600",
+       "source_component_tag": "N2_N7",
+       "source_component_tag_raw": "N2"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N4_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "344272",
+        "282832",
+        "278736",
+        "204920",
+        "114808"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "159952",
+         "tag": null,
+         "uuid": "344272"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "159952",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "159952",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1896,
+          668,
+          27,
+          12
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "159952",
+         "tag": null,
+         "uuid": "114808"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1611,
+        915,
+        10,
+        10
+       ],
+       "source_component": "159952",
+       "source_component_tag": "N4_N7",
+       "source_component_tag_raw": "N4"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N5_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "114808",
+        "217328",
+        "278736",
+        "204920",
+        "344272"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1896,
+          668,
+          27,
+          12
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "192752",
+         "tag": null,
+         "uuid": "114808"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "192752",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "192752",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "192752",
+         "tag": null,
+         "uuid": "344272"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1903,
+        693,
+        10,
+        10
+       ],
+       "source_component": "192752",
+       "source_component_tag": "N5_N7",
+       "source_component_tag_raw": "N5"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N1_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "512104",
+        "299160",
+        "278736",
+        "204920",
+        "344272"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1671,
+          651,
+          6,
+          28
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "450664",
+         "tag": null,
+         "uuid": "512104"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "450664",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "450664",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "450664",
+         "tag": null,
+         "uuid": "344272"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1672,
+        686,
+        10,
+        10
+       ],
+       "source_component": "450664",
+       "source_component_tag": "N1_N7",
+       "source_component_tag_raw": "N1"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line 487584. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "573544",
+        "290976",
+        "311400",
+        "278736",
+        "204920"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1999,
+          652,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "487584",
+         "tag": null,
+         "uuid": "573544"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "487584",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "487584",
+         "tag": null,
+         "uuid": "204920"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1997,
+        691,
+        10,
+        10
+       ],
+       "source_component": "487584",
+       "source_component_tag": "487584",
+       "source_component_tag_raw": "487584"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N6_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "376936",
+        "204944",
+        "278736",
+        "204920",
+        "344272"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1661,
+          935,
+          29,
+          14
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "512160",
+         "tag": null,
+         "uuid": "376936"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "512160",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "512160",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "512160",
+         "tag": null,
+         "uuid": "344272"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1672,
+        914,
+        10,
+        10
+       ],
+       "source_component": "512160",
+       "source_component_tag": "N6_N7",
+       "source_component_tag_raw": "N6"
+      },
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line N8_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "389280",
+        "155856",
+        "278736",
+        "204920",
+        "344272"
+       ],
+       "nearby_candidates": [
+        {
+         "bbox": [
+          1989,
+          934,
+          29,
+          13
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "565352",
+         "tag": null,
+         "uuid": "389280"
+        },
+        {
+         "bbox": [
+          1613,
+          652,
+          6,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "565352",
+         "tag": null,
+         "uuid": "278736"
+        },
+        {
+         "bbox": [
+          1942,
+          914,
+          7,
+          27
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "565352",
+         "tag": null,
+         "uuid": "204920"
+        },
+        {
+         "bbox": [
+          1613,
+          927,
+          6,
+          26
+         ],
+         "display_label": "candidate",
+         "entity_class": "Component",
+         "label": "verify secondary line",
+         "operation_kind": "isolation_device",
+         "source_component": "565352",
+         "tag": null,
+         "uuid": "344272"
+        }
+       ],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        1997,
+        915,
+        10,
+        10
+       ],
+       "source_component": "565352",
+       "source_component_tag": "N8_N7",
+       "source_component_tag_raw": "N8"
+      }
+     ],
+     "policy": "separate_field_holds",
+     "status": "completed",
+     "summary": {
+      "companion_line_count": 8,
+      "hold_count": 8
+     }
+    },
     "standard": "29 CFR 1910.147",
     "within_phase_order_is_regulatory": false,
-    "within_phase_order_source": "flow_grounding_inlet_first_default",
+    "within_phase_order_source": "engine_candidate_order_not_proposed",
     "work_scope": {
      "confined_space_entry": false,
      "high_risk_service": true,
@@ -4434,6 +5869,705 @@
     "summary": {
      "candidate_count": 0,
      "counts_by_type": {}
+    }
+   },
+   "secondary_energy_context": {
+    "items": [
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N3_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "278736",
+       "180368",
+       "204920",
+       "344272",
+       "114808"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "131192",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "131192",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "131192",
+        "tag": null,
+        "uuid": "344272"
+       },
+       {
+        "bbox": [
+         1896,
+         668,
+         27,
+         12
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "131192",
+        "tag": null,
+        "uuid": "114808"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1613,
+       692,
+       10,
+       10
+      ],
+      "source_component": "131192",
+      "source_component_tag": "N3_N7",
+      "source_component_tag_raw": "N3"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N2_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "204920",
+       "557160",
+       "278736",
+       "344272",
+       "114808"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "147600",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "147600",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "147600",
+        "tag": null,
+        "uuid": "344272"
+       },
+       {
+        "bbox": [
+         1896,
+         668,
+         27,
+         12
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "147600",
+        "tag": null,
+        "uuid": "114808"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1939,
+       915,
+       10,
+       10
+      ],
+      "source_component": "147600",
+      "source_component_tag": "N2_N7",
+      "source_component_tag_raw": "N2"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N4_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "344272",
+       "282832",
+       "278736",
+       "204920",
+       "114808"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "159952",
+        "tag": null,
+        "uuid": "344272"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "159952",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "159952",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1896,
+         668,
+         27,
+         12
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "159952",
+        "tag": null,
+        "uuid": "114808"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1611,
+       915,
+       10,
+       10
+      ],
+      "source_component": "159952",
+      "source_component_tag": "N4_N7",
+      "source_component_tag_raw": "N4"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N5_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "114808",
+       "217328",
+       "278736",
+       "204920",
+       "344272"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1896,
+         668,
+         27,
+         12
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "192752",
+        "tag": null,
+        "uuid": "114808"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "192752",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "192752",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "192752",
+        "tag": null,
+        "uuid": "344272"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1903,
+       693,
+       10,
+       10
+      ],
+      "source_component": "192752",
+      "source_component_tag": "N5_N7",
+      "source_component_tag_raw": "N5"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N1_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "512104",
+       "299160",
+       "278736",
+       "204920",
+       "344272"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1671,
+         651,
+         6,
+         28
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "450664",
+        "tag": null,
+        "uuid": "512104"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "450664",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "450664",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "450664",
+        "tag": null,
+        "uuid": "344272"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1672,
+       686,
+       10,
+       10
+      ],
+      "source_component": "450664",
+      "source_component_tag": "N1_N7",
+      "source_component_tag_raw": "N1"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line 487584. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "573544",
+       "290976",
+       "311400",
+       "278736",
+       "204920"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1999,
+         652,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "487584",
+        "tag": null,
+        "uuid": "573544"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "487584",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "487584",
+        "tag": null,
+        "uuid": "204920"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1997,
+       691,
+       10,
+       10
+      ],
+      "source_component": "487584",
+      "source_component_tag": "487584",
+      "source_component_tag_raw": "487584"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N6_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "376936",
+       "204944",
+       "278736",
+       "204920",
+       "344272"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1661,
+         935,
+         29,
+         14
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "512160",
+        "tag": null,
+        "uuid": "376936"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "512160",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "512160",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "512160",
+        "tag": null,
+        "uuid": "344272"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1672,
+       914,
+       10,
+       10
+      ],
+      "source_component": "512160",
+      "source_component_tag": "N6_N7",
+      "source_component_tag_raw": "N6"
+     },
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line N8_N7. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "389280",
+       "155856",
+       "278736",
+       "204920",
+       "344272"
+      ],
+      "nearby_candidates": [
+       {
+        "bbox": [
+         1989,
+         934,
+         29,
+         13
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "565352",
+        "tag": null,
+        "uuid": "389280"
+       },
+       {
+        "bbox": [
+         1613,
+         652,
+         6,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "565352",
+        "tag": null,
+        "uuid": "278736"
+       },
+       {
+        "bbox": [
+         1942,
+         914,
+         7,
+         27
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "565352",
+        "tag": null,
+        "uuid": "204920"
+       },
+       {
+        "bbox": [
+         1613,
+         927,
+         6,
+         26
+        ],
+        "display_label": "candidate",
+        "entity_class": "Component",
+        "label": "verify secondary line",
+        "operation_kind": "isolation_device",
+        "source_component": "565352",
+        "tag": null,
+        "uuid": "344272"
+       }
+      ],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       1997,
+       915,
+       10,
+       10
+      ],
+      "source_component": "565352",
+      "source_component_tag": "N8_N7",
+      "source_component_tag_raw": "N8"
+     }
+    ],
+    "policy": "separate_field_holds",
+    "status": "completed",
+    "summary": {
+     "companion_line_count": 8,
+     "hold_count": 8
     }
    },
    "selected_equipment": [
@@ -4458,7 +6592,7 @@
   }
  ],
  "debug": {
-  "assurance_status": "provisional_unproven_isolation",
+  "assurance_status": "not_isolated",
   "bbox_candidate_finder_mode": "nearest_exact_bbox_candidate_per_source_component",
   "bbox_candidate_pool_resolved_count": 81,
   "bbox_parallel_companion_selection_count": 0,
@@ -5143,12 +7277,12 @@
   "context_overridden_by_isolation_valve": [],
   "deduped_candidate_count": 8,
   "detected_isolation_scheme_count": 0,
-  "evidence_barrier_candidate_count": 8,
+  "evidence_barrier_candidate_count": 0,
   "evidence_candidate_count": 8,
   "evidence_isolation_obligation_count": 8,
   "evidence_manual_review_candidate_count": 0,
-  "evidence_missing_evidence_count": 1,
-  "evidence_positive_candidate_count": 8,
+  "evidence_missing_evidence_count": 2,
+  "evidence_positive_candidate_count": 0,
   "evidence_unresolved_isolation_obligation_count": 0,
   "evidence_verification_candidate_count": 0,
   "flow_candidate_role_counts": {
@@ -5179,10 +7313,11 @@
   "pid_image_file_id": 8558,
   "planner_code_version": "local_deterministic_planner_2026-06-29_v1",
   "planner_mode": "deterministic_graph_api_evidence_checks",
-  "planner_required_evidence_check_count": 4,
+  "planner_required_evidence_check_count": 5,
   "planner_required_evidence_checks": [
    "find_bleeds_vents_drains",
    "find_pressure_indicators",
+   "find_blinds_spades_flanges",
    "find_bypass_paths",
    "fetch_pid_visual_json"
   ],
@@ -5424,9 +7559,9 @@
    "unigraph_project_id": "15"
   },
   "validator_manual_review_candidate_count": 0,
-  "validator_missing_evidence_count": 4,
-  "validator_terminal": false,
-  "validator_unresolved_evidence_check_count": 3
+  "validator_missing_evidence_count": 6,
+  "validator_terminal": true,
+  "validator_unresolved_evidence_check_count": 4
  },
  "error": false,
  "message": "Completed"

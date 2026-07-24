@@ -233,6 +233,55 @@ class ViewerTests(unittest.TestCase):
         self.assertEqual(html.count("Phase 1: Preparation for shutdown"), 1)
         self.assertNotIn('[Phase 1 | 1910.147(d)(1)]', html)
 
+    def test_degraded_banner_absent_when_debug_keys_are_absent(self):
+        html = render_viewer_html(
+            payload(
+                assurance_status="complete_proven_isolation",
+                selected_equipment_overlays=[
+                    {
+                        "uuid": "eq-1",
+                        "tag": "AP001",
+                        "entity_class": "centrifugal_pump",
+                        "bbox": [1000, 900, 50, 50],
+                    }
+                ],
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertNotIn("Degraded data", html)
+        self.assertNotIn("Partial data", html)
+
+    def test_degraded_banner_uses_explicit_zero_hilt_count(self):
+        html = render_viewer_html(
+            {
+                "debug": {"hilt_graph_node_count": 0},
+                "data": [payload()["data"][0]],
+            },
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("P&amp;ID topology (HILT) unavailable", html)
+        self.assertIn("isolation analysis is unreliable", html)
+
+    def test_stlm_banner_does_not_claim_logic_unaffected(self):
+        html = render_viewer_html(
+            {
+                "debug": {
+                    "bbox_stlm_error": "STLM timeout",
+                    "hilt_branch_source_count": 7,
+                    "hilt_y_flip_calibrated": 3858,
+                    "hilt_topology_authoritative_count": 3,
+                },
+                "data": [payload()["data"][0]],
+            },
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("Symbol/label data (STLM) unavailable", html)
+        self.assertIn("HILT topology calibration still succeeded", html)
+        self.assertNotIn("isolation logic unaffected", html)
+
     def test_obligation_manual_candidate_renders_orange_overlay_and_coverage(self):
         html = render_viewer_html(
             payload(
@@ -267,7 +316,31 @@ class ViewerTests(unittest.TestCase):
         )
 
         self.assertIn("manual-box", html)
-        self.assertIn("manual isolation check", html)
+        self.assertIn("verify bypass/parallel valve", html)
+
+    def test_context_source_uses_raw_tag_and_secondary_hold_language(self):
+        html = render_viewer_html(
+            payload(
+                boundary_context_sources=[
+                    {
+                        "source_component": "409704",
+                        "source_component_tag": "unlabeled graph-only source",
+                        "source_component_tag_raw": "L6",
+                        "source_bbox": [200, 220, 15, 15],
+                        "classification": "companion_line_context",
+                        "source_hilt_lines": [{"entity_class": "companion_line"}],
+                        "reason": "HILT graph connects this source through a companion line.",
+                    }
+                ]
+            ),
+            image_url="file:///tmp/pid.png",
+        )
+
+        self.assertIn("Context L6", html)
+        self.assertIn("Secondary energy/context review required", html)
+        self.assertIn("Secondary Energy / Context Holds", html)
+        self.assertIn("Review secondary/context line L6", html)
+        self.assertNotIn(">unlabeled graph-only source<", html)
 
     def test_detected_scheme_device_renders_as_blue_overlay(self):
         html = render_viewer_html(
@@ -349,6 +422,45 @@ class ViewerTests(unittest.TestCase):
 
         self.assertIn("<!doctype html>", text)
         self.assertIn("Equipment Isolation Overlay", text)
+
+    def test_output_write_viewer_rewrites_file_uri_image_to_relative_src(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            viewer_path = output_dir / "viewer.html"
+            image_path = output_dir / "viewer_pid.png"
+            image_path.write_bytes(b"png")
+
+            write_viewer(viewer_path, payload(), image_url=image_path.resolve().as_uri())
+            text = viewer_path.read_text(encoding="utf-8")
+
+        self.assertIn('src="viewer_pid.png"', text)
+        self.assertNotIn(str(image_path.resolve()), text)
+        self.assertNotIn("file://", text)
+
+    def test_output_write_viewer_rewrites_absolute_local_image_to_relative_src(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "html"
+            asset_dir = Path(tmp) / "assets"
+            output_dir.mkdir()
+            asset_dir.mkdir()
+            viewer_path = output_dir / "viewer.html"
+            image_path = asset_dir / "pid.png"
+            image_path.write_bytes(b"png")
+
+            write_viewer(viewer_path, payload(), image_url=str(image_path.resolve()))
+            text = viewer_path.read_text(encoding="utf-8")
+
+        self.assertIn('src="../assets/pid.png"', text)
+        self.assertNotIn(str(image_path.resolve()), text)
+
+    def test_output_write_viewer_preserves_remote_image_url(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            viewer_path = Path(tmp) / "viewer.html"
+
+            write_viewer(viewer_path, payload(), image_url="https://example.test/pid.png")
+            text = viewer_path.read_text(encoding="utf-8")
+
+        self.assertIn('src="https://example.test/pid.png"', text)
 
 
 if __name__ == "__main__":

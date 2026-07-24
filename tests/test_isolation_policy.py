@@ -4,14 +4,15 @@ import unittest
 from pathlib import Path
 
 from bbox import (
-    _hilt_context_sources,
-    _hilt_nodes_by_id,
-    _image_dimensions,
-    _resolve_candidate_bboxes,
     _context_item_has_signal_line,
-    _selectable_candidate_pool,
+    _hilt_context_sources,
+    _resolve_candidate_bboxes,
+)
+from bbox_util import _selectable_candidate_pool
+from hilt_index import _hilt_nodes_by_id
+from stlm_payload import _image_dimensions
+from visual_selection import (
     _select_visually_nearest_per_source,
-    _source_key,
     _sources_owning_isolation_valve,
 )
 from candidates import find_candidates
@@ -373,14 +374,16 @@ class IsolationPolicyTests(unittest.TestCase):
         self.assertEqual([item["candidate_id"] for item in selected], ["manual"])
         self.assertEqual(debug["bbox_unselected_source_component_count"], 0)
 
-    def test_selected_conditional_candidate_creates_validation_hold(self):
+    def test_selected_conditional_candidate_without_barrier_is_not_isolated(self):
         candidate = find_candidates(_boundary_with_candidate("undefined_valve"), IsolationPolicy())["candidates"][0]
         data = build_evidence({"candidates": [candidate], "debug": {}}, RunConfig(equipment_tag="T-1"))
         validation = validate({**data, "required_evidence_checks": []})
 
         self.assertEqual(data["evidence_state"]["manual_review_candidate_ids"], ["V1"])
         self.assertIn("require manual review", data["missing_evidence"][-1])
-        self.assertEqual(validation["assurance_status"], "provisional_unproven_isolation")
+        self.assertEqual(validation["assurance_status"], "not_isolated")
+        self.assertTrue(validation["isolation_validation"]["terminal"])
+        self.assertIn("No selected candidate has deterministic isolation barrier evidence", validation["isolation_validation"]["rationale"])
 
 
 def _boundary_with_candidate(entity_class):

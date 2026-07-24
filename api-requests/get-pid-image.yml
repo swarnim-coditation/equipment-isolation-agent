@@ -1,0 +1,19 @@
+info:
+  name: get P&ID image
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: "{{BASE_URL}}/isolation-runs/:run_id/pid-image"
+  params:
+    - name: run_id
+      value: "{{RUN_ID}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -39,12 +39,8 @@
       "blind",
       "spade",
       "spectacle",
-      "flange",
       "blank_flange",
-      "line_break_point",
-      "disconnect",
-      "breaker",
-      "spool"
+      "blind_flange"
     ],
     "verification_classes": [
       "bleed",

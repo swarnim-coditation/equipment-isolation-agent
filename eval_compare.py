@@ -1,10 +1,23 @@
-"""Eval harness: compare the agentic (Gemini) path against the deterministic
-baseline across multiple equipment tags.
+"""Eval harness: compare the agentic (Gemini) tool loop against a fixed-order
+tool-driven baseline across multiple equipment tags.
 
-Since the agent uses the SAME deterministic stages as tools, its
-assurance_status + isolation points must match the baseline exactly -- any
-divergence means the agent failed to drive the full pipeline. This script makes
-that invariant cheap to check.
+SCOPE / WHAT THIS DOES NOT CHECK -- read before trusting a green result:
+  - BOTH sides run through ``agent.tools`` on a BARE ``RunConfig`` (see
+    ``build_config`` below): no project profile is applied and
+    ``resolve_project_metadata`` (pipeline stage 1) is NOT run. So this does NOT
+    exercise the ``python -m run`` or ``python -m agent`` CLI paths, and it
+    CANNOT detect divergences that live in config resolution -- notably the
+    stage-1 Unigraph enrichment ("D1"). For CLI/run parity, compare
+    ``python -m agent`` output against ``python -m run`` directly.
+  - It compares only a 3-field signature (assurance_status, point count, sorted
+    uuids), not the full payload or debug envelope. ``scripts/golden_regression``
+    is the stronger, full-payload gate.
+  - Both sides move together during a shared-stage refactor, so a bug in shared
+    code cancels out and this still reports MATCH. It measures agent-vs-baseline
+    DIVERGENCE, not correctness.
+
+Use it as a post-change smoke test that the agent still drives the full tool
+sequence -- not as a refactor gate. Needs a live graph + GEMINI_API_KEY.
 
 Usage:
     uv run python eval_compare.py BT-11 BT-12
@@ -15,12 +28,10 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from dataclasses import replace
-from pathlib import Path
 
 from run import load_dotenv
 from config import ApiConfig, GraphConfig, RunConfig
-from graph_client import GraphClient, normalize_vertex, props_only, vertex_id
+from graph_client import GraphClient, normalize_vertex, props_only
 
 from agent.session import AgentSession
 from agent.tools import call_tool
@@ -52,6 +63,11 @@ def list_equipment_tags(limit: int = 0) -> list[str]:
 
 
 def build_config(equipment_tag: str) -> RunConfig:
+    # NOTE: bare config -- no project profile, no resolve_project_metadata. This
+    # is deliberately NOT how the CLI builds config, so results here do not
+    # reflect the run.py / agent.cli.py paths (see module docstring). To make this
+    # a real parity check, apply_project_profile + resolve_project_metadata would
+    # need to run here, matching build_config in run.py / agent/cli.py.
     return RunConfig(
         equipment_tag=equipment_tag,
         graph=GraphConfig(),

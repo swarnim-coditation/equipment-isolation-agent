@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from domain.enums import IsolationDecision
+from domain.isolation_actions import is_installed_positive_isolation, is_operable_barrier
 from domain.models import CandidateClassification
 
 
@@ -70,18 +71,20 @@ def classify_candidate(properties: dict[str, Any], label: Any, policy, method_te
     else:
         decision = IsolationDecision.NOT_ISOLATION
 
-    barrier_classes = tuple(policy.eligible_classes)
-    if getattr(policy, "include_conditional_candidates", False):
-        barrier_classes = barrier_classes + tuple(policy.conditional_classes)
-    is_barrier = any(matches_any_class(value, barrier_classes) for value in class_values) or "close and lock" in str(method_text).lower()
-    is_positive = any(matches_any_class(value, policy.positive_isolation_classes) for value in class_values)
+    barrier_allowed_by_policy = decision == IsolationDecision.AUTOMATIC or (
+        decision == IsolationDecision.CONDITIONAL_MANUAL_REVIEW and getattr(policy, "include_conditional_candidates", False)
+    )
+    is_barrier = barrier_allowed_by_policy and any(is_operable_barrier(value) for value in class_values)
+    if not class_values and "close and lock" in str(method_text).lower():
+        is_barrier = True
+    is_positive = any(is_installed_positive_isolation(value) for value in class_values)
     verification_prefixes = {str(value).lower() for value in policy.verification_tag_prefixes}
     is_verification = (
         any(matches_any_class(value, policy.verification_classes) for value in class_values)
         or str(tag_prefix or "").lower() in verification_prefixes
     )
     if any(class_matches(value, "valve") or normalize_class(value).endswith("_valve") for value in class_values):
-        is_positive = any(matches_any_class(value, policy.positive_isolation_classes) for value in class_values)
+        is_positive = any(is_installed_positive_isolation(value) for value in class_values)
         is_verification = (
             str(tag_prefix or "").lower() in verification_prefixes
             or any(matches_any_class(value, policy.verification_classes) for value in class_values)

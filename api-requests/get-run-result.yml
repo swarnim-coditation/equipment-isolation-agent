@@ -1,0 +1,19 @@
+info:
+  name: get run result
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{BASE_URL}}/isolation-runs/:run_id/result"
+  params:
+    - name: run_id
+      value: "{{RUN_ID}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

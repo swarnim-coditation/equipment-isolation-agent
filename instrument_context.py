@@ -15,6 +15,7 @@ from api_client import Plant360Client
 from domain.hilt_geometry import extract_symbols as _extract_symbols
 from domain.hilt_geometry import symbol_attr as _symbol_attr
 from domain.hilt_geometry import symbol_bbox as _symbol_bbox
+from domain.hilt_geometry import valid_bbox as _valid_bbox
 from domain.topology import PROCESS_LINE_CLASSES, normalize_tag
 
 
@@ -539,16 +540,6 @@ def _hilt_bbox(payload):
     return [int(round(cx - w / 2.0)), int(round(cy - h / 2.0)), int(round(w)), int(round(h))]
 
 
-def _valid_bbox(bbox):
-    if not isinstance(bbox, list) and not isinstance(bbox, tuple):
-        return []
-    if len(bbox) != 4:
-        return []
-    try:
-        values = [int(value) for value in bbox]
-    except Exception:
-        return []
-    return values if values[2] > 0 and values[3] > 0 else []
 
 
 def _bbox_near(inner_bbox, outer_bbox, padding=0):
@@ -581,8 +572,8 @@ def _attr(attributes, name):
     return ""
 
 
-def _norm(value):
-    return normalize_tag(value)
+# Alias, not a wrapper: normalize_tag is the single implementation.
+_norm = normalize_tag
 
 
 def _tag_norm(value):

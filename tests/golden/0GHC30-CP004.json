@@ -1,7 +1,7 @@
 {
  "data": [
   {
-   "assurance_status": "provisional_unproven_isolation",
+   "assurance_status": "not_isolated",
    "boundary_context_sources": [
     {
      "classification": "companion_line_context",
@@ -378,23 +378,7 @@
       "relief_candidate_ids": [],
       "scheme_type": "single block",
       "source_component": "819304",
-      "source_component_tag": "819304",
-      "unverified_additional_blocks": [
-       {
-        "bbox": [
-         1066,
-         2106,
-         53,
-         31
-        ],
-        "entity_class": "undefined_valve",
-        "entity_type": "piping_component",
-        "id": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
-        "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
-        "tag": "",
-        "text": ""
-       }
-      ]
+      "source_component_tag": "819304"
      },
      {
       "barrier_ids": [
@@ -456,7 +440,9 @@
       ],
       "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
       "branch_id": "925800:branch:2",
-      "context_device_ids": [],
+      "context_device_ids": [
+       "8414be88-479b-42e5-8ff9-19fcd65f62aa"
+      ],
       "devices": [
        {
         "bbox": [
@@ -475,23 +461,7 @@
       "relief_candidate_ids": [],
       "scheme_type": "single block",
       "source_component": "925800",
-      "source_component_tag": "OGHC30-BR004",
-      "unverified_additional_blocks": [
-       {
-        "bbox": [
-         2690,
-         1848,
-         41,
-         28
-        ],
-        "entity_class": "undefined_valve",
-        "entity_type": "piping_component",
-        "id": "33669230-38bb-4f1a-9761-a55e1928cadb",
-        "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
-        "tag": "AA502",
-        "text": "AA502"
-       }
-      ]
+      "source_component_tag": "OGHC30-BR004"
      }
     ],
     "status": "completed",
@@ -1694,7 +1664,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 315512 via HILT piping topology (2 hops). Topology-authoritative.. Candidate vertex id: 5f4ae4ae-502b-408c-8281-039bcfc6ab06. Source component: 315512.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1729,7 +1701,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 819304 via HILT piping topology (2 hops). Topology-authoritative.. Candidate vertex id: a7a1db00-35ba-4d3a-81c9-c694fdec35ef. Source component: 819304.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1766,7 +1740,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 819304 via HILT piping topology (3 hops). Topology-authoritative.. Candidate vertex id: ec8b9bd2-ce3f-46ed-a309-2d1b67d25432. Source component: 819304.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1805,7 +1781,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 819304 via HILT piping topology (4 hops). Topology-authoritative.. Candidate vertex id: 6af90976-6afd-4762-a476-dbf98023da8f. Source component: 819304.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1848,7 +1826,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 819304 via HILT piping topology (6 hops). Topology-authoritative.. Candidate vertex id: 44f96a29-4091-4feb-9681-b7755c0599c1. Source component: 819304.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1893,7 +1873,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 819304 via HILT piping topology (7 hops). Topology-authoritative.. Candidate vertex id: 3655d880-91c1-417f-8db1-da319bdb2f9b. Source component: 819304.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1938,7 +1920,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to 819304 via HILT piping topology (7 hops). Topology-authoritative.. Candidate vertex id: fc7f4dd2-bc86-48a8-a728-7aa891e10cd9. Source component: 819304.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -1973,7 +1957,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to OGHC30-BR004 via HILT piping topology (2 hops). Topology-authoritative.. Candidate vertex id: ca2eaf36-339d-47a5-8151-f2b89309e210. Source component: OGHC30-BR004.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -2031,7 +2017,9 @@
      "entity_class": "undefined_valve",
      "equipment_id": "0GHC30-CP004",
      "isolation_method": "close and lock valve",
+     "operation_kind": "valve_isolation",
      "policy_decision": "conditional_manual_review",
+     "positive_isolation_requires_field_confirmation": false,
      "reason": "Connected to OGHC30-BR004 via HILT piping topology (3 hops). Topology-authoritative.. Candidate vertex id: 4e6914cc-4b57-4315-bdd5-4655ce4f7ea4. Source component: OGHC30-BR004.",
      "required_branch_isolation": true,
      "requires_manual_review": true,
@@ -2043,18 +2031,8 @@
     }
    ],
    "isolation_validation": {
-    "assurance_status": "provisional_unproven_isolation",
-    "barrier_candidate_ids": [
-     "5f4ae4ae-502b-408c-8281-039bcfc6ab06",
-     "a7a1db00-35ba-4d3a-81c9-c694fdec35ef",
-     "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432",
-     "6af90976-6afd-4762-a476-dbf98023da8f",
-     "44f96a29-4091-4feb-9681-b7755c0599c1",
-     "3655d880-91c1-417f-8db1-da319bdb2f9b",
-     "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9",
-     "ca2eaf36-339d-47a5-8151-f2b89309e210",
-     "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4"
-    ],
+    "assurance_status": "not_isolated",
+    "barrier_candidate_ids": [],
     "boundary_context_sources": [
      {
       "classification": "companion_line_context",
@@ -2623,8 +2601,8 @@
      "Bypass or alternate-route evidence check is required but has not been completed by this local deterministic runner."
     ],
     "positive_candidate_ids": [],
-    "rationale": "Selected barriers include conditional isolation devices that require manual review before acceptance.",
-    "terminal": false,
+    "rationale": "No selected candidate has deterministic isolation barrier evidence.",
+    "terminal": true,
     "unresolved_bbox_candidate_ids": [],
     "unresolved_evidence_checks": [
      {
@@ -2687,7 +2665,7 @@
    "job_id": 2483,
    "job_name": "Dadon-2",
    "loto_procedure": {
-    "assurance_status": "provisional_unproven_isolation",
+    "assurance_status": "not_isolated",
     "detected_isolation_schemes": {
      "items": [
       {
@@ -2850,23 +2828,7 @@
        "relief_candidate_ids": [],
        "scheme_type": "single block",
        "source_component": "819304",
-       "source_component_tag": "819304",
-       "unverified_additional_blocks": [
-        {
-         "bbox": [
-          1066,
-          2106,
-          53,
-          31
-         ],
-         "entity_class": "undefined_valve",
-         "entity_type": "piping_component",
-         "id": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
-         "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
-         "tag": "",
-         "text": ""
-        }
-       ]
+       "source_component_tag": "819304"
       },
       {
        "barrier_ids": [
@@ -2928,7 +2890,9 @@
        ],
        "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
        "branch_id": "925800:branch:2",
-       "context_device_ids": [],
+       "context_device_ids": [
+        "8414be88-479b-42e5-8ff9-19fcd65f62aa"
+       ],
        "devices": [
         {
          "bbox": [
@@ -2947,23 +2911,7 @@
        "relief_candidate_ids": [],
        "scheme_type": "single block",
        "source_component": "925800",
-       "source_component_tag": "OGHC30-BR004",
-       "unverified_additional_blocks": [
-        {
-         "bbox": [
-          2690,
-          1848,
-          41,
-          28
-         ],
-         "entity_class": "undefined_valve",
-         "entity_type": "piping_component",
-         "id": "33669230-38bb-4f1a-9761-a55e1928cadb",
-         "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
-         "tag": "AA502",
-         "text": "AA502"
-        }
-       ]
+       "source_component_tag": "OGHC30-BR004"
       }
      ],
      "status": "completed",
@@ -3838,46 +3786,51 @@
       "title": "Preparation for shutdown"
      },
      {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line AP002. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "advisory": true,
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "phase": 1,
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "ref": "1910.147(d)(1)",
+      "secondary_context_line_class": "companion_line",
+      "secondary_context_source": "422096",
+      "secondary_context_tag": "AP002",
+      "step": 11,
+      "title": "Preparation for shutdown"
+     },
+     {
       "action": "Equipment shutdown.",
       "phase": 2,
       "ref": "1910.147(d)(2)",
-      "step": 11,
+      "step": 12,
       "title": "Equipment shutdown"
      },
      {
-      "action": "Close & lock manual valve (source OGHC30-BR004 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "OGHC30-BR004",
-      "step": 12,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock manual valve (source OGHC30-BR004 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4",
-      "phase": 3,
-      "ref": "1910.147(d)(3)",
-      "source": "OGHC30-BR004",
-      "step": 13,
-      "title": "Equipment isolation"
-     },
-     {
-      "action": "Close & lock manual valve (source 315512)",
-      "device_tag": null,
+      "action": "Close & lock detected single block device manual valve (source 315512)",
+      "device_tag": "",
       "device_uuid": "5f4ae4ae-502b-408c-8281-039bcfc6ab06",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "315512",
+      "step": 13,
+      "title": "Equipment isolation"
+     },
+     {
+      "action": "Close & lock detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "a7a1db00-35ba-4d3a-81c9-c694fdec35ef",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
+      "source": "819304",
       "step": 14,
       "title": "Equipment isolation"
      },
      {
-      "action": "Close & lock manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "a7a1db00-35ba-4d3a-81c9-c694fdec35ef",
+      "action": "Close & lock detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "819304",
@@ -3885,9 +3838,9 @@
       "title": "Equipment isolation"
      },
      {
-      "action": "Close & lock manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432",
+      "action": "Close & lock detected single block device 0GHC30-BR002 (source 819304)",
+      "device_tag": "0GHC30-BR002",
+      "device_uuid": "6af90976-6afd-4762-a476-dbf98023da8f",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "819304",
@@ -3895,9 +3848,9 @@
       "title": "Equipment isolation"
      },
      {
-      "action": "Close & lock 0GHC30-BR002 (source 819304)",
-      "device_tag": "0GHC30-BR002",
-      "device_uuid": "6af90976-6afd-4762-a476-dbf98023da8f",
+      "action": "Close & lock detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "44f96a29-4091-4feb-9681-b7755c0599c1",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "819304",
@@ -3905,9 +3858,9 @@
       "title": "Equipment isolation"
      },
      {
-      "action": "Close & lock manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "44f96a29-4091-4feb-9681-b7755c0599c1",
+      "action": "Close & lock detected single block device AA503 (source 819304)",
+      "device_tag": "AA503",
+      "device_uuid": "3655d880-91c1-417f-8db1-da319bdb2f9b",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "819304",
@@ -3915,9 +3868,9 @@
       "title": "Equipment isolation"
      },
      {
-      "action": "Close & lock manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "3655d880-91c1-417f-8db1-da319bdb2f9b",
+      "action": "Close & lock detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9",
       "phase": 3,
       "ref": "1910.147(d)(3)",
       "source": "819304",
@@ -3925,49 +3878,49 @@
       "title": "Equipment isolation"
      },
      {
-      "action": "Close & lock manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9",
+      "action": "Close & lock detected single block device manual valve (source OGHC30-BR004)",
+      "device_tag": "",
+      "device_uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210",
       "phase": 3,
       "ref": "1910.147(d)(3)",
-      "source": "819304",
+      "source": "OGHC30-BR004",
       "step": 20,
       "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to manual valve (source OGHC30-BR004 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
+      "action": "Close & lock detected single block device AA504 (source OGHC30-BR004)",
+      "device_tag": "AA504",
+      "device_uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4",
+      "phase": 3,
+      "ref": "1910.147(d)(3)",
       "source": "OGHC30-BR004",
       "step": 21,
-      "title": "Lockout/tagout device application"
+      "title": "Equipment isolation"
      },
      {
-      "action": "Affix lock/tag to manual valve (source OGHC30-BR004 [OUTLET])",
-      "device_tag": null,
-      "device_uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4",
-      "phase": 4,
-      "ref": "1910.147(d)(4)",
-      "source": "OGHC30-BR004",
-      "step": 22,
-      "title": "Lockout/tagout device application"
-     },
-     {
-      "action": "Affix lock/tag to manual valve (source 315512)",
-      "device_tag": null,
+      "action": "Affix lock/tag to detected single block device manual valve (source 315512)",
+      "device_tag": "",
       "device_uuid": "5f4ae4ae-502b-408c-8281-039bcfc6ab06",
       "phase": 4,
       "ref": "1910.147(d)(4)",
       "source": "315512",
+      "step": 22,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "a7a1db00-35ba-4d3a-81c9-c694fdec35ef",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "819304",
       "step": 23,
       "title": "Lockout/tagout device application"
      },
      {
-      "action": "Affix lock/tag to manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "a7a1db00-35ba-4d3a-81c9-c694fdec35ef",
+      "action": "Affix lock/tag to detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432",
       "phase": 4,
       "ref": "1910.147(d)(4)",
       "source": "819304",
@@ -3975,9 +3928,9 @@
       "title": "Lockout/tagout device application"
      },
      {
-      "action": "Affix lock/tag to manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432",
+      "action": "Affix lock/tag to detected single block device 0GHC30-BR002 (source 819304)",
+      "device_tag": "0GHC30-BR002",
+      "device_uuid": "6af90976-6afd-4762-a476-dbf98023da8f",
       "phase": 4,
       "ref": "1910.147(d)(4)",
       "source": "819304",
@@ -3985,9 +3938,9 @@
       "title": "Lockout/tagout device application"
      },
      {
-      "action": "Affix lock/tag to 0GHC30-BR002 (source 819304)",
-      "device_tag": "0GHC30-BR002",
-      "device_uuid": "6af90976-6afd-4762-a476-dbf98023da8f",
+      "action": "Affix lock/tag to detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "44f96a29-4091-4feb-9681-b7755c0599c1",
       "phase": 4,
       "ref": "1910.147(d)(4)",
       "source": "819304",
@@ -3995,9 +3948,9 @@
       "title": "Lockout/tagout device application"
      },
      {
-      "action": "Affix lock/tag to manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "44f96a29-4091-4feb-9681-b7755c0599c1",
+      "action": "Affix lock/tag to detected single block device AA503 (source 819304)",
+      "device_tag": "AA503",
+      "device_uuid": "3655d880-91c1-417f-8db1-da319bdb2f9b",
       "phase": 4,
       "ref": "1910.147(d)(4)",
       "source": "819304",
@@ -4005,9 +3958,9 @@
       "title": "Lockout/tagout device application"
      },
      {
-      "action": "Affix lock/tag to manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "3655d880-91c1-417f-8db1-da319bdb2f9b",
+      "action": "Affix lock/tag to detected single block device manual valve (source 819304)",
+      "device_tag": "",
+      "device_uuid": "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9",
       "phase": 4,
       "ref": "1910.147(d)(4)",
       "source": "819304",
@@ -4015,13 +3968,23 @@
       "title": "Lockout/tagout device application"
      },
      {
-      "action": "Affix lock/tag to manual valve (source 819304)",
-      "device_tag": null,
-      "device_uuid": "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9",
+      "action": "Affix lock/tag to detected single block device manual valve (source OGHC30-BR004)",
+      "device_tag": "",
+      "device_uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210",
       "phase": 4,
       "ref": "1910.147(d)(4)",
-      "source": "819304",
+      "source": "OGHC30-BR004",
       "step": 29,
+      "title": "Lockout/tagout device application"
+     },
+     {
+      "action": "Affix lock/tag to detected single block device AA504 (source OGHC30-BR004)",
+      "device_tag": "AA504",
+      "device_uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4",
+      "phase": 4,
+      "ref": "1910.147(d)(4)",
+      "source": "OGHC30-BR004",
+      "step": 30,
       "title": "Lockout/tagout device application"
      },
      {
@@ -4029,7 +3992,7 @@
       "field_gap": true,
       "phase": 5,
       "ref": "1910.147(d)(5)",
-      "step": 30,
+      "step": 31,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4045,7 +4008,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 31,
+      "step": 32,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4061,7 +4024,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 32,
+      "step": 33,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4077,7 +4040,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 33,
+      "step": 34,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4093,7 +4056,7 @@
       "phase": 5,
       "purpose": "Confirm thermal energy is reducing and detect unsafe heat/cold conditions.",
       "ref": "1910.147(d)(5)",
-      "step": 34,
+      "step": 35,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4109,7 +4072,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 35,
+      "step": 36,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4125,7 +4088,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 36,
+      "step": 37,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4141,7 +4104,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 37,
+      "step": 38,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4157,7 +4120,7 @@
       "phase": 5,
       "purpose": "Confirm pressure is being relieved and detect pressure reaccumulation.",
       "ref": "1910.147(d)(5)",
-      "step": 38,
+      "step": 39,
       "title": "Stored / residual energy relief"
      },
      {
@@ -4165,7 +4128,7 @@
       "field_gap": true,
       "phase": 6,
       "ref": "1910.147(d)(6)",
-      "step": 39,
+      "step": 40,
       "title": "Verification of isolation"
      },
      {
@@ -4181,7 +4144,7 @@
       "phase": 6,
       "purpose": "Support zero-energy verification for pressure energy.",
       "ref": "1910.147(d)(6)",
-      "step": 40,
+      "step": 41,
       "title": "Verification of isolation"
      },
      {
@@ -4197,7 +4160,7 @@
       "phase": 6,
       "purpose": "Support zero-energy verification for pressure energy.",
       "ref": "1910.147(d)(6)",
-      "step": 41,
+      "step": 42,
       "title": "Verification of isolation"
      },
      {
@@ -4213,7 +4176,7 @@
       "phase": 6,
       "purpose": "Support zero-energy verification for pressure energy.",
       "ref": "1910.147(d)(6)",
-      "step": 42,
+      "step": 43,
       "title": "Verification of isolation"
      },
      {
@@ -4229,7 +4192,7 @@
       "phase": 6,
       "purpose": "Support zero-energy verification for pressure energy.",
       "ref": "1910.147(d)(6)",
-      "step": 43,
+      "step": 44,
       "title": "Verification of isolation"
      },
      {
@@ -4245,7 +4208,7 @@
       "phase": 6,
       "purpose": "Support zero-energy verification for pressure energy.",
       "ref": "1910.147(d)(6)",
-      "step": 44,
+      "step": 45,
       "title": "Verification of isolation"
      },
      {
@@ -4261,7 +4224,7 @@
       "phase": 6,
       "purpose": "Support zero-energy verification for pressure energy.",
       "ref": "1910.147(d)(6)",
-      "step": 45,
+      "step": 46,
       "title": "Verification of isolation"
      }
     ],
@@ -4403,12 +4366,37 @@
        "energy_types": [
         "process"
        ],
-       "isolation_device_count": 9,
+       "isolation_device_count": 0,
        "requires_positive_isolation": true
       },
       "objective": "Identify type and magnitude of energy, hazards, and control method.",
       "phase": 1,
       "ref": "1910.147(d)(1)",
+      "secondary_context_checks": [
+       {
+        "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+        "action": "Review secondary/context line AP002. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+        "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+        "classification": "companion_line_context",
+        "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+        "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+        "line_class": "companion_line",
+        "nearby_candidate_ids": [
+         "303248"
+        ],
+        "nearby_candidates": [],
+        "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+        "source_bbox": [
+         2255,
+         2390,
+         10,
+         10
+        ],
+        "source_component": "422096",
+        "source_component_tag": "AP002",
+        "source_component_tag_raw": "AP002"
+       }
+      ],
       "title": "Preparation for shutdown"
      },
      {
@@ -4590,23 +4578,7 @@
         "relief_candidate_ids": [],
         "scheme_type": "single block",
         "source_component": "819304",
-        "source_component_tag": "819304",
-        "unverified_additional_blocks": [
-         {
-          "bbox": [
-           1066,
-           2106,
-           53,
-           31
-          ],
-          "entity_class": "undefined_valve",
-          "entity_type": "piping_component",
-          "id": "738248eb-1d65-4b5d-9897-f74b9db2cf0f",
-          "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
-          "tag": "",
-          "text": ""
-         }
-        ]
+        "source_component_tag": "819304"
        },
        {
         "barrier_ids": [
@@ -4668,7 +4640,9 @@
         ],
         "basis": "detected from HILT process-line topology; no hazard-based scheme recommendation was made",
         "branch_id": "925800:branch:2",
-        "context_device_ids": [],
+        "context_device_ids": [
+         "8414be88-479b-42e5-8ff9-19fcd65f62aa"
+        ],
         "devices": [
          {
           "bbox": [
@@ -4687,60 +4661,31 @@
         "relief_candidate_ids": [],
         "scheme_type": "single block",
         "source_component": "925800",
-        "source_component_tag": "OGHC30-BR004",
-        "unverified_additional_blocks": [
-         {
-          "bbox": [
-           2690,
-           1848,
-           41,
-           28
-          ],
-          "entity_class": "undefined_valve",
-          "entity_type": "piping_component",
-          "id": "33669230-38bb-4f1a-9761-a55e1928cadb",
-          "note": "additional nearby block valve reached across a branch/junction or directional element; not a proven in-series double block \u2014 field-verify before relying on it as a second barrier.",
-          "tag": "AA502",
-          "text": "AA502"
-         }
-        ]
+        "source_component_tag": "OGHC30-BR004"
        }
       ],
-      "devices": [
+      "devices": [],
+      "devices_by_source": {},
+      "field_confirmed_positive_devices": [],
+      "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
+      "phase": 3,
+      "positive_isolation_devices": [],
+      "ref": "1910.147(d)(3)",
+      "supplementary_scheme_devices": [
        {
         "bbox_present": true,
         "display_label": "manual valve",
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
-        "source_component": "OGHC30-BR004",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 2,
-        "uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "manual valve",
-        "energy_type": "process",
-        "entity_class": "undefined_valve",
-        "method": "close and lock valve",
-        "source_component": "OGHC30-BR004",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 3,
-        "uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "manual valve",
-        "energy_type": "process",
-        "entity_class": "undefined_valve",
-        "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "315512",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 2,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "5f4ae4ae-502b-408c-8281-039bcfc6ab06"
        },
        {
@@ -4749,10 +4694,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 2,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "a7a1db00-35ba-4d3a-81c9-c694fdec35ef"
        },
        {
@@ -4761,10 +4710,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 3,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432"
        },
        {
@@ -4773,10 +4726,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
         "tag": "0GHC30-BR002",
-        "traversal_depth": 4,
+        "traversal_depth": null,
         "uuid": "6af90976-6afd-4762-a476-dbf98023da8f"
        },
        {
@@ -4785,22 +4742,30 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 6,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "44f96a29-4091-4feb-9681-b7755c0599c1"
        },
        {
         "bbox_present": true,
-        "display_label": "manual valve",
+        "display_label": "AA503",
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 7,
+        "supplementary_scheme_device": true,
+        "tag": "AA503",
+        "traversal_depth": null,
         "uuid": "3655d880-91c1-417f-8db1-da319bdb2f9b"
        },
        {
@@ -4809,38 +4774,52 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 7,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
+        "source_component": "OGHC30-BR004",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
+        "uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "AA504",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
+        "source_component": "OGHC30-BR004",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "AA504",
+        "traversal_depth": null,
+        "uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4"
        }
       ],
-      "devices_by_source": {
-       "315512": [
-        "5f4ae4ae-502b-408c-8281-039bcfc6ab06"
-       ],
-       "819304": [
-        "a7a1db00-35ba-4d3a-81c9-c694fdec35ef",
-        "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432",
-        "6af90976-6afd-4762-a476-dbf98023da8f",
-        "44f96a29-4091-4feb-9681-b7755c0599c1",
-        "3655d880-91c1-417f-8db1-da319bdb2f9b",
-        "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9"
-       ],
-       "OGHC30-BR004": [
-        "ca2eaf36-339d-47a5-8151-f2b89309e210",
-        "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4"
-       ]
-      },
-      "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
-      "phase": 3,
-      "positive_isolation_devices": [],
-      "ref": "1910.147(d)(3)",
-      "supplementary_scheme_devices": [],
       "title": "Equipment isolation",
       "within_phase_order_is_regulatory": false,
-      "within_phase_order_source": "flow_grounding_inlet_first_default",
+      "within_phase_order_source": "engine_candidate_order_not_proposed",
       "within_phase_ordering_note": "OSHA 1910.147 does NOT prescribe the order in which multiple isolating devices are operated within this phase -- only that all are operated. The within-phase order shown is either the agent's committed judgment or a flow-grounded default (isolate INLET / upstream devices first) derived from the HILT-parsed flow direction (source_flow_role). Each device's source_flow_role (inlet/outlet) is provided -- use it to justify the order."
      },
      {
@@ -4851,34 +4830,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
-        "source_component": "OGHC30-BR004",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 2,
-        "uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "manual valve",
-        "energy_type": "process",
-        "entity_class": "undefined_valve",
-        "method": "close and lock valve",
-        "source_component": "OGHC30-BR004",
-        "source_flow_role": "outlet",
-        "tag": null,
-        "traversal_depth": 3,
-        "uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4"
-       },
-       {
-        "bbox_present": true,
-        "display_label": "manual valve",
-        "energy_type": "process",
-        "entity_class": "undefined_valve",
-        "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "315512",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 2,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "5f4ae4ae-502b-408c-8281-039bcfc6ab06"
        },
        {
@@ -4887,10 +4846,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 2,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "a7a1db00-35ba-4d3a-81c9-c694fdec35ef"
        },
        {
@@ -4899,10 +4862,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 3,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "ec8b9bd2-ce3f-46ed-a309-2d1b67d25432"
        },
        {
@@ -4911,10 +4878,14 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
         "tag": "0GHC30-BR002",
-        "traversal_depth": 4,
+        "traversal_depth": null,
         "uuid": "6af90976-6afd-4762-a476-dbf98023da8f"
        },
        {
@@ -4923,22 +4894,30 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 6,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "44f96a29-4091-4feb-9681-b7755c0599c1"
        },
        {
         "bbox_present": true,
-        "display_label": "manual valve",
+        "display_label": "AA503",
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 7,
+        "supplementary_scheme_device": true,
+        "tag": "AA503",
+        "traversal_depth": null,
         "uuid": "3655d880-91c1-417f-8db1-da319bdb2f9b"
        },
        {
@@ -4947,16 +4926,53 @@
         "energy_type": "process",
         "entity_class": "undefined_valve",
         "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
         "source_component": "819304",
         "source_flow_role": "unknown",
-        "tag": null,
-        "traversal_depth": 7,
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
         "uuid": "fc7f4dd2-bc86-48a8-a728-7aa891e10cd9"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "manual valve",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
+        "source_component": "OGHC30-BR004",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "",
+        "traversal_depth": null,
+        "uuid": "ca2eaf36-339d-47a5-8151-f2b89309e210"
+       },
+       {
+        "bbox_present": true,
+        "display_label": "AA504",
+        "energy_type": "process",
+        "entity_class": "undefined_valve",
+        "method": "close and lock valve",
+        "operation_kind": "valve_isolation",
+        "positive_isolation_requires_field_confirmation": false,
+        "scheme_type": "single block",
+        "source_component": "OGHC30-BR004",
+        "source_flow_role": "unknown",
+        "supplementary_scheme_device": true,
+        "tag": "AA504",
+        "traversal_depth": null,
+        "uuid": "4e6914cc-4b57-4315-bdd5-4655ce4f7ea4"
        }
       ],
       "field_action_required": [
        "Each authorized employee applies their assigned individual lock to every isolating device."
       ],
+      "field_confirmed_positive_devices": [],
       "objective": "Affix an individual lock (and tag) to EACH energy-isolating device, holding it in safe/off.",
       "phase": 4,
       "ref": "1910.147(d)(4)",
@@ -5344,9 +5360,42 @@
       "use": "restoration_monitoring"
      }
     ],
+    "secondary_energy_context": {
+     "items": [
+      {
+       "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+       "action": "Review secondary/context line AP002. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+       "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+       "classification": "companion_line_context",
+       "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+       "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+       "line_class": "companion_line",
+       "nearby_candidate_ids": [
+        "303248"
+       ],
+       "nearby_candidates": [],
+       "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+       "source_bbox": [
+        2255,
+        2390,
+        10,
+        10
+       ],
+       "source_component": "422096",
+       "source_component_tag": "AP002",
+       "source_component_tag_raw": "AP002"
+      }
+     ],
+     "policy": "separate_field_holds",
+     "status": "completed",
+     "summary": {
+      "companion_line_count": 1,
+      "hold_count": 1
+     }
+    },
     "standard": "29 CFR 1910.147",
     "within_phase_order_is_regulatory": false,
-    "within_phase_order_source": "flow_grounding_inlet_first_default",
+    "within_phase_order_source": "engine_candidate_order_not_proposed",
     "work_scope": {
      "confined_space_entry": false,
      "high_risk_service": true,
@@ -5386,6 +5435,39 @@
      }
     }
    },
+   "secondary_energy_context": {
+    "items": [
+     {
+      "acceptance_criteria": "If this line carries hazardous, thermal, electrical, pressure, or stored energy, isolate, de-energize, drain, or otherwise make it safe under the site procedure before work.",
+      "action": "Review secondary/context line AP002. Confirm whether it is tracing, utility, purge, drain/vent, signal, overflow, or another non-process energy/context line.",
+      "basis": "HILT graph connects this source through a companion line; it is treated as companion context rather than a required process isolation boundary.",
+      "classification": "companion_line_context",
+      "interpretation": "HILT classified the connection as a companion/context line. This may be a secondary service or graphical context path; it is not automatically a process nozzle or a confirmed tracer.",
+      "limitation": "This context hold does not prove or disprove process isolation. The current HILT class does not by itself identify the service fluid or energy source.",
+      "line_class": "companion_line",
+      "nearby_candidate_ids": [
+       "303248"
+      ],
+      "nearby_candidates": [],
+      "purpose": "Identify secondary energy sources that are not part of the process isolation boundary.",
+      "source_bbox": [
+       2255,
+       2390,
+       10,
+       10
+      ],
+      "source_component": "422096",
+      "source_component_tag": "AP002",
+      "source_component_tag_raw": "AP002"
+     }
+    ],
+    "policy": "separate_field_holds",
+    "status": "completed",
+    "summary": {
+     "companion_line_count": 1,
+     "hold_count": 1
+    }
+   },
    "selected_equipment": [
     "0GHC30-CP004"
    ],
@@ -5408,7 +5490,7 @@
   }
  ],
  "debug": {
-  "assurance_status": "provisional_unproven_isolation",
+  "assurance_status": "not_isolated",
   "bbox_candidate_finder_mode": "nearest_exact_bbox_candidate_per_source_component",
   "bbox_candidate_pool_resolved_count": 11,
   "bbox_parallel_companion_selection_count": 0,
@@ -5573,7 +5655,7 @@
   "context_overridden_by_isolation_valve": [],
   "deduped_candidate_count": 3,
   "detected_isolation_scheme_count": 9,
-  "evidence_barrier_candidate_count": 9,
+  "evidence_barrier_candidate_count": 0,
   "evidence_candidate_count": 9,
   "evidence_isolation_obligation_count": 10,
   "evidence_manual_review_candidate_count": 9,
@@ -5812,7 +5894,7 @@
   },
   "validator_manual_review_candidate_count": 9,
   "validator_missing_evidence_count": 7,
-  "validator_terminal": false,
+  "validator_terminal": true,
   "validator_unresolved_evidence_check_count": 4
  },
  "error": false,

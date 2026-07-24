@@ -268,5 +268,5 @@ def _attr(attributes, name):
     return None
 
 
-def _norm(value):
-    return normalize_tag(value)
+# Alias, not a wrapper: normalize_tag is the single implementation.
+_norm = normalize_tag

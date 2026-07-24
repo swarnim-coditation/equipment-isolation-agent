@@ -13,9 +13,11 @@ from __future__ import annotations
 
 from domain.display import device_display_label, device_display_name
 from domain.enums import FlowRole
+from domain.isolation_actions import operation_kind, requires_positive_field_confirmation
 from domain.keywords import RELIEF_KEYWORDS, VERIFY_KEYWORDS, VERIFY_TAG_PREFIXES
 from domain.topology import tag_prefix as _tag_prefix
 from evidence import candidate_flags
+from secondary_context import build_secondary_energy_context
 
 STANDARD = "29 CFR 1910.147"
 
@@ -31,10 +33,12 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     instrument_checks = instrument_context.get("checks") or {}
     detected_schemes = validation_data.get("detected_isolation_schemes") or {}
     relief_candidates = validation_data.get("relief_candidates") or {}
+    secondary_context = validation_data.get("secondary_energy_context") or build_secondary_energy_context(validation_data)
+    secondary_context_checks = secondary_context.get("items") or []
     work_scope = (config.work_scope.__dict__ if hasattr(config.work_scope, "__dict__") else {})
     energy_types = sorted({(c.get("energy_type") or ["process"])[0] for c in candidates} or ["process"])
 
-    isolation_devices, positive_devices = _devices(candidates, config.policy if hasattr(config, "policy") else None)
+    isolation_devices, positive_devices, field_confirmed_positive_devices = _devices(candidates, config.policy if hasattr(config, "policy") else None)
     relief_devices, verify_devices = _relief_and_verify(candidates, relief_candidates)
     supplementary_scheme_devices = _supplementary_scheme_devices(detected_schemes, isolation_devices)
     # NOTE: OSHA 1910.147 prescribes only the PHASE order, NOT the within-phase
@@ -49,10 +53,12 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     if isolation_order:
         isolation_devices = _apply_order(isolation_devices, isolation_order)
         positive_devices = _apply_order(positive_devices, isolation_order)
+        field_confirmed_positive_devices = _apply_order(field_confirmed_positive_devices, isolation_order)
         order_source = "agent_engineering_judgment"
     elif has_known_flow:
         isolation_devices = _flow_default_order(isolation_devices)
         positive_devices = _flow_default_order(positive_devices)
+        field_confirmed_positive_devices = _flow_default_order(field_confirmed_positive_devices)
         order_source = "flow_grounding_inlet_first_default"
     else:
         order_source = "engine_candidate_order_not_proposed"
@@ -60,10 +66,10 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
     missing_evidence = validation.get("missing_evidence") or evidence.get("missing_evidence") or []
 
     phases = [
-        _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks),
+        _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks, secondary_context_checks),
         _phase_2_shutdown(instrument_checks),
-        _phase_3_isolation(isolation_devices, positive_devices, order_source, detected_schemes, supplementary_scheme_devices),
-        _phase_4_lockout(isolation_devices, positive_devices, supplementary_scheme_devices),
+        _phase_3_isolation(isolation_devices, positive_devices, field_confirmed_positive_devices, order_source, detected_schemes, supplementary_scheme_devices),
+        _phase_4_lockout(isolation_devices, positive_devices, field_confirmed_positive_devices, supplementary_scheme_devices),
         _phase_5_stored_energy(relief_devices, evidence, instrument_checks),
         _phase_6_verification(verify_devices, evidence, instrument_checks),
     ]
@@ -84,6 +90,7 @@ def build_loto_procedure(validation_data: dict, config, isolation_order: list | 
         "release_note": _release_note(instrument_checks),
         "restoration_checks": instrument_checks.get("restoration_reenergization") or [],
         "instrument_context": instrument_context,
+        "secondary_energy_context": secondary_context,
         "detected_isolation_schemes": detected_schemes,
         "relief_candidates": relief_candidates,
         "open_gaps": _open_gaps(missing_evidence, relief_devices, verify_devices),
@@ -120,7 +127,11 @@ def _ordered_steps(phases: list) -> list:
         ref = phase.get("ref")
         title = phase.get("title")
         if phase_num in (3, 4):
-            devices = (phase.get("devices") or []) + (phase.get("supplementary_scheme_devices") or [])
+            devices = (
+                (phase.get("devices") or [])
+                + (phase.get("field_confirmed_positive_devices") or [])
+                + (phase.get("supplementary_scheme_devices") or [])
+            )
             if not devices:
                 n += 1
                 steps.append(_step(n, phase_num, ref, title, f"{title}: no isolation devices identified."))
@@ -158,10 +169,13 @@ def _ordered_steps(phases: list) -> list:
             for check in phase.get("instrument_checks") or []:
                 n += 1
                 steps.append(_step(n, phase_num, ref, title, _instrument_action(check), instrument=check, advisory=True))
+            for check in phase.get("secondary_context_checks") or []:
+                n += 1
+                steps.append(_step(n, phase_num, ref, title, _secondary_context_action(check), secondary_context=check, advisory=True))
     return steps
 
 
-def _step(n, phase, ref, title, action, device=None, field_gap=False, instrument=None, advisory=False):
+def _step(n, phase, ref, title, action, device=None, field_gap=False, instrument=None, secondary_context=None, advisory=False):
     step = {"step": n, "phase": phase, "ref": ref, "title": title, "action": action}
     if device:
         step["device_uuid"] = device.get("uuid")
@@ -175,6 +189,14 @@ def _step(n, phase, ref, title, action, device=None, field_gap=False, instrument
         for key in ("purpose", "interpretation", "acceptance_criteria", "limitation"):
             if instrument.get(key):
                 step[key] = instrument.get(key)
+        step["advisory"] = True
+    if secondary_context:
+        step["secondary_context_source"] = secondary_context.get("source_component")
+        step["secondary_context_tag"] = secondary_context.get("source_component_tag")
+        step["secondary_context_line_class"] = secondary_context.get("line_class")
+        for key in ("purpose", "interpretation", "acceptance_criteria", "limitation"):
+            if secondary_context.get(key):
+                step[key] = secondary_context.get(key)
         step["advisory"] = True
     if field_gap:
         step["field_gap"] = True
@@ -192,35 +214,71 @@ def _instrument_action(check):
     return action
 
 
+def _secondary_context_action(check):
+    action = str(check.get("action") or "").strip()
+    if not action:
+        action = f"Review secondary/context line {check.get('source_component_tag') or check.get('source_component')} before work."
+    return action
+
+
 def _device_action(phase_num, device):
-    tag = device.get("tag") or device.get("uuid")
     source = device.get("source_component") or "?"
     role = device.get("source_flow_role")
     role_str = f" [{role.upper()}]" if role and role != "unknown" else ""
-    verb = "Close & lock" if phase_num == 3 else "Affix lock/tag to"
     label = device.get("display_label") or device_display_label(device, fallback="isolation device")
+    source_suffix = f"(source {source}{role_str})"
     if device.get("supplementary_scheme_device"):
         scheme = device.get("scheme_type") or "detected scheme"
-        return f"{verb} detected {scheme} device {label} (source {source}{role_str})"
-    return f"{verb} {label} (source {source}{role_str})"
+        label = f"detected {scheme} device {label}"
+
+    kind = device.get("operation_kind") or operation_kind(device.get("entity_class"))
+    if phase_num == 3:
+        if kind == "electrical_isolation":
+            return f"Open/de-energize and lock {label} {source_suffix}"
+        if kind == "installed_positive_isolation":
+            return f"Install/verify positive isolation at {label} {source_suffix}"
+        if kind == "field_confirmed_positive_isolation":
+            return (
+                f"Field-verify flange/line-break point {label}; install an approved blind/spade "
+                f"or perform an approved line break before this point is accepted as isolation {source_suffix}"
+            )
+        if kind == "directional_context":
+            return f"Field-verify check-valve/backflow context at {label}; do not use it as the sole lockable isolation device {source_suffix}"
+        if kind == "control_context":
+            return f"Field-verify control valve {label}; do not use it as an isolation point unless site procedure explicitly approves it {source_suffix}"
+        if kind == "valve_isolation":
+            return f"Close & lock {label} {source_suffix}"
+        return f"Isolate and lock/tag {label} {source_suffix}"
+
+    if kind == "electrical_isolation":
+        return f"Affix lock/tag to {label} in the de-energized/open position {source_suffix}"
+    if kind == "installed_positive_isolation":
+        return f"Affix lock/tag to installed positive-isolation device {label} {source_suffix}"
+    if kind == "field_confirmed_positive_isolation":
+        return f"Affix lock/tag/hold point to the approved blind, spade, or line-break control at {label} {source_suffix}"
+    if kind == "directional_context":
+        return f"Document check-valve/backflow verification for {label}; apply no lock unless an approved lockable device is identified {source_suffix}"
+    if kind == "control_context":
+        return f"Document control-valve verification for {label}; apply no isolation lock unless explicitly approved by site procedure {source_suffix}"
+    return f"Affix lock/tag to {label} {source_suffix}"
 
 
 def _devices(candidates, policy):
     isolation = []
     positive = []
+    field_confirmed_positive = []
     for candidate in candidates:
         flags = candidate_flags(candidate, policy)
         is_barrier = flags["barrier"]
         is_positive = flags["positive"]
         device = _device_summary(candidate)
+        if device.get("operation_kind") == "field_confirmed_positive_isolation":
+            field_confirmed_positive.append(device)
         if is_positive:
             positive.append(device)
         if is_barrier:
             isolation.append(device)
-    if not isolation:
-        # every selected candidate is a barrier candidate by construction; fall back to all
-        isolation = [_device_summary(c) for c in candidates]
-    return isolation, positive
+    return isolation, positive, field_confirmed_positive
 
 
 def _relief_and_verify(candidates, relief_candidates=None):
@@ -265,6 +323,7 @@ def _device_summary(candidate):
     props = candidate.get("properties") or {}
     entity_class = props.get("entity_class") or candidate.get("candidate_label")
     tag = candidate.get("tag_number") or _first(props, ("tag", "name"))
+    kind = operation_kind(entity_class)
     return {
         "uuid": str(candidate.get("candidate_id")),
         "tag": tag,
@@ -276,6 +335,8 @@ def _device_summary(candidate):
         "energy_type": (candidate.get("energy_type") or ["process"])[0],
         "bbox_present": bool(candidate.get("bbox")),
         "source_flow_role": candidate.get("source_flow_role") or "unknown",
+        "operation_kind": kind,
+        "positive_isolation_requires_field_confirmation": requires_positive_field_confirmation(entity_class),
     }
 
 
@@ -294,7 +355,7 @@ def _flow_default_order(devices):
     return sorted(devices, key=lambda d: (_FLOW_ROLE_RANK.get(d.get("source_flow_role"), 3), str(d.get("source_component") or "")))
 
 
-def _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks):
+def _phase_1_preparation(config, energy_types, work_scope, isolation_devices, instrument_checks, secondary_context_checks=None):
     requires_positive = any((work_scope or {}).get(k) for k in ("intrusive_work", "confined_space_entry", "hot_work", "high_risk_service"))
     return {
         "phase": 1,
@@ -310,6 +371,7 @@ def _phase_1_preparation(config, energy_types, work_scope, isolation_devices, in
             "Confirm actual energy type and magnitude (pressure/temperature) at the equipment.",
         ],
         "instrument_checks": instrument_checks.get("before_isolation") or [],
+        "secondary_context_checks": secondary_context_checks or [],
     }
 
 
@@ -328,13 +390,14 @@ def _phase_2_shutdown(instrument_checks):
     }
 
 
-def _phase_3_isolation(isolation_devices, positive_devices, order_source, detected_schemes, supplementary_scheme_devices):
+def _phase_3_isolation(isolation_devices, positive_devices, field_confirmed_positive_devices, order_source, detected_schemes, supplementary_scheme_devices):
     return {
         "phase": 3,
         "ref": "1910.147(d)(3)",
         "title": "Equipment isolation",
         "objective": "Operate each energy-isolating device to isolate the equipment from every energy source.",
         "devices": isolation_devices,
+        "field_confirmed_positive_devices": field_confirmed_positive_devices,
         "supplementary_scheme_devices": supplementary_scheme_devices,
         "positive_isolation_devices": positive_devices,
         "detected_schemes": (detected_schemes or {}).get("items") or [],
@@ -352,7 +415,8 @@ def _phase_3_isolation(isolation_devices, positive_devices, order_source, detect
     }
 
 
-def _phase_4_lockout(isolation_devices, positive_devices, supplementary_scheme_devices=None):
+def _phase_4_lockout(isolation_devices, positive_devices, field_confirmed_positive_devices=None, supplementary_scheme_devices=None):
+    field_confirmed_positive_devices = field_confirmed_positive_devices or []
     supplementary_scheme_devices = supplementary_scheme_devices or []
     all_devices = isolation_devices + [d for d in positive_devices if d not in isolation_devices] + [
         d for d in supplementary_scheme_devices if d not in isolation_devices
@@ -363,6 +427,7 @@ def _phase_4_lockout(isolation_devices, positive_devices, supplementary_scheme_d
         "title": "Lockout/tagout device application",
         "objective": "Affix an individual lock (and tag) to EACH energy-isolating device, holding it in safe/off.",
         "devices": all_devices,
+        "field_confirmed_positive_devices": field_confirmed_positive_devices,
         "supplementary_scheme_devices": [],
         "field_action_required": [
             "Each authorized employee applies their assigned individual lock to every isolating device.",
@@ -445,6 +510,9 @@ def _supplementary_scheme_devices(detected_schemes, isolation_devices):
             device_id = str(device.get("id") or "")
             if not device_id or device_id in known:
                 continue
+            kind = operation_kind(device.get("entity_class"))
+            if kind == "field_confirmed_positive_isolation":
+                continue
             known.add(device_id)
             result.append(
                 {
@@ -458,6 +526,8 @@ def _supplementary_scheme_devices(detected_schemes, isolation_devices):
                     "energy_type": "process",
                     "bbox_present": bool(device.get("bbox")),
                     "source_flow_role": "unknown",
+                    "operation_kind": kind,
+                    "positive_isolation_requires_field_confirmation": requires_positive_field_confirmation(device.get("entity_class")),
                     "scheme_type": scheme.get("scheme_type"),
                     "supplementary_scheme_device": True,
                 }
@@ -479,5 +549,3 @@ def _first(props, keys):
         if value not in (None, "", []):
             return str(value)
     return None
-
-

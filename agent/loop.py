@@ -159,6 +159,7 @@ def _ensure_pipeline(session: AgentSession, validate_terminal: bool, on_event) -
         and session.downstream_impact is not None
         and session.isolation_obligations is not None
         and session.relief_analysis is not None
+        and session.instrument_context is not None
     ):
         return forced
     if session.boundary_data is None:
@@ -171,6 +172,12 @@ def _ensure_pipeline(session: AgentSession, validate_terminal: bool, on_event) -
         _run("analyze_isolation_obligations")
     if session.relief_analysis is None and session.bbox_data is not None:
         _run("analyze_isolation_schemes_and_relief")
+    # run.py runs instrument context at stage 7, BEFORE build_evidence at stage 8,
+    # so evidence is always built from data that already carries it. Force the same
+    # order here rather than baking it into the stage, so the two runners converge
+    # without the agent losing the freedom to call tools out of order.
+    if session.instrument_context is None and session.bbox_data is not None:
+        _run("analyze_instrument_context")
     if session.evidence_data is None:
         _run("build_evidence")
     if session.validation_data is None:

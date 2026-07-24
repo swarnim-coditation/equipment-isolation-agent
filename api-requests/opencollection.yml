@@ -1,0 +1,44 @@
+opencollection: 1.0.0
+
+info:
+  name: equipment-isolation
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:8088
+    - name: EQUIPMENT_TAG
+      value: P3
+    - name: RUN_ID
+      value: ""
+    - name: RUN_LIST_LIMIT
+      value: "100"
+    - name: CNVRT_PROJECT_ID
+      value: "277"
+    - name: COLLECTION_ID
+      value: "206"
+    - name: UNIGRAPH_PROJECT_ID
+      value: "15"
+    - name: COLLECTION_NAME
+      value: Test
+    - name: JOB_NAME
+      value: ""
+    - name: JOB_ID
+      value: ""
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

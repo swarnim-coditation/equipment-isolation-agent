@@ -1,0 +1,30 @@
+info:
+  name: reject body token without bearer auth
+  type: http
+  seq: 13
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/isolation-runs"
+  auth: none
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "equipment_tag": "{{EQUIPMENT_TAG}}",
+        "cnvrt_project_id": "{{CNVRT_PROJECT_ID}}",
+        "collection_id": "{{COLLECTION_ID}}",
+        "unigraph_project_id": "{{UNIGRAPH_PROJECT_ID}}",
+        "collection_name": "{{COLLECTION_NAME}}",
+        "auth_token": "body-token-must-not-be-used",
+        "include_viewer": false
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

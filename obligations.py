@@ -1,4 +1,5 @@
 from domain.enums import ObligationStatus, SourceType
+from domain.hilt_geometry import valid_bbox as _valid_bbox
 from domain.topology import CONTEXT_LINE_CLASSES as HILT_CONTEXT_LINE_CLASSES
 from domain.topology import PROCESS_LINE_CLASSES as HILT_PROCESS_LINE_CLASSES
 from domain.topology import normalize_tag
@@ -267,17 +268,7 @@ def _candidate_sort_key(candidate):
     )
 
 
-def _valid_bbox(bbox):
-    if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
-        return []
-    try:
-        values = [int(value) for value in bbox]
-    except Exception:
-        return []
-    if values[2] <= 0 or values[3] <= 0:
-        return []
-    return values
 
 
-def _norm(value):
-    return normalize_tag(value)
+# Alias, not a wrapper: normalize_tag is the single implementation.
+_norm = normalize_tag

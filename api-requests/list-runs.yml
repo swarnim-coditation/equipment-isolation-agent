@@ -1,0 +1,20 @@
+info:
+  name: list runs
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{BASE_URL}}/isolation-runs"
+  auth: inherit
+  params:
+    - name: limit
+      value: "{{RUN_LIST_LIMIT}}"
+    - name: offset
+      value: "0"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

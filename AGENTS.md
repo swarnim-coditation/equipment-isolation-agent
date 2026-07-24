@@ -11,6 +11,9 @@ uv run python -m run --equipment BT-11 --job-name pnid_2_bio_final --job-id 2100
 # Run the AGENTIC (Gemini-orchestrated) isolation runner
 uv run python -m agent --equipment BT-11 --job-name pnid_2_bio_final --job-id 2100
 
+# Run the HTTP API for CNVRT integration
+uv run python -m api
+
 # List available equipment from JanusGraph
 uv run python -m run --list-equipment
 
@@ -29,6 +32,10 @@ uv run python eval_compare.py BT-11 C-02
 - Python 3.11 managed by `uv`; deps in `pyproject.toml`: `gremlinpython`, `requests`, `google-genai>=2.10.0`
 - Virtual env at `.venv/` (created by `uv sync`)
 - `.env` is git-ignored; copy `.env.example` → `.env` and set `PLANT360_AUTH_TOKEN`, `GEMINI_API_KEY`, and optionally `GEMINI_MODEL`, `JANUSGRAPH_URL` / `JANUSGRAPH_USERNAME` / `JANUSGRAPH_PASSWORD`
+- Optional API persistence uses Postgres via separate `.env` fields:
+  `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`,
+  `POSTGRES_PASSWORD`, `POSTGRES_SSLMODE`. The schema source is `schema.sql`;
+  set `EIA_AUTO_INIT_SCHEMA_ON_STARTUP=true` only for explicit startup DDL.
 - `GEMINI_API_KEY` is required by the agentic runner (`python -m agent`); the deterministic `run.py` does not need it
 - `.env` is loaded by a hand-rolled parser in `run.py`/`agent/cli.py` (`load_dotenv`) — not python-dotenv
 
@@ -39,6 +46,7 @@ uv run python eval_compare.py BT-11 C-02
 | Install deps | `uv sync` |
 | Run isolation (deterministic) | `uv run python -m run --equipment <TAG> [--job-name <NAME>] [--job-id <ID>]` |
 | Run isolation (agentic / Gemini) | `uv run python -m agent --equipment <TAG> [--model gemini-2.5-flash] [--max-steps 16]` |
+| Run API service | `uv run python -m api` |
 | List equipment | `uv run python -m run --list-equipment [--equipment-limit N]` |
 | Run tests | `uv run python -m unittest discover -s tests` |
 | Eval agent vs baseline | `uv run python eval_compare.py <TAG>...` (or `--limit N`) |
@@ -74,6 +82,7 @@ viewer.py         HTML overlay renderer (bbox/overlay canvas)
 image.py          P&ID image download
 domain/           Shared domain layer: enums, models, classification, serialization
 eval_compare.py   Eval harness: agent vs deterministic baseline across equipment
+api/              FastAPI service for CNVRT integration; calls shared config + agent runner
 
 agent/            AGENTIC runner — Gemini orchestrates deterministic stages as tools
   session.py      AgentSession: server-side pipeline state + audit trace
@@ -85,6 +94,14 @@ agent/            AGENTIC runner — Gemini orchestrates deterministic stages as
   cli.py          `python -m agent` entrypoint
   __main__.py     module runner
 ```
+
+API design rule: `api/` must call `pipeline.config_builder.build_run_config`
+and `agent.runner.run_agent_pipeline`; it must not assemble its own `RunConfig`
+or duplicate the agent post-run payload merge.
+
+API requests must supply project context explicitly: `cnvrt_project_id`,
+`collection_id`, and `unigraph_project_id`. The API must not rely on
+`project_config.json` / `active_profile`; those are CLI/dev conveniences only.
 
 ### Agentic design (agent/)
 
@@ -126,6 +143,15 @@ HTML viewer.
 - Fallback `JOB_IDS_BY_NAME` hardcoded in `config.py` (pnid_1_bio_final=2099, pnid_2_bio_final=2100, etc.)
 - Default output dir: `output/` (deterministic), `output_agent/` (agentic), repo-relative and git-ignored
 - Agent default model: `gemini-2.5-flash` (override via `GEMINI_MODEL` env or `--model`)
+- API default run dir: `api_runs/` (git-ignored); override with `EIA_RUNS_DIR`
+- API requests should pass the Plant360 token with `Authorization: Bearer ...`.
+  For local/dev only, the API falls back to server-side `PLANT360_AUTH_TOKEN`
+  when no request token is supplied.
+- When `POSTGRES_HOST`, `POSTGRES_DB`, and `POSTGRES_USER` are set, the API
+  persists run status/result/trace/events to Postgres. Set
+  `EIA_AUTO_INIT_SCHEMA_ON_STARTUP=true` only when this process should initialize
+  `schema.sql` on startup. P&ID images and viewer HTML remain file artifacts
+  under `EIA_RUNS_DIR`.
 - Isolation policy: max depth 3; eligible classes = valves/blinds/flanges/breakers/disconnects; conditional classes (check/control/undefined valve) selected but flagged manual-review
 - Work scope defaults: intrusive=true, high_risk_service=true → requires positive isolation
 

@@ -80,12 +80,8 @@ class IsolationPolicy:
         "blind",
         "spade",
         "spectacle",
-        "flange",
         "blank_flange",
-        "line_break_point",
-        "disconnect",
-        "breaker",
-        "spool",
+        "blind_flange",
     )
     verification_classes: tuple[str, ...] = ("bleed", "vent", "drain", "gauge", "indicator", "test_point")
     verification_tag_prefixes: tuple[str, ...] = ("pi", "pg")

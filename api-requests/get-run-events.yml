@@ -1,0 +1,18 @@
+info:
+  name: stream run events
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{BASE_URL}}/isolation-runs/{{RUN_ID}}/events"
+  auth: inherit
+  headers:
+    - name: Accept
+      value: text/event-stream
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

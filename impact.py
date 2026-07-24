@@ -15,8 +15,6 @@ from api_client import Plant360Client
 from domain.enums import FlowRole, ImpactSeverity
 from domain.hilt_geometry import calibrate_yflip as _calibrate_hilt_yflip
 from domain.hilt_geometry import extract_symbols as _extract_symbols
-from domain.hilt_geometry import symbol_attr as _symbol_attr
-from domain.hilt_geometry import symbol_bbox as _symbol_bbox
 from domain.models import BBox, DownstreamImpactWarning
 from domain.topology import PROCESS_LINE_CLASSES, normalize_tag
 
@@ -543,5 +541,5 @@ def _tag_prefix(value: str) -> str:
     return "".join(result)
 
 
-def _norm(value: Any) -> str:
-    return normalize_tag(value)
+# Alias, not a wrapper: normalize_tag is the single implementation.
+_norm = normalize_tag

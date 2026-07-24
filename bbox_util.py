@@ -5,7 +5,11 @@ Extracted from bbox.py so that both bbox.py (candidate selection) and hilt_merge
 no I/O.
 """
 
+from domain.enums import IsolationDecision
 from domain.topology import FAR_DISTANCE, normalize_tag
+
+# Alias, not a wrapper: normalize_tag is the single implementation.
+_norm = normalize_tag
 
 
 def _distance_sort_value(value):
@@ -55,3 +59,26 @@ def _dedupe_candidates(candidates):
             for field in ("source_component_tag", "source_component_id", "source_visual_id", "source_bbox", "source_visual_node_id", "source_visual_distance", "traversal_depth", "source_name", "confidence", "reason"):
                 existing[field] = candidate.get(field)
     return list(merged.values())
+
+
+def _selectable_candidate_pool(candidate_pool, policy):
+    del policy
+    return [
+        candidate
+        for candidate in candidate_pool
+        if candidate.get("policy_decision")
+        in {IsolationDecision.AUTOMATIC.value, IsolationDecision.CONDITIONAL_MANUAL_REVIEW.value}
+    ]
+
+
+def _dedupe_source_candidates(items):
+    merged = {}
+    for item in items:
+        key = _norm(item.get("visual_id") or item.get("candidate_id"))
+        if key not in merged or _visual_sort_key(item) < _visual_sort_key(merged[key]):
+            merged[key] = item
+    return list(merged.values())
+
+
+def _source_key(candidate):
+    return (str(candidate.get("equipment_tag") or ""), str(candidate.get("source_component_id") or candidate.get("source_component_tag") or ""))

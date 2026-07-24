@@ -2,26 +2,13 @@ import argparse
 import logging
 import os
 import sys
-from dataclasses import replace
 from pathlib import Path
 
 from bbox import resolve_bboxes
-from bbox import _extract_symbols
 from boundary import fetch_boundaries
 from candidates import find_candidates
-from config import (
-    ApiConfig,
-    GraphConfig,
-    IsolationPolicy,
-    JOB_IDS_BY_NAME,
-    RunConfig,
-    WorkScope,
-    apply_graph_env,
-    apply_project_profile,
-    load_project_profile,
-)
+from config import JOB_IDS_BY_NAME
 from evidence import build_evidence
-from graph_client import GraphClient, normalize_vertex, props_only, vertex_id
 from image import resolve_pid_image
 from impact import analyze_downstream_impact
 from instrument_context import analyze_instrument_context
@@ -29,29 +16,21 @@ from job_resolver import resolve_job_from_boundary
 from loto import build_loto_procedure
 from obligations import analyze_isolation_obligations
 from output import build_final_payload, write_json, write_viewer
+from pipeline.stages import resolve_project_metadata
+from pipeline.errors import (
+    fatal_job_resolution_detail,
+    format_fatal_job_resolution,
+)
+from pipeline.config_builder import build_run_config
+from pipeline.equipment import add_equipment_jobs, add_equipment_jobs_from_metadata, list_equipment
+from pipeline.env import load_dotenv
+from pipeline.job_inference import _config_with_inferred_job, _norm
 from planner import plan_requests
-from api_client import Plant360Client
 from relief import analyze_isolation_schemes_and_relief
-from unigraph_metadata import enrich_config_from_unigraph
 from validator import validate
 
 
 logger = logging.getLogger("local_no_llm")
-
-
-def load_dotenv():
-    for env_path in (Path.cwd() / ".env", Path(__file__).resolve().parents[1] / ".env"):
-        if not env_path.exists():
-            continue
-        for line in env_path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, value = line.split("=", 1)
-            key = key.strip()
-            value = value.strip().strip('"').strip("'")
-            if key and key not in os.environ:
-                os.environ[key] = value
 
 
 def parse_args():
@@ -98,119 +77,28 @@ def configure_logging(quiet=False):
 
 
 def build_config(args):
-    profile = load_project_profile(args.project_config, args.project_profile)
-    config = apply_project_profile(
-        RunConfig(
-            equipment_tag=args.equipment,
-            job_name=args.job_name,
-            job_id=args.job_id,
-            api=ApiConfig(
-                base_url=args.api_base_url,
-                auth_token=args.auth_token,
-                verify_ssl=not args.no_verify_ssl,
-            ),
-            policy=IsolationPolicy(),
-            work_scope=WorkScope(
-                intrusive_work=not args.non_intrusive,
-                high_risk_service=not args.not_high_risk,
-            ),
-            output_dir=Path(args.output_dir),
-            unigraph_api_base_url=args.unigraph_api_base_url or RunConfig(equipment_tag=args.equipment).unigraph_api_base_url,
-        ),
-        profile,
-    )
-    env_graph = apply_graph_env(config.graph)
-    graph = replace(
-        env_graph,
-        host=args.host or env_graph.host,
-        port=args.port or env_graph.port,
-        project_id=args.project_id or env_graph.project_id,
-        traversal_source_name=args.traversal_source or env_graph.traversal_source_name,
-    )
-    return replace(
-        config,
+    return build_run_config(
         equipment_tag=args.equipment,
         job_name=args.job_name,
         job_id=args.job_id,
-        cnvrt_project_id=args.cnvrt_project_id or config.cnvrt_project_id,
-        unigraph_api_base_url=args.unigraph_api_base_url or config.unigraph_api_base_url,
-        collection_id=args.collection_id or config.collection_id,
-        collection_name=args.collection_name or config.collection_name,
-        graph=graph,
-        api=ApiConfig(
-            base_url=args.api_base_url,
-            auth_token=args.auth_token,
-            verify_ssl=not args.no_verify_ssl,
-        ),
-        policy=replace(config.policy, max_traversal_depth=args.max_depth) if args.max_depth is not None else config.policy,
-        work_scope=WorkScope(
-            intrusive_work=not args.non_intrusive,
-            high_risk_service=not args.not_high_risk,
-        ),
+        project_config=args.project_config,
+        project_profile=args.project_profile,
+        auth_token=args.auth_token,
+        api_base_url=args.api_base_url,
+        verify_ssl=not args.no_verify_ssl,
+        cnvrt_project_id=args.cnvrt_project_id,
+        unigraph_api_base_url=args.unigraph_api_base_url,
+        collection_id=args.collection_id,
+        collection_name=args.collection_name,
+        host=args.host,
+        port=args.port,
+        project_id=args.project_id,
+        traversal_source=args.traversal_source,
+        max_depth=args.max_depth,
+        intrusive_work=not args.non_intrusive,
+        high_risk_service=not args.not_high_risk,
+        output_dir=args.output_dir,
     )
-
-
-def list_equipment(graph_config, limit=0):
-    with GraphClient(graph_config) as client:
-        rows = [normalize_vertex(row) for row in client.g.V().hasLabel("Equipment").valueMap(True).toList()]
-
-    items = []
-    for row in rows:
-        props = props_only(row)
-        tag = _first_value(props, ("tag", "tag_number", "Equipment Name", "name", "equipment_number"))
-        name = _first_value(props, ("name", "Equipment Name", "label"))
-        entity_class = _first_value(props, ("entity_class", "class", "type"))
-        items.append(
-            {
-                "id": vertex_id(row),
-                "tag": tag or "",
-                "name": name or "",
-                "entity_class": entity_class or "",
-                "node_id": props.get("node_id") or "",
-                "job_id": "",
-                "job_name": "",
-            }
-        )
-
-    items.sort(key=lambda item: (str(item["tag"] or item["name"] or ""), str(item["id"])))
-    return items[:limit] if limit and limit > 0 else items
-
-
-def add_equipment_jobs(items, api_config, job_ids_by_name=None):
-    if not items or not api_config.auth_token:
-        return items
-
-    node_to_job = {}
-    client = Plant360Client(api_config)
-    for job_name, job_id in (job_ids_by_name or JOB_IDS_BY_NAME).items():
-        try:
-            payload = client.stlm_symbols(job_id)
-        except Exception:
-            continue
-        for symbol in _extract_symbols(payload):
-            for value in (symbol.get("uuid"), symbol.get("id"), symbol.get("source_id")):
-                key = _norm(value)
-                if key:
-                    node_to_job.setdefault(key, (job_name, job_id))
-
-    for item in items:
-        job = node_to_job.get(_norm(item.get("node_id")))
-        if job:
-            item["job_name"] = job[0]
-            item["job_id"] = job[1]
-    return items
-
-
-def add_equipment_jobs_from_metadata(items, job_ids_by_name):
-    if not items or not job_ids_by_name:
-        return items
-    by_name = {str(name).strip().lower(): (str(name), str(job_id)) for name, job_id in job_ids_by_name.items()}
-    for item in items:
-        job = by_name.get(str(item.get("job_name") or "").strip().lower())
-        if job:
-            item["job_name"] = job[0]
-            item["job_id"] = job[1]
-    return items
 
 
 def print_equipment(items):
@@ -236,47 +124,12 @@ def print_equipment(items):
         print("  ".join(str(item.get(key, "")).ljust(widths[key]) for key, _ in columns))
 
 
-def _first_value(properties, keys):
-    for key in keys:
-        value = properties.get(key)
-        if value not in (None, "", []):
-            return str(value).strip()
-    return None
-
-
-def _norm(value):
-    return str(value or "").strip().lower()
-
-
 def _raise_fatal_job_resolution(config, job_debug):
-    pnid_names = ", ".join(str(item) for item in (job_debug.get("pnid_names") or [])) or "-"
-    message = job_debug.get("message") or job_debug.get("job_resolution_error") or "Job resolution failed."
-    raise RuntimeError(
-        "Configured CNVRT job resolution failed for "
-        f"equipment {config.equipment_tag}; pnid_names={pnid_names}; "
-        f"cnvrt_project_id={job_debug.get('cnvrt_project_id') or config.cnvrt_project_id or '-'}; "
-        f"collection_id={job_debug.get('collection_id') or config.collection_id or '-'}; "
-        f"reason={message}"
-    )
+    """Fail fast. The agent runner returns the same detail as a dict instead."""
+    detail = fatal_job_resolution_detail(config, {"debug": {**job_debug, "fatal": True}})
+    raise RuntimeError(format_fatal_job_resolution(detail))
 
 
-def _raise_fatal_project_metadata(config, metadata_debug):
-    message = metadata_debug.get("error") or "Project metadata resolution failed."
-    raise RuntimeError(
-        "Configured project metadata failed for "
-        f"equipment {config.equipment_tag or '-'}; "
-        f"unigraph_project_id={config.graph.project_id or '-'}; "
-        f"cnvrt_project_id={config.cnvrt_project_id or '-'}; "
-        f"collection_id={config.collection_id or '-'}; "
-        f"reason={message}"
-    )
-
-
-def resolve_project_metadata(config):
-    config, metadata_debug = enrich_config_from_unigraph(config)
-    if metadata_debug.get("fatal"):
-        _raise_fatal_project_metadata(config, metadata_debug)
-    return config, metadata_debug
 
 
 def run(config, image_url=""):
@@ -463,118 +316,6 @@ def main():
     print(f"isolation_points={len(data.get('isolation_points') or [])}")
     print(f"output_json={output_json}")
     print(f"viewer_html={viewer_html}")
-
-
-def _config_with_inferred_job(config, candidate_data, boundary_data=None):
-    counts = {}
-    for candidate in candidate_data.get("candidates", []) or []:
-        job_name = _candidate_job_name(candidate, config.job_ids_by_name)
-        if job_name:
-            counts[job_name] = counts.get(job_name, 0) + 1
-    for job_name in _boundary_job_names(boundary_data, config.job_ids_by_name):
-        counts[job_name] = counts.get(job_name, 0) + 1
-    if not counts:
-        stlm_job_name = _infer_job_name_from_stlm(config, candidate_data, boundary_data)
-        if stlm_job_name:
-            counts[stlm_job_name] = counts.get(stlm_job_name, 0) + 1
-    if not counts:
-        return config
-    inferred_job_name = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[0][0]
-    if inferred_job_name == config.job_name:
-        return config
-    inferred_job_id = config.job_ids_by_name.get(inferred_job_name, "") or JOB_IDS_BY_NAME.get(inferred_job_name, "")
-    debug = candidate_data.setdefault("debug", {})
-    debug["input_job_name"] = config.job_name
-    debug["input_job_id"] = config.resolved_job_id
-    debug["inferred_job_name"] = inferred_job_name
-    debug["inferred_job_id"] = inferred_job_id
-    debug["inferred_job_source"] = "selected_candidate_or_boundary_context"
-    return replace(config, job_name=inferred_job_name, job_id=inferred_job_id)
-
-
-def _candidate_job_name(candidate, job_ids_by_name=None):
-    properties = candidate.get("properties") or {}
-    known_jobs = job_ids_by_name or JOB_IDS_BY_NAME
-    for key in ("unit_name", "pnid", "pnid_name", "job_name", "job"):
-        value = str(properties.get(key) or candidate.get(key) or "").strip()
-        if value in known_jobs:
-            return value
-    return ""
-
-
-def _boundary_job_names(boundary_data, job_ids_by_name=None):
-    if not boundary_data:
-        return []
-    known_jobs = job_ids_by_name or JOB_IDS_BY_NAME
-    names = []
-    for props in _boundary_properties(boundary_data):
-        for key in ("unit_name", "pnid", "pnid_name", "job_name", "job"):
-            value = str(props.get(key) or "").strip()
-            if value in known_jobs:
-                names.append(value)
-    return names
-
-
-def _infer_job_name_from_stlm(config, candidate_data, boundary_data):
-    if config.resolved_job_id or not config.api.auth_token:
-        return ""
-    ids = _job_lookup_ids(candidate_data, boundary_data)
-    if not ids:
-        return ""
-
-    client = Plant360Client(config.api)
-    for job_name, job_id in (config.job_ids_by_name or JOB_IDS_BY_NAME).items():
-        try:
-            payload = client.stlm_symbols(job_id)
-        except Exception:
-            continue
-        for symbol in _extract_symbols(payload):
-            for key in ("uuid", "id", "source_id", "associated_equipment_id", "parent"):
-                if _norm(symbol.get(key)) in ids:
-                    return job_name
-    return ""
-
-
-def _job_lookup_ids(candidate_data, boundary_data):
-    ids = set()
-    for candidate in candidate_data.get("candidates", []) or []:
-        for value in (
-            candidate.get("visual_id"),
-            candidate.get("source_visual_id"),
-            candidate.get("candidate_id"),
-            candidate.get("source_component_id"),
-            (candidate.get("properties") or {}).get("node_id"),
-            (candidate.get("properties") or {}).get("source_id"),
-            (candidate.get("properties") or {}).get("uuid"),
-        ):
-            key = _norm(value)
-            if key:
-                ids.add(key)
-    for props in _boundary_properties(boundary_data):
-        for key in ("node_id", "source_id", "uuid", "id", "name"):
-            value = props.get(key)
-            normalized = _norm(value)
-            if normalized:
-                ids.add(normalized)
-    return ids
-
-
-def _boundary_properties(boundary_data):
-    if not boundary_data:
-        return []
-    properties = []
-    for boundary in boundary_data.get("equipment_boundaries", []) or []:
-        equipment = boundary.get("equipment") or {}
-        props = dict(equipment.get("properties") or {})
-        if equipment.get("id") is not None:
-            props.setdefault("id", equipment.get("id"))
-        properties.append(props)
-        for component in boundary.get("components", []) or []:
-            props = dict(component.get("properties") or {})
-            if component.get("id") is not None:
-                props.setdefault("id", component.get("id"))
-            properties.append(props)
-    return properties
 
 
 if __name__ == "__main__":

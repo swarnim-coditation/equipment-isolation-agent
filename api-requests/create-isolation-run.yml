@@ -1,0 +1,31 @@
+info:
+  name: create isolation run
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/isolation-runs"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "equipment_tag": "{{EQUIPMENT_TAG}}",
+        "cnvrt_project_id": "{{CNVRT_PROJECT_ID}}",
+        "collection_id": "{{COLLECTION_ID}}",
+        "unigraph_project_id": "{{UNIGRAPH_PROJECT_ID}}",
+        "collection_name": "{{COLLECTION_NAME}}",
+        "job_name": "{{JOB_NAME}}",
+        "job_id": "{{JOB_ID}}",
+        "include_viewer": false
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

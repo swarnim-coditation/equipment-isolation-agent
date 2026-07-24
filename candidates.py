@@ -1,6 +1,7 @@
 from domain.classification import class_matches, classify_candidate, normalize_class
 from domain.enums import IsolationDecision
 from domain.models import BBox, IsolationCandidate
+from domain.topology import FAR_DISTANCE
 from domain.topology import tag_prefix as _tag_prefix
 
 
@@ -253,7 +254,7 @@ def _point_distance(source_props, candidate_props):
 
 
 def _distance_sort_value(value):
-    return float(value) if value is not None else 999999.0
+    return float(value) if value is not None else FAR_DISTANCE
 
 
 def _number(value):

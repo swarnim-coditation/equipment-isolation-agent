@@ -1,11 +1,12 @@
 from domain.classification import classify_candidate
 from domain.enums import IsolationDecision, ObligationStatus, SourceType
+from domain.isolation_actions import is_installed_positive_isolation, is_operable_barrier
 from domain.keywords import VERIFICATION_ENTITY_KEYWORDS, VERIFY_TAG_PREFIXES
 from domain.topology import tag_prefix as _tag_prefix
 
 
-BARRIER_KEYWORDS = {"valve", "generic_inline_valve", "gate_valve", "ball_valve", "globe_valve", "blind", "spade", "flange", "blank_flange", "line_break_point", "disconnect", "breaker"}
-POSITIVE_ENTITY_KEYWORDS = {"blind", "spade", "spectacle", "flange", "blank_flange", "line_break_point", "disconnect", "breaker", "spool"}
+BARRIER_KEYWORDS = {"valve", "generic_inline_valve", "gate_valve", "ball_valve", "globe_valve", "undefined_valve", "blind", "spade", "blank_flange", "blind_flange", "disconnect", "breaker"}
+POSITIVE_ENTITY_KEYWORDS = {"blind", "spade", "spectacle", "blank_flange", "blind_flange"}
 VERIFICATION_TAG_PREFIXES = VERIFY_TAG_PREFIXES
 
 
@@ -223,14 +224,24 @@ def _candidate_classification(candidate, policy=None):
 def _classification_from_payload(payload):
     from domain.models import CandidateClassification
 
+    class_values = tuple(payload.get("class_values") or ())
+    raw_entity_class = str(payload.get("raw_entity_class") or "")
+    values = class_values or ((raw_entity_class,) if raw_entity_class else ())
+    decision = IsolationDecision(str(payload.get("decision") or IsolationDecision.NOT_ISOLATION.value))
+    is_barrier = payload.get("is_barrier")
+    if is_barrier is None:
+        is_barrier = decision == IsolationDecision.AUTOMATIC and any(is_operable_barrier(value) for value in values)
+    is_positive = payload.get("is_positive_isolation")
+    if is_positive is None:
+        is_positive = any(is_installed_positive_isolation(value) for value in values)
     return CandidateClassification(
-        raw_entity_class=str(payload.get("raw_entity_class") or ""),
+        raw_entity_class=raw_entity_class,
         raw_entity_type=str(payload.get("raw_entity_type") or ""),
-        class_values=tuple(payload.get("class_values") or ()),
+        class_values=class_values,
         matched_policy_classes=tuple(payload.get("matched_policy_classes") or ()),
-        decision=IsolationDecision(str(payload.get("decision") or IsolationDecision.NOT_ISOLATION.value)),
-        is_barrier=bool(payload.get("is_barrier")),
-        is_positive_isolation=bool(payload.get("is_positive_isolation")),
+        decision=decision,
+        is_barrier=bool(is_barrier),
+        is_positive_isolation=bool(is_positive),
         is_verification=bool(payload.get("is_verification")),
     )
 

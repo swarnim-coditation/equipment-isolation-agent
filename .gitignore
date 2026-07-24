@@ -99,3 +99,8 @@ Thumbs.db
 # Generated pipeline output (HTML/JSON/P&ID images)
 output/
 output_agent/
+api_runs/
+
+# Local export bundles (copies of output/)
+equipment-isolation-collection/
+equipment-isolation-collection.zip

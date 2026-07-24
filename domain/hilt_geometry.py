@@ -105,3 +105,22 @@ def calibrate_yflip(hilt_nodes, symbols):
     if not heights:
         return None
     return sum(heights) / len(heights)
+
+
+def valid_bbox(bbox):
+    """Coerce a 4-element bbox to ints, rejecting non-positive width/height.
+
+    Shared by instrument_context and obligations, which had byte-equivalent
+    copies. NOTE: viewer has a deliberately laxer variant with no positivity
+    check -- it renders zero-area boxes that this rejects. Do not merge that one
+    without deciding whether those overlays should disappear.
+    """
+    if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
+        return []
+    try:
+        values = [int(value) for value in bbox]
+    except Exception:
+        return []
+    if values[2] <= 0 or values[3] <= 0:
+        return []
+    return values

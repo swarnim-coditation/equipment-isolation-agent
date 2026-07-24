@@ -8,21 +8,30 @@ manual/CI script, NOT a unit test.
 
     uv run python scripts/golden_regression.py --update   # capture/refresh goldens
     uv run python scripts/golden_regression.py            # check against goldens
+    uv run python scripts/golden_regression.py --jobs 1   # serial (debugging)
 
-Exit code is non-zero if any tag drifts, so it can gate a refactor.
+Tags run concurrently (threads around subprocess, which is I/O-bound), so wall
+clock is roughly the slowest single tag rather than the sum. Output stays ordered
+by TAGS regardless of completion order, so runs are diffable against each other.
+
+A tag whose pipeline run fails is reported as FAIL and counted as drift; it does
+not abort the other tags. Exit code is non-zero if any tag drifts or fails, so it
+can gate a refactor.
 """
 
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
+DEFAULT_GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
 
 # Representative spread: both P&IDs (Dadon-2 job 2483, Aker-Clean job 2151) and
 # multiple equipment classes (vessel, pump, heat exchanger).
@@ -34,17 +43,28 @@ TAGS = [
     "P3",
 ]
 
+DEFAULT_JOBS = 5
+
 
 def run_pipeline(tag: str, out_dir: Path) -> dict:
-    """Run the deterministic pipeline for one tag and return its JSON payload."""
-    subprocess.run(
-        [sys.executable, "-m", "run", "--equipment", tag, "--quiet", "--output-dir", str(out_dir)],
+    """Run the deterministic pipeline for one tag and return its JSON payload.
+
+    Each tag gets its own output directory so concurrent runs cannot interact
+    through the P&ID image files the pipeline also writes there.
+    """
+    tag_dir = out_dir / tag
+    tag_dir.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        [sys.executable, "-m", "run", "--equipment", tag, "--quiet", "--output-dir", str(tag_dir)],
         cwd=REPO_ROOT,
-        check=True,
+        check=False,
         capture_output=True,
         text=True,
     )
-    return json.loads((out_dir / f"{tag}.json").read_text(encoding="utf-8"))
+    if result.returncode != 0:
+        tail = (result.stderr or result.stdout or "").strip().splitlines()
+        raise RuntimeError("\n".join(tail[-5:]) or f"exit {result.returncode}")
+    return json.loads((tag_dir / f"{tag}.json").read_text(encoding="utf-8"))
 
 
 def _strip_volatile(obj):
@@ -61,44 +81,75 @@ def _canonical(payload: dict) -> str:
     return json.dumps(_strip_volatile(payload), indent=1, sort_keys=True)
 
 
-def update() -> int:
-    GOLDEN_DIR.mkdir(parents=True, exist_ok=True)
+def _run_all(tmp: Path, jobs: int) -> dict[str, object]:
+    """Run every tag concurrently. Returns tag -> payload dict or the Exception."""
+
+    def one(tag: str):
+        try:
+            return run_pipeline(tag, tmp)
+        except Exception as exc:  # reported per-tag; never aborts the sweep
+            return exc
+
+    with ThreadPoolExecutor(max_workers=max(1, jobs)) as pool:
+        return dict(zip(TAGS, pool.map(one, TAGS)))
+
+
+def update(jobs: int, golden_dir: Path) -> int:
+    golden_dir.mkdir(parents=True, exist_ok=True)
+    failed = 0
     with tempfile.TemporaryDirectory() as tmp:
-        for tag in TAGS:
-            payload = run_pipeline(tag, Path(tmp))
-            (GOLDEN_DIR / f"{tag}.json").write_text(_canonical(payload) + "\n", encoding="utf-8")
-            print(f"captured {tag}")
-    print(f"\nGoldens written to {GOLDEN_DIR}")
+        results = _run_all(Path(tmp), jobs)
+    for tag in TAGS:
+        payload = results[tag]
+        if isinstance(payload, Exception):
+            failed += 1
+            print(f"FAIL {tag}: {payload}")
+            continue
+        (golden_dir / f"{tag}.json").write_text(_canonical(payload) + "\n", encoding="utf-8")
+        print(f"captured {tag}")
+    if failed:
+        print(f"\n{failed} tag(s) failed to run; their goldens were NOT written.")
+        return 1
+    print(f"\nGoldens written to {golden_dir}")
     return 0
 
 
-def check() -> int:
+def check(jobs: int, golden_dir: Path) -> int:
     drift = 0
     with tempfile.TemporaryDirectory() as tmp:
-        for tag in TAGS:
-            golden_path = GOLDEN_DIR / f"{tag}.json"
-            if not golden_path.exists():
-                print(f"MISSING golden for {tag} (run --update first)")
-                drift += 1
-                continue
-            actual = _canonical(run_pipeline(tag, Path(tmp)))
-            expected = golden_path.read_text(encoding="utf-8").rstrip("\n")
-            if actual == expected:
-                print(f"OK   {tag}")
-            else:
-                drift += 1
-                a_lines = expected.splitlines()
-                b_lines = actual.splitlines()
-                import difflib
+        results = _run_all(Path(tmp), jobs)
 
-                delta = [
-                    line
-                    for line in difflib.unified_diff(a_lines, b_lines, lineterm="")
-                    if line[:1] in "+-" and line[:2] not in ("++", "--")
-                ]
-                print(f"DRIFT {tag}: {len(delta)} changed line(s)")
-                for line in delta[:40]:
-                    print(f"    {line}")
+    for tag in TAGS:
+        golden_path = golden_dir / f"{tag}.json"
+        if not golden_path.exists():
+            print(f"MISSING golden for {tag} (run --update first)")
+            drift += 1
+            continue
+
+        payload = results[tag]
+        if isinstance(payload, Exception):
+            drift += 1
+            print(f"FAIL {tag}: {payload}")
+            continue
+
+        actual = _canonical(payload)
+        expected = golden_path.read_text(encoding="utf-8").rstrip("\n")
+        if actual == expected:
+            print(f"OK   {tag}")
+            continue
+
+        drift += 1
+        delta = [
+            line
+            for line in difflib.unified_diff(expected.splitlines(), actual.splitlines(), lineterm="")
+            if line[:1] in "+-" and line[:2] not in ("++", "--")
+        ]
+        print(f"DRIFT {tag}: {len(delta)} changed line(s)")
+        for line in delta[:40]:
+            print(f"    {line}")
+        if len(delta) > 40:
+            print(f"    ... {len(delta) - 40} more")
+
     if drift:
         print(f"\n{drift} tag(s) drifted from golden.")
         return 1
@@ -109,8 +160,23 @@ def check() -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--update", action="store_true", help="Capture/refresh golden outputs instead of checking.")
+    parser.add_argument(
+        "--golden-dir",
+        type=Path,
+        default=DEFAULT_GOLDEN_DIR,
+        help="Directory holding golden payloads (default tests/golden). Point this at an\n"
+             "out-of-tree baseline to verify a refactor without staging files into the repo.",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=DEFAULT_JOBS,
+        help=f"Concurrent pipeline runs (default {DEFAULT_JOBS}; use 1 to serialize when debugging).",
+    )
     args = parser.parse_args()
-    return update() if args.update else check()
+    golden_dir = args.golden_dir.expanduser().resolve()
+    print(f"golden dir: {golden_dir}\n")
+    return update(args.jobs, golden_dir) if args.update else check(args.jobs, golden_dir)
 
 
 if __name__ == "__main__":

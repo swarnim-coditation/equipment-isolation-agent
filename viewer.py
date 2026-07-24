@@ -2,9 +2,16 @@ import html
 from collections import Counter
 from dataclasses import dataclass
 
-from domain.display import device_display_label, device_display_name
+from domain.display import device_display_label
 from domain.enums import ImpactSeverity, ObligationStatus, OverlayKind, SourceType
-from domain.models import BBox, Overlay
+from secondary_context import build_secondary_energy_context, context_source_label
+from viewer_overlays import (
+    _collect_overlays,
+    _obligation_source_label,
+    _optional_int,
+    _source_warning_label,
+    _valid_bbox,
+)
 
 CANVAS_WIDTH = 5458
 CANVAS_HEIGHT = 3109
@@ -18,7 +25,7 @@ _LEGEND_ENTRIES = [
     ((OverlayKind.SCHEME,), "Detected scheme device (unselected 2nd block)", "#1d4ed8", False),
     ((OverlayKind.RELIEF,), "Relief point (vent / drain / bleed)", "#0284c7", False),
     ((OverlayKind.MANUAL, OverlayKind.OBLIGATION_MANUAL), "Manual field check", "#f59e0b", True),
-    ((OverlayKind.CONTEXT,), "Boundary context (non-process)", "#1d4ed8", False),
+    ((OverlayKind.CONTEXT,), "Secondary/context source", "#1d4ed8", False),
     ((OverlayKind.INSTRUMENT,), "Instrument (advisory)", "#0891b2", False),
     ((OverlayKind.IMPACT,), "Downstream impact", "#dc2626", False),
 ]
@@ -37,6 +44,8 @@ class Viewport:
 def render_viewer_html(payload, image_url=""):
     data = payload.get("data", [{}])[0]
     debug = payload.get("debug") or data.get("debug") or {}
+    if not data.get("secondary_energy_context"):
+        data = {**data, "secondary_energy_context": build_secondary_energy_context(data)}
     overlays = _collect_overlays(data)
     viewport = _compute_viewport(overlays, image_url)
     procedure_html = _render_isolation_procedure_panel(
@@ -60,300 +69,70 @@ def render_viewer_html(payload, image_url=""):
 
 
 def _render_degraded_banner(debug, data):
-    """Prominent callout when the run fell back to partial/graph-only data, so a
-    degraded result is never presented as if it were authoritative."""
-    errors = []
-    if debug.get("hilt_graph_error"):
-        errors.append(f"P&ID topology (HILT) failed to load: {debug.get('hilt_graph_error')}")
-    if debug.get("bbox_stlm_error"):
-        errors.append(f"Symbols/labels (STLM) failed to load: {debug.get('bbox_stlm_error')}")
-    zero_topology = not (debug.get("hilt_graph_node_count") or 0)
-    if not errors and not zero_topology:
+    """Prominent callout when a run fell back to partial data.
+
+    Names *which* layer failed and what it does (and does not) affect. The two
+    failures are not equivalent: losing the HILT piping graph compromises the
+    isolation analysis itself, while STLM loss can be harmless only when HILT
+    coordinate calibration still succeeded from another source. Missing debug
+    keys are treated as unknown, not as failure.
+    """
+    hilt_node_count = _optional_int(debug.get("hilt_graph_node_count"))
+    symbol_count = _optional_int(debug.get("bbox_stlm_symbol_count"))
+    target_count = _optional_int(debug.get("target_equipment_bbox_resolved_count"))
+    branch_source_count = _optional_int(debug.get("hilt_branch_source_count"))
+    authoritative_count = _optional_int(debug.get("hilt_topology_authoritative_count"))
+    y_flip = debug.get("hilt_y_flip_calibrated")
+
+    topology_failed = bool(debug.get("hilt_graph_error")) or (hilt_node_count is not None and hilt_node_count == 0)
+    symbols_failed = bool(debug.get("bbox_stlm_error")) or (symbol_count is not None and symbol_count == 0)
+    hilt_merge_expected = branch_source_count is not None and branch_source_count > 0
+    hilt_merge_missing = hilt_merge_expected and (not y_flip or (authoritative_count is not None and authoritative_count == 0))
+    target_missing = target_count is not None and target_count == 0
+    if not (topology_failed or symbols_failed or hilt_merge_missing or target_missing):
         return ""
-    if zero_topology and not any("HILT" in e for e in errors):
-        errors.append("No P&ID topology nodes were available; topology-based checks were skipped.")
-    if not (data.get("selected_equipment_overlays") or []):
-        errors.append("Target equipment could not be located on the drawing.")
-    items = "".join(f"<li>{html.escape(str(reason))}</li>" for reason in errors)
-    return (
-        '<div class="degraded">'
-        '<div class="degraded-title">⚠ Degraded / incomplete data — do not rely on this result as-is</div>'
-        f"<ul>{items}</ul>"
-        "<div>This run fell back to partial or graph-only data; drawing overlays, second-block detection, and "
-        "relief analysis may be missing or incorrect. Re-run once the drawing/topology services are available.</div>"
-        "</div>"
-    )
 
-
-def _collect_overlays(data):
-    seq_by_uuid = _isolation_sequence(data.get("loto_procedure"))
-    overlays = []
-    overlays.extend(_collect_target_overlays(data))
-    overlays.extend(_collect_isolation_overlays(data, seq_by_uuid))
-    overlays.extend(_collect_scheme_device_overlays(data, seq_by_uuid))
-    overlays.extend(_collect_impact_overlays(data))
-    overlays.extend(_collect_obligation_manual_overlays(data))
-    overlays.extend(_collect_manual_check_overlays(data))
-    overlays.extend(_collect_context_overlays(data))
-    overlays.extend(_collect_instrument_overlays(data))
-    overlays.extend(_collect_relief_overlays(data))
-    return overlays
-
-
-def _collect_target_overlays(data):
-    overlays = []
-    for item in data.get("selected_equipment_overlays", []) or []:
-        bbox = _valid_bbox(item.get("bbox"))
-        if not bbox:
-            continue
-        label = "Target"
-        title = f"Selected equipment of interest | {item.get('tag')} | class={item.get('entity_class')} | bbox={bbox}"
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.TARGET,
-                bbox=BBox.from_any(bbox),
-                label=label,
-                title=title,
-                css_class="target-box",
-                label_class="target-label",
-                summary_seq="target",
-                summary_uuid=str(item.get("uuid") or item.get("equipment_id") or ""),
-                summary_reason=str(item.get("reason") or title),
-            )
+    rows = []
+    if topology_failed:
+        detail = debug.get("hilt_graph_error") or "no topology nodes were returned"
+        rows.append(
+            f"<li><b>P&amp;ID topology (HILT) unavailable</b> — {html.escape(str(detail))}<br>"
+            "Branch tracing, second-block detection and relief analysis could not use the piping graph, so the "
+            "isolation result is unreliable.</li>"
         )
-    return overlays
-
-
-def _collect_isolation_overlays(data, seq_by_uuid):
-    overlays = []
-    for point in data.get("isolation_points", []) or []:
-        bbox = _valid_bbox(point.get("bbox"))
-        if not bbox:
-            continue
-        seq = seq_by_uuid.get(str(point.get("uuid")))
-        label = device_display_label(point, fallback=str(point.get("uuid") or "isolation device"))
-        if seq:
-            label = f"#{seq}  {label}"
-        title = f"{label} | uuid={point.get('uuid')} | bbox={bbox}"
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.ISOLATION,
-                bbox=BBox.from_any(bbox),
-                label=label,
-                title=title,
-                css_class="box",
-                label_class="label",
-                summary_seq=str(seq or ""),
-                summary_uuid=str(point.get("uuid") or ""),
-                summary_reason=str(point.get("reason") or ""),
-                badge=str(seq or ""),
-            )
+    elif hilt_merge_missing:
+        rows.append(
+            "<li><b>Authoritative HILT branch merge not proven</b><br>"
+            "The HILT graph reported branch sources, but coordinate calibration or authoritative candidate merging "
+            "did not complete. Isolation selection may have fallen back to less authoritative graph candidates.</li>"
         )
-    return overlays
-
-
-def _collect_scheme_device_overlays(data, seq_by_uuid):
-    overlays = []
-    selected_ids = {str(point.get("uuid")) for point in data.get("isolation_points", []) or []}
-    seen = set()
-    for scheme in ((data.get("detected_isolation_schemes") or {}).get("items") or []):
-        for device in scheme.get("devices") or []:
-            device_id = str(device.get("id") or "")
-            if not device_id or device_id in selected_ids or device_id in seen:
-                continue
-            bbox = _valid_bbox(device.get("bbox"))
-            if not bbox:
-                continue
-            seen.add(device_id)
-            label = _scheme_device_label(device, scheme)
-            title = (
-                f"Detected scheme device | scheme={scheme.get('scheme_type')} | "
-                f"label={label} | uuid={device_id} | bbox={bbox}"
+    if symbols_failed:
+        detail = debug.get("bbox_stlm_error") or "no symbols were returned"
+        if hilt_merge_expected and y_flip and (authoritative_count is None or authoritative_count > 0):
+            impact = (
+                f"HILT topology calibration still succeeded for this run "
+                f"(y_flip={html.escape(str(y_flip))}, authoritative merges={html.escape(str(authoritative_count))})."
             )
-            overlays.append(
-                Overlay(
-                    kind=OverlayKind.SCHEME,
-                    bbox=BBox.from_any(bbox),
-                    label=label,
-                    title=title,
-                    css_class="box scheme-box",
-                    label_class="scheme-label",
-                    summary_seq="scheme",
-                    summary_uuid=device_id,
-                    summary_reason=title,
-                    badge="",
-                )
+        elif hilt_merge_missing:
+            impact = (
+                "HILT branch calibration/merge was not proven for this run; isolation selection may have fallen "
+                "back to less authoritative graph candidates."
             )
-    return overlays
-
-
-def _collect_impact_overlays(data):
-    overlays = []
-    warnings = ((data.get("downstream_impact") or {}).get("warnings") or [])
-    for index, warning_item in enumerate([item for item in warnings if _valid_bbox(item.get("affected_bbox"))], start=1):
-        bbox = _minimum_display_bbox(_valid_bbox(warning_item.get("affected_bbox")), min_width=86, min_height=30)
-        severity = ImpactSeverity(str(warning_item.get("severity") or ImpactSeverity.POSSIBLE.value))
-        raw_label = warning_item.get("affected_tag") or warning_item.get("affected_id") or "downstream impact"
-        source = warning_item.get("source_tag") or warning_item.get("source_candidate_tag") or "selected barrier"
-        wording = "likely affects" if severity == ImpactSeverity.LIKELY else "may affect"
-        title = (
-            f"Downstream impact | {source} {wording} {raw_label} | "
-            f"class={warning_item.get('affected_class')} | original_bbox={warning_item.get('affected_bbox')}"
+        else:
+            impact = "Impact on HILT branch selection is unknown from the available debug data."
+        rows.append(
+            f"<li><b>Symbol/label data (STLM) unavailable</b> — {html.escape(str(detail))}<br>"
+            "Box placement and labels are affected: some isolation points may render without a box, device labels "
+            f"may be blank, and instrument overlays are missing. {impact}</li>"
         )
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.IMPACT,
-                bbox=BBox.from_any(bbox),
-                label=_impact_overlay_label(warning_item, index),
-                title=title,
-                css_class=f"impact-box impact-{severity.value}",
-                label_class="impact-label",
-                summary_seq="",
-                summary_uuid=str(warning_item.get("affected_id") or ""),
-                summary_reason=title,
-                severity=severity.value,
-            )
-        )
-    return overlays
+    if target_missing:
+        rows.append("<li><b>Target equipment not located on the drawing</b> — the equipment outline is not shown.</li>")
 
-
-def _collect_manual_check_overlays(data):
-    overlays = []
-    for check in data.get("manual_visual_isolation_checks", []) or []:
-        bbox = _valid_bbox(check.get("bbox"))
-        if not bbox:
-            continue
-        title = f"{check.get('entity_class')} | uuid={check.get('uuid')} | bbox={bbox}"
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.MANUAL,
-                bbox=BBox.from_any(bbox),
-                label="manual check",
-                title=title,
-                css_class="manual-box",
-                label_class="manual-label",
-                summary_seq="",
-                summary_uuid=str(check.get("uuid") or ""),
-                summary_reason=str(check.get("reason") or ""),
-            )
-        )
-    return overlays
-
-
-def _collect_obligation_manual_overlays(data):
-    overlays = []
-    seen = set()
-    obligations = (data.get("isolation_obligations") or {}).get("items") or []
-    for obligation in obligations:
-        source = obligation.get("source_component_tag") or obligation.get("source_component") or "source"
-        for candidate in obligation.get("manual_candidates") or []:
-            bbox = _valid_bbox(candidate.get("bbox"))
-            if not bbox:
-                continue
-            key = (str(candidate.get("uuid") or ""), tuple(bbox))
-            if key in seen:
-                continue
-            seen.add(key)
-            tag = device_display_label(candidate, fallback="candidate")
-            title = (
-                f"Manual isolation candidate | source={source} | candidate={tag} | "
-                f"uuid={candidate.get('uuid')} | bbox={bbox}"
-            )
-            overlays.append(
-                Overlay(
-                    kind=OverlayKind.OBLIGATION_MANUAL,
-                    bbox=BBox.from_any(bbox),
-                    label="manual isolation check",
-                    title=title,
-                    css_class="manual-box",
-                    label_class="manual-label",
-                    summary_seq="manual",
-                    summary_uuid=str(candidate.get("uuid") or ""),
-                    summary_reason=str(candidate.get("reason") or title),
-                )
-            )
-    return overlays
-
-
-def _collect_context_overlays(data):
-    overlays = []
-    context_items = data.get("boundary_context_sources", []) or data.get("context_instruments", []) or []
-    for context in context_items:
-        bbox = _valid_bbox(context.get("source_bbox"))
-        if not bbox:
-            continue
-        label = str(context.get("source_component_tag") or "boundary context")
-        title = f"boundary context | source={label} | class={context.get('classification')} | bbox={bbox}"
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.CONTEXT,
-                bbox=BBox.from_any(bbox),
-                label=label,
-                title=title,
-                css_class="context-box",
-                label_class="context-label",
-                summary_seq="",
-                summary_uuid=str(context.get("source_component") or ""),
-                summary_reason=str(context.get("reason") or ""),
-            )
-        )
-    return overlays
-
-
-def _collect_instrument_overlays(data):
-    overlays = []
-    for instrument in ((data.get("instrument_context") or {}).get("instruments") or []):
-        bbox = _valid_bbox(instrument.get("bbox"))
-        if not bbox:
-            continue
-        label = str(instrument.get("tag") or instrument.get("name") or "instrument")
-        title = (
-            f"instrument context | {label} | variable={instrument.get('measured_variable')} | "
-            f"type={instrument.get('instrument_type')} | bbox={bbox}"
-        )
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.INSTRUMENT,
-                bbox=BBox.from_any(bbox),
-                label=label,
-                title=title,
-                css_class="instrument-box",
-                label_class="instrument-label",
-                summary_seq="instrument",
-                summary_uuid=str(instrument.get("id") or ""),
-                summary_reason=str(instrument.get("verification_note") or title),
-            )
-        )
-    return overlays
-
-
-def _collect_relief_overlays(data):
-    overlays = []
-    for item in ((data.get("relief_candidates") or {}).get("items") or []):
-        if item.get("relief_type") not in {"vent", "drain", "bleed"}:
-            continue
-        bbox = _valid_bbox(item.get("bbox"))
-        if not bbox:
-            continue
-        label = str(item.get("relief_type") or "relief").title()
-        title = (
-            f"relief candidate | {label} | tag={item.get('tag')} | "
-            f"class={item.get('entity_class')} | classified_by={item.get('classified_by')} | bbox={bbox}"
-        )
-        overlays.append(
-            Overlay(
-                kind=OverlayKind.RELIEF,
-                bbox=BBox.from_any(bbox),
-                label=label,
-                title=title,
-                css_class="relief-box",
-                label_class="relief-label",
-                summary_seq="relief",
-                summary_uuid=str(item.get("id") or ""),
-                summary_reason=str(item.get("basis") or title),
-            )
-        )
-    return overlays
+    if topology_failed or hilt_merge_missing:
+        css, title = "degraded", "⚠ Degraded data — isolation analysis is unreliable; do not rely on this result"
+    else:
+        css, title = "degraded degraded-warn", "⚠ Partial data — review the affected drawing/data layer"
+    return f'<div class="{css}"><div class="degraded-title">{title}</div><ul>{"".join(rows)}</ul></div>'
 
 
 def _compute_viewport(overlays, image_url):
@@ -556,8 +335,10 @@ h1 { margin: 0 0 8px; font-size: 20px; }
 .meta { margin: 0 0 16px; color: #4b5563; }
 .warning { margin: 0 0 16px; padding: 10px 12px; border: 1px solid #f59e0b; background: #fffbeb; color: #92400e; font-weight: 600; }
 .degraded { margin: 0 0 18px; padding: 12px 14px; border: 2px solid #dc2626; background: #fef2f2; color: #7f1d1d; border-radius: 6px; }
+.degraded-warn { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
 .degraded-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
 .degraded ul { margin: 6px 0; padding-left: 20px; }
+.degraded li { margin: 4px 0; }
 .hero { margin: 0 0 18px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
 .hero-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
 .hero-title { font-size: 18px; font-weight: 700; }
@@ -670,79 +451,6 @@ window.addEventListener('load', function () {
     )
 
 
-def _valid_bbox(bbox):
-    if not isinstance(bbox, list) and not isinstance(bbox, tuple):
-        return []
-    if len(bbox) != 4:
-        return []
-    try:
-        return [int(value) for value in bbox]
-    except Exception:
-        return []
-
-
-def _source_warning_label(item):
-    label = str(item.get("source_component_tag") or "").strip()
-    if label:
-        return label
-    if item.get("source_label_confidence") == "graph_only_unlabeled_component":
-        return "unlabeled graph-only source"
-    return str(item.get("source_component") or "unknown")
-
-
-def _obligation_source_label(item):
-    label = str(item.get("source_component_tag") or "").strip()
-    if label:
-        return label
-    return str(item.get("source_component") or "unknown source")
-
-
-def _minimum_display_bbox(bbox, min_width=1, min_height=1):
-    x, y, w, h = [int(value) for value in bbox]
-    display_w = max(w, int(min_width))
-    display_h = max(h, int(min_height))
-    display_x = x - max((display_w - w) // 2, 0)
-    display_y = y - max((display_h - h) // 2, 0)
-    return [display_x, display_y, display_w, display_h]
-
-
-def _impact_overlay_label(warning_item, index):
-    affected_type = str(warning_item.get("affected_type") or "").replace("_", " ").strip()
-    affected_class = str(warning_item.get("affected_class") or "").replace("_", " ").strip()
-    label_type = affected_type or affected_class or "node"
-    if label_type == "endpoint":
-        label_type = "endpoint"
-    elif "instrument" in label_type or "control" in label_type:
-        label_type = "instrument"
-    elif label_type == "relief context":
-        label_type = "relief"
-    elif label_type == "equipment":
-        label_type = "equipment"
-    return f"Impact {index} {label_type}"
-
-
-def _scheme_device_label(device, scheme):
-    label = device_display_label(device, fallback="device")
-    scheme_type = str(scheme.get("scheme_type") or "").lower()
-    if "double block" in scheme_type:
-        return f"second block: {label}"
-    if "positive" in scheme_type:
-        return f"positive isolation: {label}"
-    return f"scheme device: {label}"
-
-
-def _isolation_sequence(procedure):
-    if not procedure:
-        return {}
-    seq_by_uuid = {}
-    seq = 0
-    for step in procedure.get("ordered_steps") or []:
-        if step.get("phase") == 3 and step.get("device_uuid"):
-            seq += 1
-            seq_by_uuid[str(step["device_uuid"])] = seq
-    return seq_by_uuid
-
-
 def _render_isolation_procedure_panel(
     procedure,
     data,
@@ -751,6 +459,7 @@ def _render_isolation_procedure_panel(
     context_instruments,
     downstream_impact,
 ):
+    secondary_context = data.get("secondary_energy_context") or build_secondary_energy_context(data)
     warning_html = _render_procedure_warnings(
         unselected_sources,
         manual_checks,
@@ -759,6 +468,7 @@ def _render_isolation_procedure_panel(
         data.get("isolation_obligations") or {},
     )
     coverage_html = _render_isolation_coverage(data.get("isolation_obligations") or {})
+    secondary_html = _render_secondary_context(secondary_context)
     scheme_html = _render_detected_schemes(data.get("detected_isolation_schemes") or {})
     relief_html = _render_relief_candidates(data.get("relief_candidates") or {})
     steps = (procedure or {}).get("ordered_steps") or []
@@ -796,6 +506,7 @@ def _render_isolation_procedure_panel(
         f'Procedure basis: OSHA {standard}(d).</p>'
         f'{status_callout}'
         f'{warning_html}'
+        f'{secondary_html}'
         f'{coverage_html}'
         f'{scheme_html}'
         f'{relief_html}'
@@ -856,7 +567,8 @@ def _render_detected_schemes(detected_schemes):
         scheme = html.escape(str(item.get("scheme_type") or "unknown"))
         barriers = _scheme_device_list(item)
         relief = ", ".join(html.escape(str(value)) for value in item.get("relief_candidate_ids") or []) or "-"
-        rows.append(f"<li><b>{source}</b>: {scheme}; barriers: {barriers}; relief: {relief}.</li>")
+        device_label = "field point" if str(item.get("scheme_type") or "").startswith("field-confirmed") else "barriers"
+        rows.append(f"<li><b>{source}</b>: {scheme}; {device_label}: {barriers}; relief: {relief}.</li>")
     return (
         '<div class="coverage"><h3>Detected Isolation Scheme</h3>'
         '<p class="meta">Detected from existing HILT topology only; no hazard-based scheme recommendation is made.</p>'
@@ -905,14 +617,15 @@ def _render_status_callout(data):
     css = _STATUS_CALLOUT_CSS[tone]
     summary = (data.get("isolation_obligations") or {}).get("summary") or {}
     unresolved = int(summary.get("unresolved_count") or 0)
-    manual = int(summary.get("manual_candidate_count") or 0)
+    manual = _unique_manual_candidate_count(data.get("isolation_obligations") or {})
 
     if status == "not_isolated" and unresolved:
         detail = f"{unresolved} process path still needs a selected isolation point before this can be treated as isolated."
     elif status == "not_isolated":
         detail = "The available evidence does not show a complete isolation boundary for the selected equipment."
     elif status == "provisional_unproven_isolation" and manual:
-        detail = f"The graph found an isolation boundary, but {manual} additional field/manual check must be resolved before work proceeds."
+        plural = "check" if manual == 1 else "checks"
+        detail = f"The graph found an isolation boundary, but {manual} additional field/manual {plural} must be resolved before work proceeds."
     elif status == "provisional_unproven_isolation":
         detail = "The graph found an isolation boundary, but required field verification or proof of zero energy is still missing."
     elif tone == "good":
@@ -992,10 +705,13 @@ def _render_procedure_warnings(unselected_sources, manual_checks, context_instru
             "but not parsed as valve symbols. Confirm and close/lock these branches in the field/UI if applicable."
         )
     if context_instruments:
+        labels = ", ".join(html.escape(context_source_label(item)) for item in context_instruments[:8])
+        suffix = f": {labels}" if labels else ""
         rows.append(
-            "Boundary context: "
-            f"{len(context_instruments)} nozzle/source path(s) were classified as non-process context and not counted "
-            "as process isolation boundaries."
+            "Secondary energy/context review required: "
+            f"{len(context_instruments)} non-process context path(s) were not counted as process isolation boundaries"
+            f"{suffix}. Confirm whether each carries tracing, utility, purge, signal, overflow, drain/vent, "
+            "or other secondary energy before work."
         )
 
     downstream_rows = _render_downstream_impact_items(downstream_impact)
@@ -1036,6 +752,25 @@ def _render_isolation_coverage(obligations):
         f'<p class="meta">{html.escape(meta)}</p><ul>'
         + "\n".join(rows)
         + "</ul></div>"
+    )
+
+
+def _render_secondary_context(secondary_context):
+    if (secondary_context or {}).get("status") != "completed":
+        return ""
+    items = secondary_context.get("items") or []
+    if not items:
+        return ""
+    rows = []
+    for item in items:
+        source = html.escape(str(item.get("source_component_tag") or item.get("source_component") or "context source"))
+        line_class = html.escape(str(item.get("line_class") or "context"))
+        action = html.escape(str(item.get("action") or "Review secondary/context source before work."))
+        rows.append(f"<li><b>{source}</b> ({line_class}): {action}{_render_step_details(item)}</li>")
+    return (
+        '<div class="coverage secondary-context"><h3>Secondary Energy / Context Holds</h3>'
+        '<p class="meta">These holds do not change process isolation coverage; they identify non-process lines that require field review before work.</p>'
+        f'<ul>{"".join(rows)}</ul></div>'
     )
 
 

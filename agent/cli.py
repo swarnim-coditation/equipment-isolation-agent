@@ -20,23 +20,15 @@ import os
 import sys
 from pathlib import Path
 
-from dataclasses import replace
-
-from config import (
-    ApiConfig,
-    GraphConfig,
-    IsolationPolicy,
-    RunConfig,
-    WorkScope,
-    apply_graph_env,
-    apply_project_profile,
-    load_project_profile,
-)
 from image import resolve_pid_image
 from output import write_json, write_viewer
 
-from agent.loop import DEFAULT_MODEL, run_agent
-from agent.session import AgentSession, jsonable
+from pipeline.config_builder import build_run_config
+from pipeline.env import load_dotenv
+
+from agent.loop import DEFAULT_MODEL
+from agent.runner import run_agent_pipeline
+from agent.session import jsonable
 
 logger = logging.getLogger("agent_isolation")
 
@@ -74,70 +66,27 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_dotenv():
-    for env_path in (Path.cwd() / ".env", Path(__file__).resolve().parents[1] / ".env"):
-        if not env_path.exists():
-            continue
-        for line in env_path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, value = line.split("=", 1)
-            key = key.strip()
-            value = value.strip().strip('"').strip("'")
-            if key and key not in os.environ:
-                os.environ[key] = value
-
-
-def build_config(args) -> RunConfig:
-    profile = load_project_profile(args.project_config, args.project_profile)
-    config = apply_project_profile(
-        RunConfig(
-            equipment_tag=args.equipment,
-            job_name=args.job_name,
-            job_id=args.job_id,
-            api=ApiConfig(
-                base_url=args.api_base_url,
-                auth_token=args.auth_token,
-                verify_ssl=True,
-            ),
-            policy=IsolationPolicy(),
-            work_scope=WorkScope(
-                intrusive_work=not args.non_intrusive,
-                high_risk_service=not args.not_high_risk,
-            ),
-            output_dir=Path(args.output_dir),
-        ),
-        profile,
-    )
-    env_graph = apply_graph_env(config.graph)
-    graph = replace(
-        env_graph,
-        host=args.host or env_graph.host,
-        port=args.port or env_graph.port,
-        project_id=args.project_id or env_graph.project_id,
-        traversal_source_name=args.traversal_source or env_graph.traversal_source_name,
-    )
-    return replace(
-        config,
+def build_config(args):
+    return build_run_config(
         equipment_tag=args.equipment,
         job_name=args.job_name,
         job_id=args.job_id,
-        cnvrt_project_id=args.cnvrt_project_id or config.cnvrt_project_id,
-        collection_id=args.collection_id or config.collection_id,
-        collection_name=args.collection_name or config.collection_name,
-        graph=graph,
-        api=ApiConfig(
-            base_url=args.api_base_url,
-            auth_token=args.auth_token,
-            verify_ssl=True,
-        ),
-        policy=replace(config.policy, max_traversal_depth=args.max_depth) if args.max_depth is not None else config.policy,
-        work_scope=WorkScope(
-            intrusive_work=not args.non_intrusive,
-            high_risk_service=not args.not_high_risk,
-        ),
-        output_dir=Path(args.output_dir),
+        project_config=args.project_config,
+        project_profile=args.project_profile,
+        auth_token=args.auth_token,
+        api_base_url=args.api_base_url,
+        verify_ssl=True,
+        cnvrt_project_id=args.cnvrt_project_id,
+        collection_id=args.collection_id,
+        collection_name=args.collection_name,
+        host=args.host,
+        port=args.port,
+        project_id=args.project_id,
+        traversal_source=args.traversal_source,
+        max_depth=args.max_depth,
+        intrusive_work=not args.non_intrusive,
+        high_risk_service=not args.not_high_risk,
+        output_dir=args.output_dir,
     )
 
 
@@ -182,6 +131,28 @@ def _make_event_printer(quiet: bool):
     return on_event
 
 
+def _safe_stem(equipment_tag: str) -> str:
+    return str(equipment_tag or "unknown_equipment").replace("/", "_").replace(" ", "_")
+
+
+def _write_trace(output_dir: Path, equipment_tag: str, model: str, agent_result: dict, trace: list[dict]) -> Path:
+    trace_path = output_dir / f"{_safe_stem(equipment_tag)}_trace.json"
+    trace_path.write_text(
+        json.dumps(
+            {
+                "equipment": equipment_tag,
+                "model": model,
+                "agent_result": jsonable(agent_result),
+                "trace": jsonable(trace),
+            },
+            indent=2,
+            default=str,
+        )
+        + "\n"
+    )
+    return trace_path
+
+
 def main():
     args = parse_args()
     logging.basicConfig(level=logging.WARNING, force=True)
@@ -191,49 +162,48 @@ def main():
         print("ERROR: GEMINI_API_KEY is required (set in .env or pass --gemini-api-key).", file=sys.stderr)
         sys.exit(2)
 
-    config = build_config(args)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    session = AgentSession(config)
-
-    agent_result = run_agent(
-        session,
-        model=args.model,
-        api_key=args.gemini_api_key,
-        max_steps=args.max_steps,
-        on_event=_make_event_printer(args.quiet),
-    )
-
-    # Always write the trace first so failed/incomplete runs are still debuggable.
-    config = session.config
-    stem = config.equipment_tag.replace("/", "_").replace(" ", "_")
-    trace_path = output_dir / f"{stem}_trace.json"
-    trace_path.write_text(
-        json.dumps(
-            {
-                "equipment": config.equipment_tag,
-                "model": args.model,
-                "agent_result": jsonable(agent_result),
-                "trace": session.trace,
-            },
-            indent=2,
-            default=str,
+    config = None
+    try:
+        config = build_config(args)
+        result = run_agent_pipeline(
+            config,
+            model=args.model,
+            api_key=args.gemini_api_key,
+            max_steps=args.max_steps,
+            on_event=_make_event_printer(args.quiet),
         )
-        + "\n"
-    )
-
-    final_payload = session.final_payload
-    if not final_payload:
-        print(f"ERROR: no final payload produced (forced stages: {agent_result.get('forced')}).", file=sys.stderr)
+    except Exception as exc:
+        equipment_tag = getattr(config, "equipment_tag", None) or args.equipment
+        agent_result = {
+            "error": True,
+            "kind": "pipeline_error",
+            "message": str(exc),
+            "steps_used": 0,
+            "forced": [],
+        }
+        trace_path = _write_trace(
+            output_dir,
+            equipment_tag,
+            args.model,
+            agent_result,
+            [{"kind": "fatal_error", "error": agent_result}],
+        )
+        print(f"ERROR: {exc}", file=sys.stderr)
         print(f"trace_json={trace_path}", file=sys.stderr)
         sys.exit(1)
 
-    if session.loto_procedure:
-        final_payload.setdefault("data", [{}])[0].setdefault("loto_procedure", session.loto_procedure)
-    if session.instrument_context:
-        final_payload.setdefault("data", [{}])[0].setdefault("instrument_context", session.instrument_context)
-    if session.relief_analysis:
-        final_payload.setdefault("data", [{}])[0].update(session.relief_analysis)
+    # Always write the trace first so failed/incomplete runs are still debuggable.
+    config = result.config
+    stem = _safe_stem(config.equipment_tag)
+    trace_path = _write_trace(output_dir, config.equipment_tag, args.model, result.agent_result, result.trace)
+
+    final_payload = result.final_payload
+    if not final_payload:
+        print(f"ERROR: no final payload produced (forced stages: {result.agent_result.get('forced')}).", file=sys.stderr)
+        print(f"trace_json={trace_path}", file=sys.stderr)
+        sys.exit(1)
 
     image_url = args.image_url
     if not image_url:
@@ -248,7 +218,7 @@ def main():
     data = final_payload.get("data", [{}])[0]
     print(f"assurance_status={data.get('assurance_status')}")
     print(f"isolation_points={len(data.get('isolation_points') or [])}")
-    print(f"agent_steps={agent_result['steps_used']}")
+    print(f"agent_steps={result.agent_result['steps_used']}")
     print(f"output_json={output_json}")
     print(f"viewer_html={viewer_html}")
     print(f"trace_json={trace_path}")

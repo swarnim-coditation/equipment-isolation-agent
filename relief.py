@@ -4,12 +4,13 @@ from collections import deque
 
 from domain.classification import class_matches, classify_candidate, normalize_class
 from domain.enums import IsolationDecision
+from domain.isolation_actions import is_field_confirmed_positive_candidate, is_installed_positive_isolation
 from domain.topology import PROCESS_LINE_CLASSES
 
 
 BACKPRESSURE_CONTEXT_CLASSES = {"check_valve", "control_valve"}
 RELIEF_TERMS = ("bleed", "vent", "drain", "open_vent")
-POSITIVE_TERMS = ("blind", "spade", "spectacle", "flange", "blank_flange", "line_break_point", "disconnect", "breaker")
+POSITIVE_TERMS = ("blind", "spade", "spectacle", "blank_flange", "blind_flange")
 MAX_ENVELOPE_HOPS = 14
 MAX_SCHEME_LOOKAHEAD_HOPS = 10
 
@@ -203,9 +204,25 @@ def _detect_schemes(selected, node_by_id, adj, policy, y_flip=None):
         first = item["barrier_id"]
         if first not in node_by_id:
             continue
+        first_summary = _node_summary(first, node_by_id, y_flip=y_flip)
+        first_field_confirmed = is_field_confirmed_positive_candidate(first_summary.get("entity_class"))
+        if first_field_confirmed:
+            schemes.append(
+                {
+                    "source_component": item.get("source_component"),
+                    "source_component_tag": item.get("source_component_tag"),
+                    "branch_id": item.get("branch_id"),
+                    "scheme_type": "field-confirmed positive isolation point",
+                    "barrier_ids": [],
+                    "relief_candidate_ids": [],
+                    "context_device_ids": [],
+                    "basis": "flange/line-break location detected from HILT topology; it is not accepted as isolation until an approved blind/spade or line break is field-confirmed",
+                    "devices": [first_summary],
+                }
+            )
+            continue
         previous = _previous_node(item.get("path_node_ids") or [], first)
         extension = _look_beyond_first_barrier(first, previous, node_by_id, adj, policy, y_flip=y_flip)
-        first_summary = _node_summary(first, node_by_id, y_flip=y_flip)
         first_positive = _is_positive(first_summary.get("entity_class"))
         second = extension.get("second_block")
         series_proven = extension.get("series_proven", True)
@@ -382,7 +399,7 @@ def _branch_device_role(node, policy):
         entity_class,
         policy,
     )
-    if classification.decision in {IsolationDecision.AUTOMATIC, IsolationDecision.CONDITIONAL_MANUAL_REVIEW}:
+    if classification.is_barrier and classification.decision in {IsolationDecision.AUTOMATIC, IsolationDecision.CONDITIONAL_MANUAL_REVIEW}:
         return "block"
     return "traversable"
 
@@ -444,8 +461,7 @@ def _source_branch_for_node(envelope, schemes, node_id):
 
 
 def _is_positive(entity_class):
-    normalized = normalize_class(entity_class)
-    return any(value in normalized for value in POSITIVE_TERMS)
+    return is_installed_positive_isolation(entity_class)
 
 
 def _node_text(node):
