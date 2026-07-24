@@ -15,9 +15,14 @@ config:
       bypassProxy: ""
 
 request:
+  auth:
+    type: bearer
+    token: "{{PLANT360_AUTH_TOKEN}}"
   variables:
     - name: BASE_URL
       value: http://localhost:8088
+    - name: PLANT360_AUTH_TOKEN
+      value: ""
     - name: EQUIPMENT_TAG
       value: P3
     - name: RUN_ID

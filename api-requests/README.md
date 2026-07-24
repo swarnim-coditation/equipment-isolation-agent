@@ -10,6 +10,9 @@ uv run python -m api
 
 Recommended smoke order:
 
+Set `PLANT360_AUTH_TOKEN` in the collection/environment first. Requests inherit
+Bearer auth from the collection.
+
 1. `health` should return `200`.
 2. `reject blank equipment tag` should return `422`.
 3. `reject missing project context` should return `422`.

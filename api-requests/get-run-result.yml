@@ -8,7 +8,7 @@ http:
   url: "{{BASE_URL}}/isolation-runs/:run_id/result"
   params:
     - name: run_id
-      value: "{{RUN_ID}}"
+      value: 34da642d28ad4b0ea311f4c12ce591ce
       type: path
   auth: inherit
 
